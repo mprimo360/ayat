@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPRIMO | Quran & Science - الإعجاز العلمي</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'Amiri', 'Traditional Arabic', serif;
+            background: linear-gradient(135deg, #0a2a0a 0%, #0a0a2e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #FFD700, #00aa44, #4ECDC4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .creator-name {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            color: #FFD700;
+            letter-spacing: 2px;
+        }
+        
+        .creator-name span {
+            background: rgba(0,0,0,0.5);
+            padding: 5px 15px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+        
+        .header p {
+            color: #aaa;
+            margin-top: 10px;
+        }
+        
+        .search-card {
+            background: rgba(0,0,0,0.5);
+            border-radius: 25px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .search-box input {
+            flex: 2;
+            min-width: 300px;
+            font-size: 1.1rem;
+            padding: 15px 20px;
+            background: #2a2a3e;
+            color: #fff;
+            border: 1px solid #FFD700;
+            border-radius: 15px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .search-btn {
+            background: linear-gradient(135deg, #FFD700, #00aa44);
+            color: #000;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .search-btn:hover {
+            transform: scale(1.02);
+        }
+        
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .mode-btn {
+            background: #2a2a3e;
+            padding: 8px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            border: 1px solid #FFD700;
+            transition: all 0.2s;
+        }
+        
+        .mode-btn.active {
+            background: #FFD700;
+            color: #000;
+        }
+        
+        .mode-btn:hover {
+            background: #FFD700;
+            color: #000;
+        }
+        
+        .suggestion-chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .chip {
+            background: #2a2a3e;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #FFD700;
+        }
+        
+        .chip:hover {
+            background: #FFD700;
+            color: #000;
+            transform: translateY(-2px);
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .result-card {
+            background: rgba(0,0,0,0.65);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #333;
+            transition: all 0.3s;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-card:hover {
+            transform: translateY(-5px);
+            border-color: #FFD700;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        
+        .result-header {
+            background: rgba(0,0,0,0.5);
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .result-surah {
+            color: #FFD700;
+            font-weight: bold;
+        }
+        
+        .arabic-text {
+            font-size: 1.3rem;
+            font-family: 'Amiri', 'Traditional Arabic', serif;
+            color: #00cc44;
+            text-align: right;
+            direction: rtl;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        .english-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .audio-player {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .play-btn {
+            background: #00aa44;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        
+        .play-btn:hover {
+            background: #FFD700;
+            color: #000;
+        }
+        
+        .science-box {
+            background: rgba(0,170,68,0.15);
+            border-left: 3px solid #00cc44;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        
+        .science-title {
+            color: #00cc44;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 1.2rem;
+            color: #FFD700;
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #FFD700;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px;
+            color: #888;
+            font-size: 1.1rem;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 25px;
+            color: #555;
+            border-top: 1px solid #333;
+        }
+        
+        @media (max-width: 768px) {
+            .results-grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.6rem; }
+            .arabic-text { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🔬 القرآن والعلم | Quran & Science</h1>
+        <div class="creator-name"><span>✨ Created by: MPRIMO ✨</span></div>
+        <p>Search ANY word in the Quran | Discover scientific miracles | Listen with audio</p>
+    </div>
+    
+    <div class="search-card">
+        <div class="mode-selector">
+            <div class="mode-btn active" id="modeQuranBtn" onclick="setMode('quran')">📖 Quran Search (Any Word)</div>
+            <div class="mode-btn" id="modeScienceBtn" onclick="setMode('science')">🔬 Scientific Miracles</div>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Type ANY word: mercy, justice, woman, iron, sun, moon, peace, love, water, mountains, universe..." autocomplete="off">
+            <button class="search-btn" id="searchBtn">🔍 Search in Quran</button>
+        </div>
+        
+        <div class="suggestion-chips" id="suggestionChips">
+            <span class="chip" onclick="searchWord('mercy')">🤲 Mercy</span>
+            <span class="chip" onclick="searchWord('justice')">⚖️ Justice</span>
+            <span class="chip" onclick="searchWord('woman')">👩 Woman</span>
+            <span class="chip" onclick="searchWord('peace')">🕊️ Peace</span>
+            <span class="chip" onclick="searchWord('love')">❤️ Love</span>
+            <span class="chip" onclick="searchWord('iron')">⚙️ Iron</span>
+            <span class="chip" onclick="searchWord('sun')">☀️ Sun</span>
+            <span class="chip" onclick="searchWord('water')">💧 Water</span>
+        </div>
+    </div>
+    
+    <div id="resultsContainer">
+        <div id="resultsGrid"></div>
+    </div>
+    
+    <div class="footer">
+        <p>🌟 Created by MPRIMO | Quran API | Audio from EveryAyat | Search ANY word in the Quran</p>
+        <p>📞 Contact: ukdesigner62@gmail.com | WhatsApp: +447492166072</p>
+    </div>
+</div>
+
+<script>
+    // ========== MPRIMO - COMPLETE QURAN SEARCH ENGINE ==========
+    
+    let currentMode = 'quran';
+    
+    // Scientific Miracles Database
+    const scienceDatabase = {
+        'baby': {
+            title: '🤰 Human Embryonic Development',
+            explanation: 'The Quran describes human creation in stages: Nutfah (drop) → Alaqah (clinging clot) → Mudghah (chewed lump) → bones → flesh. Professor Keith Moore confirmed these stages match modern embryology.',
+            surah: 23,
+            verse: 12,
+            verses: ['Surah Al-Mu\'minun (23:12-14)', 'Surah Al-Hajj (22:5)']
+        },
+        'embryo': {
+            title: '👶 Embryonic Development',
+            explanation: 'The Quran accurately describes embryonic stages that were unknown in the 7th century.',
+            surah: 23,
+            verse: 12,
+            verses: ['Surah Al-Mu\'minun (23:12-14)']
+        },
+        'iron': {
+            title: '⚙️ Iron - Sent Down from Space',
+            explanation: 'The Quran states iron was "sent down". Modern astrophysics confirms iron comes from supernova explosions.',
+            surah: 57,
+            verse: 25,
+            verses: ['Surah Al-Hadid (57:25)']
+        },
+        'sun': {
+            title: '☀️ The Sun\'s Orbit',
+            explanation: 'The Quran states the sun runs to a fixed resting place. Modern science confirms the sun orbits the galactic center.',
+            surah: 36,
+            verse: 38,
+            verses: ['Surah Ya-Sin (36:38)']
+        },
+        'moon': {
+            title: '🌙 The Moon\'s Reflected Light',
+            explanation: 'The Quran distinguishes between the sun as a lamp and the moon as reflected light.',
+            surah: 71,
+            verse: 16,
+            verses: ['Surah Nuh (71:16)']
+        },
+        'water': {
+            title: '💧 The Water Cycle',
+            explanation: 'The Quran describes evaporation, clouds, rain, and springs - the complete water cycle.',
+            surah: 39,
+            verse: 21,
+            verses: ['Surah Az-Zumar (39:21)']
+        },
+        'mountains': {
+            title: '⛰️ Mountains as Pegs',
+            explanation: 'The Quran describes mountains as pegs stabilizing the earth\'s crust.',
+            surah: 78,
+            verse: 6,
+            verses: ['Surah An-Naba (78:6-7)']
+        },
+        'universe': {
+            title: '🌌 The Expanding Universe',
+            explanation: 'The Quran states "We are expanding it." Hubble discovered this in 1929.',
+            surah: 51,
+            verse: 47,
+            verses: ['Surah Adh-Dhariyat (51:47)']
+        },
+        'big bang': {
+            title: '💥 The Big Bang',
+            explanation: 'The Quran describes the heavens and earth joined then separated.',
+            surah: 21,
+            verse: 30,
+            verses: ['Surah Al-Anbiya (21:30)']
+        }
+    };
+    
+    // Quran API
+    const QURAN_SEARCH_API = 'https://api.alquran.cloud/v1/search/';
+    const QURAN_AYAH_API = 'https://api.alquran.cloud/v1/ayah/';
+    
+    let currentAudio = null;
+    
+    function setMode(mode) {
+        currentMode = mode;
+        document.getElementById('modeQuranBtn').classList.toggle('active', mode === 'quran');
+        document.getElementById('modeScienceBtn').classList.toggle('active', mode === 'science');
+        
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
+        
+        if (mode === 'quran') {
+            searchBtn.innerHTML = '🔍 Search in Quran';
+            searchInput.placeholder = 'Type ANY word: mercy, justice, woman, iron, sun, moon, peace, love, water...';
+            document.getElementById('suggestionChips').innerHTML = `
+                <span class="chip" onclick="searchWord('mercy')">🤲 Mercy</span>
+                <span class="chip" onclick="searchWord('justice')">⚖️ Justice</span>
+                <span class="chip" onclick="searchWord('woman')">👩 Woman</span>
+                <span class="chip" onclick="searchWord('peace')">🕊️ Peace</span>
+                <span class="chip" onclick="searchWord('love')">❤️ Love</span>
+                <span class="chip" onclick="searchWord('iron')">⚙️ Iron</span>
+                <span class="chip" onclick="searchWord('sun')">☀️ Sun</span>
+                <span class="chip" onclick="searchWord('water')">💧 Water</span>
+            `;
+        } else {
+            searchBtn.innerHTML = '🔬 Discover Scientific Miracle';
+            searchInput.placeholder = 'Search: baby, iron, sun, moon, water, mountains, universe...';
+            document.getElementById('suggestionChips').innerHTML = `
+                <span class="chip" onclick="searchWord('baby')">🤰 Baby/Embryo</span>
+                <span class="chip" onclick="searchWord('iron')">⚙️ Iron</span>
+                <span class="chip" onclick="searchWord('sun')">☀️ Sun</span>
+                <span class="chip" onclick="searchWord('moon')">🌙 Moon</span>
+                <span class="chip" onclick="searchWord('water')">💧 Water Cycle</span>
+                <span class="chip" onclick="searchWord('mountains')">⛰️ Mountains</span>
+                <span class="chip" onclick="searchWord('universe')">🌌 Universe</span>
+                <span class="chip" onclick="searchWord('big bang')">💥 Big Bang</span>
+            `;
+        }
+    }
+    
+    async function searchWord(word) {
+        document.getElementById('searchInput').value = word;
+        await performSearch();
+    }
+    
+    async function fetchAyahText(surah, verse) {
+        try {
+            const response = await fetch(`${QURAN_AYAH_API}${surah}:${verse}/editions/ar.sahih,en.sahih`);
+            if (response.ok) {
+                const data = await response.json();
+                if (data && data.data) {
+                    const arabic = data.data.find(d => d.edition?.identifier === 'ar.sahih');
+                    const english = data.data.find(d => d.edition?.identifier === 'en.sahih');
+                    return {
+                        arabic: arabic?.text || '',
+                        english: english?.text || ''
+                    };
+                }
+            }
+        } catch(e) {
+            console.log('Error fetching ayah:', e);
+        }
+        return null;
+    }
+    
+    function getAudioUrl(surah, verse) {
+        return `https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps/${surah.toString().padStart(3, '0')}${verse.toString().padStart(3, '0')}.mp3`;
+    }
+    
+    function playAudio(surah, verse, button) {
+        const audioUrl = getAudioUrl(surah, verse);
+        
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio = null;
+            document.querySelectorAll('.play-btn').forEach(btn => {
+                btn.innerHTML = '🔊 Play';
+            });
+        }
+        
+        const audio = new Audio(audioUrl);
+        currentAudio = audio;
+        
+        audio.onplay = () => {
+            button.innerHTML = '🎧 Playing...';
+        };
+        
+        audio.onended = () => {
+            button.innerHTML = '🔊 Play';
+            currentAudio = null;
+        };
+        
+        audio.onerror = () => {
+            button.innerHTML = '🔊 Play';
+        };
+        
+        audio.play().catch(e => console.log('Audio error:', e));
+    }
+    
+    async function searchQuranAnyWord(term) {
+        try {
+            const response = await fetch(QURAN_SEARCH_API + encodeURIComponent(term) + '/all/en');
+            if (response.ok) {
+                const data = await response.json();
+                if (data && data.data && data.data.matches) {
+                    return data.data.matches.slice(0, 8);
+                }
+            }
+        } catch(e) {
+            console.log('Search error:', e);
+        }
+        return [];
+    }
+    
+    async function performSearch() {
+        const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+        const resultsGrid = document.getElementById('resultsGrid');
+        
+        if (!searchTerm) {
+            resultsGrid.innerHTML = '<div class="no-results">✨ Enter a word to search the Quran or discover scientific miracles</div>';
+            return;
+        }
+        
+        resultsGrid.innerHTML = '<div class="loading">Searching...</div>';
+        
+        if (currentMode === 'quran') {
+            // QURAN MODE: Search any word in the entire Quran
+            const verses = await searchQuranAnyWord(searchTerm);
+            displayQuranResults(searchTerm, verses);
+        } else {
+            // SCIENCE MODE: Show scientific miracle
+            let scienceMatch = null;
+            for (const key in scienceDatabase) {
+                if (searchTerm.includes(key) || key.includes(searchTerm)) {
+                    scienceMatch = scienceDatabase[key];
+                    break;
+                }
+            }
+            
+            if (!scienceMatch) {
+                for (const key in scienceDatabase) {
+                    if (key.includes(searchTerm) || searchTerm.includes(key)) {
+                        scienceMatch = scienceDatabase[key];
+                        break;
+                    }
+                }
+            }
+            
+            if (scienceMatch) {
+                const quranData = await fetchAyahText(scienceMatch.surah, scienceMatch.verse);
+                displayScienceResult(scienceMatch, quranData);
+            } else {
+                // Show scientific miracles list if no match
+                resultsGrid.innerHTML = `
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <div class="result-header"><span class="result-surah">🔍 SCIENTIFIC MIRACLES</span></div>
+                            <div class="result-body" style="padding: 20px;">
+                                <div class="science-box">
+                                    <div class="science-title">📚 No direct match for "${escapeHtml(searchTerm)}"</div>
+                                    <div>Try searching these verified scientific miracles:</div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-top: 15px;">
+                                    ${Object.keys(scienceDatabase).map(key => `• <span onclick="searchWord('${key}')" style="color:#FFD700; cursor:pointer;">${key}</span>`).join('<br>')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+    }
+    
+    function displayQuranResults(searchTerm, verses) {
+        const resultsGrid = document.getElementById('resultsGrid');
+        
+        if (!verses || verses.length === 0) {
+            resultsGrid.innerHTML = `
+                <div class="no-results">
+                    📭 No verses found containing "${escapeHtml(searchTerm)}"<br>
+                    <span style="font-size:0.8rem;">Try: mercy, justice, peace, love, woman, iron, sun, water, mountains</span>
+                </div>`;
+            return;
+        }
+        
+        let html = '<div class="results-grid">';
+        
+        for (const verse of verses) {
+            const surahNum = verse.surah?.number || '';
+            const ayahNum = verse.numberInSurah || '';
+            const surahName = verse.surah?.name || 'Quran';
+            const arabicText = verse.text || '';
+            const englishText = verse.translation || '';
+            
+            html += `
+                <div class="result-card">
+                    <div class="result-header">
+                        <span class="result-surah">📖 ${escapeHtml(surahName)} (${surahNum}:${ayahNum})</span>
+                        <span>🔍 Contains "${escapeHtml(searchTerm)}"</span>
+                    </div>
+                    <div class="result-body" style="padding: 20px;">
+                        <div class="arabic-text">${escapeHtml(arabicText)}</div>
+                        <div class="english-text">${escapeHtml(englishText)}</div>
+                        <div class="audio-player">
+                            <button class="play-btn" onclick="playAudio(${surahNum}, ${ayahNum}, this)">🔊 Play Recitation</button>
+                            <span style="font-size:0.7rem; color:#aaa;">🎙️ Sheikh Sudais</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        html += '</div>';
+        resultsGrid.innerHTML = html;
+    }
+    
+    function displayScienceResult(scienceMatch, quranData) {
+        const resultsGrid = document.getElementById('resultsGrid');
+        
+        let html = '<div class="results-grid">';
+        
+        html += `
+            <div class="result-card">
+                <div class="result-header">
+                    <span class="result-surah">🔬 SCIENTIFIC MIRACLE</span>
+                </div>
+                <div class="result-body" style="padding: 20px;">
+                    <div class="science-box">
+                        <div class="science-title">${scienceMatch.title}</div>
+                        <div>${scienceMatch.explanation}</div>
+                    </div>
+        `;
+        
+        if (quranData && quranData.arabic) {
+            html += `
+                <div style="margin-top: 15px;">
+                    <strong>📖 Quran Verse (${scienceMatch.surah}:${scienceMatch.verse})</strong>
+                    <div class="arabic-text">${escapeHtml(quranData.arabic)}</div>
+                    <div class="english-text">${escapeHtml(quranData.english)}</div>
+                    <div class="audio-player">
+                        <button class="play-btn" onclick="playAudio(${scienceMatch.surah}, ${scienceMatch.verse}, this)">🔊 Play Recitation</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        html += `<div style="margin-top: 15px;"><strong>📖 Related Verses:</strong><br>${scienceMatch.verses.map(v => `• ${v}`).join('<br>')}</div>`;
+        html += `</div></div>`;
+        
+        html += `
+            <div class="result-card">
+                <div class="result-header"><span class="result-surah">📚 MORE SCIENTIFIC MIRACLES</span></div>
+                <div class="result-body" style="padding: 20px;">
+                    <div style="display: grid; grid-template-columns: repeat(2,1fr); gap: 10px;">
+                        ${Object.keys(scienceDatabase).filter(k => k !== Object.keys(scienceMatch)[0]).map(key => 
+                            `<div onclick="searchWord('${key}')" style="color:#FFD700; cursor:pointer; padding:5px; background:rgba(0,0,0,0.3); border-radius:8px;">🔬 ${scienceDatabase[key].title}</div>`
+                        ).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        html += '</div>';
+        resultsGrid.innerHTML = html;
+    }
+    
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // Event listeners
+    document.getElementById('searchBtn').addEventListener('click', performSearch);
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') performSearch();
+    });
+    
+    // Welcome message
+    setTimeout(() => {
+        const welcome = document.createElement('div');
+        welcome.style.cssText = 'position:fixed; bottom:20px; right:20px; background:#00aa44; color:white; padding:12px 20px; border-radius:10px; z-index:9999; animation:fadeOut 4s ease;';
+        welcome.innerHTML = '🏆 MPRIMO Quran & Science Engine | Search ANY word in the Quran!';
+        document.body.appendChild(welcome);
+        setTimeout(() => welcome.remove(), 4000);
+    }, 1000);
+</script>
+
+<style>
+    @keyframes fadeOut {
+        0% { opacity: 1; }
+        70% { opacity: 1; }
+        100% { opacity: 0; visibility: hidden; }
+    }
+</style>
+</body>
+</html>
