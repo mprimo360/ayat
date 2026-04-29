@@ -222,26 +222,6 @@
             cursor: pointer;
         }
         
-        .next-prayer:hover {
-            background: #FFD700;
-            color: #000;
-        }
-        
-        .athan-btn {
-            background: #ff8800;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 25px;
-            cursor: pointer;
-            margin-top: 10px;
-            font-size: 0.8rem;
-        }
-        
-        .athan-btn:hover {
-            background: #FFD700;
-            color: #000;
-        }
-        
         /* Search Section */
         .search-card {
             background: rgba(0,0,0,0.5);
@@ -455,6 +435,25 @@
             border-top: 1px solid #333;
         }
         
+        /* Admin Panel Button (hidden from normal users) */
+        .admin-hidden-link {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.6);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: #aaa;
+            text-decoration: none;
+            z-index: 999;
+            transition: 0.2s;
+        }
+        .admin-hidden-link:hover {
+            color: #FFD700;
+            background: rgba(0,0,0,0.8);
+        }
+        
         @media (max-width: 768px) {
             .results-grid { grid-template-columns: 1fr; }
             .header h1 { font-size: 1.6rem; }
@@ -468,10 +467,10 @@
     <div class="header">
         <h1>🔬 القرآن والعلم | Quran & Science</h1>
         <div class="creator-name"><span>✨ Created by: MPRIMO ✨</span></div>
-        <p>Search ANY word in the Quran | Discover scientific miracles | Prayer Times with Adhan | Find Nearest Masjid</p>
+        <p>Search ANY word in the Quran | Discover scientific miracles | Prayer Times | Find Nearest Masjid</p>
     </div>
     
-    <!-- Prayer Times & Masjid Locator Section -->
+    <!-- Prayer Times & Masjid Locator Section (Adhan removed) -->
     <div class="prayer-section">
         <div class="prayer-card">
             <div class="prayer-title">🕌 Find Nearest Masjid</div>
@@ -495,19 +494,18 @@
         </div>
         
         <div class="prayer-card">
-            <div class="prayer-title">🕌 Prayer Times with Adhan</div>
+            <div class="prayer-title">🕌 Prayer Times</div>
             <div id="locationName" style="font-size:0.85rem; color:#aaa; margin-bottom:10px;">📍 Allow location to see prayer times</div>
             <div class="prayer-times" id="prayerTimesList">
-                <div class="prayer-item" onclick="playAdhanManual('Fajr')"><div class="prayer-name">Fajr</div><div class="prayer-time" id="fajr">--:--</div></div>
-                <div class="prayer-item" onclick="playAdhanManual('Dhuhr')"><div class="prayer-name">Dhuhr</div><div class="prayer-time" id="dhuhr">--:--</div></div>
-                <div class="prayer-item" onclick="playAdhanManual('Asr')"><div class="prayer-name">Asr</div><div class="prayer-time" id="asr">--:--</div></div>
-                <div class="prayer-item" onclick="playAdhanManual('Maghrib')"><div class="prayer-name">Maghrib</div><div class="prayer-time" id="maghrib">--:--</div></div>
-                <div class="prayer-item" onclick="playAdhanManual('Isha')"><div class="prayer-name">Isha</div><div class="prayer-time" id="isha">--:--</div></div>
+                <div class="prayer-item"><div class="prayer-name">Fajr</div><div class="prayer-time" id="fajr">--:--</div></div>
+                <div class="prayer-item"><div class="prayer-name">Dhuhr</div><div class="prayer-time" id="dhuhr">--:--</div></div>
+                <div class="prayer-item"><div class="prayer-name">Asr</div><div class="prayer-time" id="asr">--:--</div></div>
+                <div class="prayer-item"><div class="prayer-name">Maghrib</div><div class="prayer-time" id="maghrib">--:--</div></div>
+                <div class="prayer-item"><div class="prayer-name">Isha</div><div class="prayer-time" id="isha">--:--</div></div>
             </div>
-            <div class="next-prayer" id="nextPrayer" onclick="playAdhanForNext()">
+            <div class="next-prayer" id="nextPrayer">
                 ⏰ Enable location to see next prayer
             </div>
-            <button class="athan-btn" onclick="playMakkahAdhan()">🎧 Play Makkah Adhan</button>
         </div>
     </div>
     
@@ -539,10 +537,13 @@
     </div>
     
     <div class="footer">
-        <p>🌟 Created by MPRIMO | Quran API | Adhan from Makkah | Find Nearest Masjid</p>
+        <p>🌟 Created by MPRIMO | Quran API | Find Nearest Masjid | Prayer Times</p>
         <p>📞 Contact: ukdesigner62@gmail.com | WhatsApp: +447492166072</p>
     </div>
 </div>
+
+<!-- Hidden Admin Link (accessible only if you know the route) -->
+<a href="admin.html" class="admin-hidden-link">👑 Admin Portal</a>
 
 <script>
     // ========== MPRIMO - COMPLETE QURAN SEARCH ENGINE ==========
@@ -551,33 +552,55 @@
     let userLat = null;
     let userLon = null;
     let closestMasjids = [];
-    let adhanPlayer = null;
     let prayerCheckInterval = null;
+    let currentUserId = null;
     
-    // Adhan audio URL
-    const ADHAN_FALLBACK = 'https://audio.urdu-islam.com/azan/Adhan%20Makkah.mp3';
-    
-    function playMakkahAdhan() {
-        if (adhanPlayer) {
-            adhanPlayer.pause();
-            adhanPlayer = null;
+    // ========== USER TRACKING FOR ADMIN ==========
+    function getUserId() {
+        let id = localStorage.getItem('mprimo_user_id');
+        if (!id) {
+            id = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
+            localStorage.setItem('mprimo_user_id', id);
         }
-        adhanPlayer = new Audio(ADHAN_FALLBACK);
-        adhanPlayer.play().catch(e => {
-            console.log('Adhan play error');
-        });
-        showToast('🎧 Playing Makkah Adhan - الله أكبر الله أكبر');
+        return id;
     }
     
-    function playAdhanManual(prayerName) {
-        playMakkahAdhan();
-        showToast(`🕌 Adhan for ${prayerName} prayer`);
+    function trackUserActivity(searchPerformed = false) {
+        currentUserId = getUserId();
+        let users = JSON.parse(localStorage.getItem('admin_users')) || {};
+        let now = new Date();
+        
+        let userData = users[currentUserId] || {
+            id: currentUserId,
+            firstSeen: now.toISOString(),
+            searches: 0
+        };
+        
+        userData.lastActive = now.toISOString();
+        if (searchPerformed) userData.searches = (userData.searches || 0) + 1;
+        
+        // Update location if available
+        if (userLat && userLon) {
+            userData.lat = userLat;
+            userData.lon = userLon;
+            // Simple reverse geocoding (city)
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLat}&lon=${userLon}&zoom=10`)
+                .then(res => res.json())
+                .then(data => {
+                    const city = data.address?.city || data.address?.town || data.address?.village || '';
+                    const country = data.address?.country || '';
+                    userData.location = city + (country ? `, ${country}` : '');
+                    localStorage.setItem('admin_users', JSON.stringify(users));
+                })
+                .catch(() => {});
+        }
+        
+        users[currentUserId] = userData;
+        localStorage.setItem('admin_users', JSON.stringify(users));
     }
     
-    function playAdhanForNext() {
-        playMakkahAdhan();
-        showToast(`🎧 Adhan played`);
-    }
+    // update periodically
+    setInterval(() => trackUserActivity(false), 30000);
     
     // ========== MASJID LOCATOR ==========
     
@@ -587,8 +610,8 @@
             navigator.geolocation.getCurrentPosition(async (position) => {
                 userLat = position.coords.latitude;
                 userLon = position.coords.longitude;
+                trackUserActivity(false);
                 
-                // Using Overpass API to find mosques (free, no API key)
                 const query = `
                     [out:json];
                     (
@@ -633,7 +656,6 @@
                     if (closestMasjids.length > 0) {
                         displayNearestMasjid(closestMasjids[0]);
                     } else {
-                        // Fallback: Use Google Places API style search
                         findMosquesViaGoogleMaps();
                     }
                     
@@ -642,7 +664,6 @@
                     findMosquesViaGoogleMaps();
                 }
                 
-                // Also update prayer times
                 await getPrayerTimes(userLat, userLon);
                 
             }, (error) => {
@@ -655,14 +676,13 @@
     }
     
     function findMosquesViaGoogleMaps() {
-        // Open Google Maps search for mosques nearby as fallback
         const mapsUrl = `https://www.google.com/maps/search/mosque+near+me/@${userLat},${userLon},14z`;
         window.open(mapsUrl, '_blank');
         showToast('📍 Opening Google Maps to find mosques near you');
     }
     
     function calculateDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371; // Earth's radius in km
+        const R = 6371;
         const dLat = (lat2 - lat1) * Math.PI / 180;
         const dLon = (lon2 - lon1) * Math.PI / 180;
         const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -711,7 +731,6 @@
         document.getElementById('masjidDistance').innerHTML = `📏 ${distText} from your location`;
         document.getElementById('masjidAddress').innerHTML = `📍 ${escapeHtml(masjid.address)}`;
         
-        // Store current masjid for navigation
         window.selectedMasjid = masjid;
     }
     
@@ -729,7 +748,7 @@
         }
     }
     
-    // ========== PRAYER TIMES ==========
+    // ========== PRAYER TIMES (No Adhan) ==========
     
     async function getPrayerTimes(lat, lon) {
         try {
@@ -750,16 +769,6 @@
                 document.getElementById('asr').innerHTML = timings.Asr;
                 document.getElementById('maghrib').innerHTML = timings.Maghrib;
                 document.getElementById('isha').innerHTML = timings.Isha;
-                
-                const prayerTimes = {
-                    Fajr: timings.Fajr,
-                    Dhuhr: timings.Dhuhr,
-                    Asr: timings.Asr,
-                    Maghrib: timings.Maghrib,
-                    Isha: timings.Isha
-                };
-                
-                scheduleAdhan(prayerTimes);
                 
                 const now = new Date();
                 const currentTime = now.getHours() * 60 + now.getMinutes();
@@ -789,10 +798,9 @@
                 if (nextPrayer) {
                     const remainingHours = Math.floor(minDiff / 60);
                     const remainingMinutes = minDiff % 60;
-                    document.getElementById('nextPrayer').innerHTML = `⏰ Next Prayer: <strong>${nextPrayer.name}</strong> in ${remainingHours}h ${remainingMinutes}m 🔔 Click to play Adhan`;
+                    document.getElementById('nextPrayer').innerHTML = `⏰ Next Prayer: <strong>${nextPrayer.name}</strong> in ${remainingHours}h ${remainingMinutes}m`;
                 }
                 
-                // Get city name
                 try {
                     const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
                     const geoData = await geoRes.json();
@@ -809,26 +817,6 @@
             console.log('Prayer time error:', e);
         }
         return false;
-    }
-    
-    function scheduleAdhan(prayerTimes) {
-        if (prayerCheckInterval) clearInterval(prayerCheckInterval);
-        
-        prayerCheckInterval = setInterval(() => {
-            const now = new Date();
-            const currentTime = now.getHours() * 60 + now.getMinutes();
-            const currentSeconds = now.getSeconds();
-            
-            for (const [prayer, time] of Object.entries(prayerTimes)) {
-                const [hours, minutes] = time.split(':').map(Number);
-                const prayerMinutes = hours * 60 + minutes;
-                
-                if (currentTime === prayerMinutes && currentSeconds < 30) {
-                    playMakkahAdhan();
-                    showToast(`🕌 Adhan for ${prayer} prayer - وقت الصلاة`);
-                }
-            }
-        }, 10000);
     }
     
     // ========== SCIENTIFIC MIRACLES DATABASE ==========
@@ -978,19 +966,9 @@
         const audio = new Audio(audioUrl);
         currentAudio = audio;
         
-        audio.onplay = () => {
-            button.innerHTML = '🎧 Playing...';
-        };
-        
-        audio.onended = () => {
-            button.innerHTML = '🔊 Play';
-            currentAudio = null;
-        };
-        
-        audio.onerror = () => {
-            button.innerHTML = '🔊 Play';
-        };
-        
+        audio.onplay = () => button.innerHTML = '🎧 Playing...';
+        audio.onended = () => { button.innerHTML = '🔊 Play'; currentAudio = null; };
+        audio.onerror = () => button.innerHTML = '🔊 Play';
         audio.play().catch(e => console.log('Audio error:', e));
     }
     
@@ -1017,6 +995,8 @@
             resultsGrid.innerHTML = '<div class="no-results">✨ Enter a word to search the Quran or discover scientific miracles</div>';
             return;
         }
+        
+        trackUserActivity(true);  // record search in admin
         
         resultsGrid.innerHTML = '<div class="loading">Searching...</div>';
         
@@ -1167,20 +1147,28 @@
         if (e.key === 'Enter') performSearch();
     });
     
-    // Auto-request location on load for prayer times only
+    // Auto-request location on load for prayer times and user tracking
     setTimeout(() => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(async (position) => {
                 userLat = position.coords.latitude;
                 userLon = position.coords.longitude;
+                trackUserActivity(false);
                 await getPrayerTimes(userLat, userLon);
-            }, () => {});
+            }, () => {
+                trackUserActivity(false);
+            });
+        } else {
+            trackUserActivity(false);
         }
     }, 1000);
     
+    // Initial user tracking
+    trackUserActivity(false);
+    
     // Welcome message
     setTimeout(() => {
-        showToast('🏆 MPRIMO Quran & Science | Find Nearest Masjid | Prayer Times with Adhan 🕌');
+        showToast('🏆 MPRIMO Quran & Science | Find Nearest Masjid | Prayer Times 🕌');
     }, 1000);
 </script>
 
