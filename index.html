@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>MPRIMO | Quran & Science - الإعجاز العلمي | Prayer Times & Masjid Locator</title>
+    <title>MPRIMO | Quran, Hadith & Science | Prayer Times & Masjid Locator</title>
     <style>
         * {
             margin: 0;
@@ -32,6 +32,7 @@
             border-radius: 25px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,215,0,0.3);
+            position: relative;
         }
         
         .header h1 {
@@ -54,6 +55,34 @@
             padding: 5px 15px;
             border-radius: 30px;
             display: inline-block;
+        }
+        
+        /* Random Muslim Country Flag (top right corner) */
+        .flag-corner {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 30px;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,215,0,0.4);
+            font-size: 0.9rem;
+            font-weight: bold;
+            z-index: 10;
+        }
+        
+        .flag-emoji {
+            font-size: 2rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        
+        .country-name {
+            color: #FFD700;
+            font-family: monospace;
         }
         
         /* Prayer & Masjid Section */
@@ -181,7 +210,7 @@
             color: #00cc44;
         }
         
-        /* Prayer Times */
+        /* Prayer Times (Adhan completely removed) */
         .prayer-times {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -194,12 +223,6 @@
             padding: 10px;
             border-radius: 12px;
             text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .prayer-item:hover {
-            background: rgba(255,215,0,0.2);
         }
         
         .prayer-name {
@@ -219,7 +242,6 @@
             padding: 12px;
             margin-top: 15px;
             text-align: center;
-            cursor: pointer;
         }
         
         /* Search Section */
@@ -362,6 +384,7 @@
             font-size: 0.95rem;
             line-height: 1.6;
             margin-bottom: 15px;
+            color: #f0f0f0;
         }
         
         .audio-player {
@@ -396,6 +419,27 @@
             color: #00cc44;
             font-weight: bold;
             margin-bottom: 10px;
+        }
+        
+        .meaning-badge {
+            display: inline-block;
+            background: #FFD700;
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+        
+        .topic-tag {
+            display: inline-block;
+            background: #4ECDC4;
+            color: #000;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-left: 8px;
         }
         
         .loading {
@@ -435,29 +479,13 @@
             border-top: 1px solid #333;
         }
         
-        /* Admin Panel Button (hidden from normal users) */
-        .admin-hidden-link {
-            position: fixed;
-            bottom: 15px;
-            right: 15px;
-            background: rgba(0,0,0,0.6);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            color: #aaa;
-            text-decoration: none;
-            z-index: 999;
-            transition: 0.2s;
-        }
-        .admin-hidden-link:hover {
-            color: #FFD700;
-            background: rgba(0,0,0,0.8);
-        }
-        
         @media (max-width: 768px) {
             .results-grid { grid-template-columns: 1fr; }
             .header h1 { font-size: 1.6rem; }
             .prayer-times { grid-template-columns: repeat(2, 1fr); }
+            .flag-corner { top: 8px; right: 10px; padding: 4px 8px; }
+            .flag-emoji { font-size: 1.4rem; }
+            .country-name { font-size: 0.7rem; }
         }
     </style>
 </head>
@@ -465,12 +493,18 @@
 
 <div class="container">
     <div class="header">
+        <!-- Randomized Muslim country flag (appears each load) -->
+        <div class="flag-corner" id="randomFlagContainer">
+            <span class="flag-emoji" id="flagEmoji">🏳️</span>
+            <span class="country-name" id="countryName">Loading...</span>
+        </div>
+        
         <h1>🔬 القرآن والعلم | Quran & Science</h1>
         <div class="creator-name"><span>✨ Created by: MPRIMO ✨</span></div>
-        <p>Search ANY word in the Quran | Discover scientific miracles | Prayer Times | Find Nearest Masjid</p>
+        <p>Search ANY word in the Quran & Hadith • Arabic + Modern English Translation • Prayer Times • Nearest Masjid</p>
     </div>
     
-    <!-- Prayer Times & Masjid Locator Section (Adhan removed) -->
+    <!-- Prayer Times & Masjid Locator Section -->
     <div class="prayer-section">
         <div class="prayer-card">
             <div class="prayer-title">🕌 Find Nearest Masjid</div>
@@ -509,27 +543,19 @@
         </div>
     </div>
     
+    <!-- Enhanced Search Card -->
     <div class="search-card">
         <div class="mode-selector">
-            <div class="mode-btn active" id="modeQuranBtn" onclick="setMode('quran')">📖 Quran Search (Any Word)</div>
+            <div class="mode-btn active" id="modeQuranBtn" onclick="setMode('quran')">📖 Quran & Hadith Search (Any Word)</div>
             <div class="mode-btn" id="modeScienceBtn" onclick="setMode('science')">🔬 Scientific Miracles</div>
         </div>
         
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Type ANY word: mercy, justice, woman, iron, sun, moon, peace, love, water..." autocomplete="off">
-            <button class="search-btn" id="searchBtn">🔍 Search in Quran</button>
+            <input type="text" id="searchInput" placeholder="Type ANY word: mercy, justice, woman, prayer, charity, love, patience..." autocomplete="off">
+            <button class="search-btn" id="searchBtn">🔍 Search Quran & Hadith</button>
         </div>
         
-        <div class="suggestion-chips" id="suggestionChips">
-            <span class="chip" onclick="searchWord('mercy')">🤲 Mercy</span>
-            <span class="chip" onclick="searchWord('justice')">⚖️ Justice</span>
-            <span class="chip" onclick="searchWord('woman')">👩 Woman</span>
-            <span class="chip" onclick="searchWord('peace')">🕊️ Peace</span>
-            <span class="chip" onclick="searchWord('love')">❤️ Love</span>
-            <span class="chip" onclick="searchWord('iron')">⚙️ Iron</span>
-            <span class="chip" onclick="searchWord('sun')">☀️ Sun</span>
-            <span class="chip" onclick="searchWord('water')">💧 Water</span>
-        </div>
+        <div class="suggestion-chips" id="suggestionChips"></div>
     </div>
     
     <div id="resultsContainer">
@@ -537,639 +563,250 @@
     </div>
     
     <div class="footer">
-        <p>🌟 Created by MPRIMO | Quran API | Find Nearest Masjid | Prayer Times</p>
+        <p>🌟 Created by MPRIMO | Quran API + Authentic Hadith (Bukhari, Muslim, Abu Dawud, Tirmidhi, Nasai, Ibn Majah) | Arabic + Modern English | Prayer Times | Nearest Masjid</p>
         <p>📞 Contact: ukdesigner62@gmail.com | WhatsApp: +447492166072</p>
     </div>
 </div>
 
-<!-- Hidden Admin Link (accessible only if you know the route) -->
-<a href="admin.html" class="admin-hidden-link">👑 Admin Portal</a>
-
 <script>
-    // ========== MPRIMO - COMPLETE QURAN SEARCH ENGINE ==========
+    // ========== RANDOM MUSLIM COUNTRY FLAG ==========
+    const muslimCountries = [
+        { name: "Saudi Arabia", emoji: "🇸🇦" },
+        { name: "Egypt", emoji: "🇪🇬" },
+        { name: "Turkey", emoji: "🇹🇷" },
+        { name: "Pakistan", emoji: "🇵🇰" },
+        { name: "Indonesia", emoji: "🇮🇩" },
+        { name: "Malaysia", emoji: "🇲🇾" },
+        { name: "UAE", emoji: "🇦🇪" },
+        { name: "Morocco", emoji: "🇲🇦" },
+        { name: "Nigeria", emoji: "🇳🇬" },
+        { name: "Bangladesh", emoji: "🇧🇩" },
+        { name: "Iran", emoji: "🇮🇷" },
+        { name: "Iraq", emoji: "🇮🇶" },
+        { name: "Jordan", emoji: "🇯🇴" },
+        { name: "Lebanon", emoji: "🇱🇧" },
+        { name: "Palestine", emoji: "🇵🇸" },
+        { name: "Qatar", emoji: "🇶🇦" },
+        { name: "Kuwait", emoji: "🇰🇼" },
+        { name: "Oman", emoji: "🇴 " },
+        { name: "Bahrain", emoji: "🇧🇭" },
+        { name: "Tunisia", emoji: "🇹🇳" },
+        { name: "Algeria", emoji: "🇩🇿" },
+        { name: "Libya", emoji: "🇱🇾" },
+        { name: "Sudan", emoji: "🇸🇩" },
+        { name: "Somalia", emoji: "🇸🇴" },
+        { name: "Afghanistan", emoji: "🇦🇫" }
+    ];
     
-    let currentMode = 'quran';
-    let userLat = null;
-    let userLon = null;
+    function displayRandomFlag() {
+        const randomIndex = Math.floor(Math.random() * muslimCountries.length);
+        const country = muslimCountries[randomIndex];
+        document.getElementById('flagEmoji').innerHTML = country.emoji;
+        document.getElementById('countryName').innerHTML = country.name;
+    }
+    
+    // ========== MASJID LOCATOR + PRAYER TIMES (Adhan removed) ==========
+    let userLat = null, userLon = null;
     let closestMasjids = [];
-    let prayerCheckInterval = null;
-    let currentUserId = null;
-    
-    // ========== USER TRACKING FOR ADMIN ==========
-    function getUserId() {
-        let id = localStorage.getItem('mprimo_user_id');
-        if (!id) {
-            id = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
-            localStorage.setItem('mprimo_user_id', id);
-        }
-        return id;
-    }
-    
-    function trackUserActivity(searchPerformed = false) {
-        currentUserId = getUserId();
-        let users = JSON.parse(localStorage.getItem('admin_users')) || {};
-        let now = new Date();
-        
-        let userData = users[currentUserId] || {
-            id: currentUserId,
-            firstSeen: now.toISOString(),
-            searches: 0
-        };
-        
-        userData.lastActive = now.toISOString();
-        if (searchPerformed) userData.searches = (userData.searches || 0) + 1;
-        
-        // Update location if available
-        if (userLat && userLon) {
-            userData.lat = userLat;
-            userData.lon = userLon;
-            // Simple reverse geocoding (city)
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLat}&lon=${userLon}&zoom=10`)
-                .then(res => res.json())
-                .then(data => {
-                    const city = data.address?.city || data.address?.town || data.address?.village || '';
-                    const country = data.address?.country || '';
-                    userData.location = city + (country ? `, ${country}` : '');
-                    localStorage.setItem('admin_users', JSON.stringify(users));
-                })
-                .catch(() => {});
-        }
-        
-        users[currentUserId] = userData;
-        localStorage.setItem('admin_users', JSON.stringify(users));
-    }
-    
-    // update periodically
-    setInterval(() => trackUserActivity(false), 30000);
-    
-    // ========== MASJID LOCATOR ==========
+    let currentAudio = null;
     
     function findNearestMasjid() {
         if (navigator.geolocation) {
             showToast('📍 Finding mosques near you...');
             navigator.geolocation.getCurrentPosition(async (position) => {
-                userLat = position.coords.latitude;
-                userLon = position.coords.longitude;
-                trackUserActivity(false);
-                
-                const query = `
-                    [out:json];
-                    (
-                      node["amenity"="place_of_worship"]["religion"="muslim"](around:5000,${userLat},${userLon});
-                      way["amenity"="place_of_worship"]["religion"="muslim"](around:5000,${userLat},${userLon});
-                      relation["amenity"="place_of_worship"]["religion"="muslim"](around:5000,${userLat},${userLon});
-                    );
-                    out body;
-                    >;
-                    out skel qt;
-                `;
-                
-                const overpassUrl = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
-                
+                userLat = position.coords.latitude; userLon = position.coords.longitude;
+                const query = `[out:json];(node["amenity"="place_of_worship"]["religion"="muslim"](around:5000,${userLat},${userLon});way["amenity"="place_of_worship"]["religion"="muslim"](around:5000,${userLat},${userLon});relation["amenity"="place_of_worship"]["religion"="muslim"](around:5000,${userLat},${userLon}););out body;>;out skel qt;`;
                 try {
-                    const response = await fetch(overpassUrl);
+                    const response = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`);
                     const data = await response.json();
-                    
                     const masjids = [];
-                    const elements = data.elements || [];
-                    
-                    for (const element of elements) {
-                        if (element.type === 'node' && element.lat && element.lon) {
-                            const distance = calculateDistance(userLat, userLon, element.lat, element.lon);
-                            const name = element.tags?.name || element.tags?.name_en || 'Mosque';
-                            masjids.push({
-                                id: element.id,
-                                name: name,
-                                lat: element.lat,
-                                lon: element.lon,
-                                distance: distance,
-                                address: element.tags?.addr_street || 'Address available in Maps'
-                            });
+                    for (let el of data.elements || []) {
+                        if (el.type === 'node' && el.lat && el.lon) {
+                            const distance = calculateDistance(userLat, userLon, el.lat, el.lon);
+                            masjids.push({ id: el.id, name: el.tags?.name || 'Mosque', lat: el.lat, lon: el.lon, distance: distance, address: el.tags?.addr_street || 'Maps' });
                         }
                     }
-                    
-                    masjids.sort((a, b) => a.distance - b.distance);
-                    closestMasjids = masjids.slice(0, 10);
-                    
+                    masjids.sort((a,b)=>a.distance-b.distance);
+                    closestMasjids = masjids.slice(0,10);
                     displayMasjids(closestMasjids);
-                    
-                    if (closestMasjids.length > 0) {
-                        displayNearestMasjid(closestMasjids[0]);
-                    } else {
-                        findMosquesViaGoogleMaps();
-                    }
-                    
-                } catch(e) {
-                    console.error('Overpass API error:', e);
-                    findMosquesViaGoogleMaps();
-                }
-                
+                    if (closestMasjids.length) displayNearestMasjid(closestMasjids[0]);
+                    else findMosquesViaGoogleMaps();
+                } catch(e) { findMosquesViaGoogleMaps(); }
                 await getPrayerTimes(userLat, userLon);
-                
-            }, (error) => {
-                console.error('Geolocation error:', error);
-                showToast('⚠️ Please enable location access to find mosques');
-            });
-        } else {
-            showToast('⚠️ Geolocation is not supported');
+            }, () => showToast('⚠️ Please enable location'));
+        } else showToast('⚠️ Geolocation not supported');
+    }
+    function findMosquesViaGoogleMaps() { window.open(`https://www.google.com/maps/search/mosque+near+me/@${userLat},${userLon},14z`, '_blank'); showToast('📍 Opening Google Maps'); }
+    function calculateDistance(lat1,lon1,lat2,lon2){ const R=6371; const dLat=(lat2-lat1)*Math.PI/180; const dLon=(lon2-lon1)*Math.PI/180; const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2; return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)); }
+    function displayMasjids(masjids){ const container=document.getElementById('masjidList'); if(masjids.length===0){ container.innerHTML='<div style="text-align:center;color:#888;">No mosques found</div>'; return; }
+        container.innerHTML='<div style="font-size:0.7rem;color:#aaa;margin-bottom:5px;">📋 Nearby Mosques:</div>';
+        for(let i=0;i<Math.min(masjids.length,5);i++){ const m=masjids[i]; const distText=m.distance<1?`${(m.distance*1000).toFixed(0)}m`:`${m.distance.toFixed(1)}km`;
+            container.innerHTML+=`<div class="masjid-item" onclick="selectMasjid(${i})"><div class="masjid-item-name">🕌 ${escapeHtml(m.name)}</div><div class="masjid-item-dist">📏 ${distText} away</div></div>`;
         }
     }
-    
-    function findMosquesViaGoogleMaps() {
-        const mapsUrl = `https://www.google.com/maps/search/mosque+near+me/@${userLat},${userLon},14z`;
-        window.open(mapsUrl, '_blank');
-        showToast('📍 Opening Google Maps to find mosques near you');
+    function selectMasjid(idx){ const m=closestMasjids[idx]; if(m) displayNearestMasjid(m); }
+    function displayNearestMasjid(m){ const distText=m.distance<1?`${(m.distance*1000).toFixed(0)} meters`:`${m.distance.toFixed(1)} km`;
+        document.getElementById('masjidInfo').style.display='block';
+        document.getElementById('masjidName').innerHTML=`🕌 ${escapeHtml(m.name)}`;
+        document.getElementById('masjidDistance').innerHTML=`📏 ${distText} from your location`;
+        document.getElementById('masjidAddress').innerHTML=`📍 ${escapeHtml(m.address)}`;
+        window.selectedMasjid=m;
     }
+    function openMaps(){ if(window.selectedMasjid) window.open(`https://www.google.com/maps/dir/?api=1&destination=${window.selectedMasjid.lat},${window.selectedMasjid.lon}&travelmode=driving`,'_blank'); else if(userLat&&userLon) window.open(`https://www.google.com/maps/search/mosque+near+me/@${userLat},${userLon},14z`,'_blank'); else showToast('📍 Please find mosques first'); }
     
-    function calculateDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371;
-        const dLat = (lat2 - lat1) * Math.PI / 180;
-        const dLon = (lon2 - lon1) * Math.PI / 180;
-        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                  Math.sin(dLon/2) * Math.sin(dLon/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return R * c;
-    }
+    // Prayer Times (no adhan)
+    async function getPrayerTimes(lat,lon){ try{ const date=new Date(); const url=`https://api.aladhan.com/v1/timings/${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}?latitude=${lat}&longitude=${lon}&method=2`; const res=await fetch(url); const data=await res.json(); if(data?.data?.timings){ const t=data.data.timings; document.getElementById('fajr').innerHTML=t.Fajr; document.getElementById('dhuhr').innerHTML=t.Dhuhr; document.getElementById('asr').innerHTML=t.Asr; document.getElementById('maghrib').innerHTML=t.Maghrib; document.getElementById('isha').innerHTML=t.Isha; const now=new Date(); const cur=now.getHours()*60+now.getMinutes(); const prayers=[{name:'Fajr',time:t.Fajr},{name:'Dhuhr',time:t.Dhuhr},{name:'Asr',time:t.Asr},{name:'Maghrib',time:t.Maghrib},{name:'Isha',time:t.Isha}]; for(let p of prayers){ let [h,m]=p.time.split(':').map(Number); let mins=h*60+m; if(mins>cur){ document.getElementById('nextPrayer').innerHTML=`⏰ Next Prayer: <strong>${p.name}</strong> in ${Math.floor((mins-cur)/60)}h ${(mins-cur)%60}m`; break; } }
+            try{ const geo=await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`); const geoData=await geo.json(); document.getElementById('locationName').innerHTML=`📍 ${geoData.address?.city||geoData.address?.town||'Your Location'}`; }catch(e){}
+        } }catch(e){console.log(e);} }
     
-    function displayMasjids(masjids) {
-        const listContainer = document.getElementById('masjidList');
-        if (masjids.length === 0) {
-            listContainer.innerHTML = '<div style="text-align:center; color:#888;">No mosques found nearby</div>';
-            return;
-        }
-        
-        listContainer.innerHTML = '<div style="font-size:0.7rem; color:#aaa; margin-bottom:5px;">📋 Nearby Mosques:</div>';
-        
-        for (let i = 0; i < Math.min(masjids.length, 5); i++) {
-            const m = masjids[i];
-            const distKm = m.distance.toFixed(1);
-            const distText = distKm < 1 ? `${(m.distance * 1000).toFixed(0)}m` : `${distKm}km`;
-            
-            listContainer.innerHTML += `
-                <div class="masjid-item" onclick="selectMasjid(${i})">
-                    <div class="masjid-item-name">🕌 ${escapeHtml(m.name)}</div>
-                    <div class="masjid-item-dist">📏 ${distText} away</div>
-                </div>
-            `;
-        }
-    }
-    
-    function selectMasjid(index) {
-        const masjid = closestMasjids[index];
-        if (masjid) {
-            displayNearestMasjid(masjid);
-        }
-    }
-    
-    function displayNearestMasjid(masjid) {
-        const distKm = masjid.distance.toFixed(1);
-        const distText = distKm < 1 ? `${(masjid.distance * 1000).toFixed(0)} meters` : `${distKm} km`;
-        
-        document.getElementById('masjidInfo').style.display = 'block';
-        document.getElementById('masjidName').innerHTML = `🕌 ${escapeHtml(masjid.name)}`;
-        document.getElementById('masjidDistance').innerHTML = `📏 ${distText} from your location`;
-        document.getElementById('masjidAddress').innerHTML = `📍 ${escapeHtml(masjid.address)}`;
-        
-        window.selectedMasjid = masjid;
-    }
-    
-    function openMaps() {
-        if (window.selectedMasjid) {
-            const masjid = window.selectedMasjid;
-            const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${masjid.lat},${masjid.lon}&travelmode=driving`;
-            window.open(mapsUrl, '_blank');
-            showToast(`🧭 Opening Maps to ${masjid.name}`);
-        } else if (userLat && userLon) {
-            const mapsUrl = `https://www.google.com/maps/search/mosque+near+me/@${userLat},${userLon},14z`;
-            window.open(mapsUrl, '_blank');
-        } else {
-            showToast('📍 Please find mosques first');
-        }
-    }
-    
-    // ========== PRAYER TIMES (No Adhan) ==========
-    
-    async function getPrayerTimes(lat, lon) {
-        try {
-            const date = new Date();
-            const year = date.getFullYear();
-            const month = date.getMonth() + 1;
-            const day = date.getDate();
-            
-            const url = `https://api.aladhan.com/v1/timings/${day}-${month}-${year}?latitude=${lat}&longitude=${lon}&method=2`;
-            const response = await fetch(url);
-            const data = await response.json();
-            
-            if (data && data.data && data.data.timings) {
-                const timings = data.data.timings;
-                
-                document.getElementById('fajr').innerHTML = timings.Fajr;
-                document.getElementById('dhuhr').innerHTML = timings.Dhuhr;
-                document.getElementById('asr').innerHTML = timings.Asr;
-                document.getElementById('maghrib').innerHTML = timings.Maghrib;
-                document.getElementById('isha').innerHTML = timings.Isha;
-                
-                const now = new Date();
-                const currentTime = now.getHours() * 60 + now.getMinutes();
-                
-                const prayers = [
-                    { name: 'Fajr', time: timings.Fajr },
-                    { name: 'Dhuhr', time: timings.Dhuhr },
-                    { name: 'Asr', time: timings.Asr },
-                    { name: 'Maghrib', time: timings.Maghrib },
-                    { name: 'Isha', time: timings.Isha }
-                ];
-                
-                let nextPrayer = null;
-                let minDiff = Infinity;
-                
-                for (const prayer of prayers) {
-                    const [hours, minutes] = prayer.time.split(':').map(Number);
-                    const prayerMinutes = hours * 60 + minutes;
-                    let diff = prayerMinutes - currentTime;
-                    if (diff < 0) diff += 24 * 60;
-                    if (diff < minDiff) {
-                        minDiff = diff;
-                        nextPrayer = prayer;
-                    }
-                }
-                
-                if (nextPrayer) {
-                    const remainingHours = Math.floor(minDiff / 60);
-                    const remainingMinutes = minDiff % 60;
-                    document.getElementById('nextPrayer').innerHTML = `⏰ Next Prayer: <strong>${nextPrayer.name}</strong> in ${remainingHours}h ${remainingMinutes}m`;
-                }
-                
-                try {
-                    const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
-                    const geoData = await geoRes.json();
-                    const city = geoData.address?.city || geoData.address?.town || geoData.address?.village || 'Your Location';
-                    const country = geoData.address?.country || '';
-                    document.getElementById('locationName').innerHTML = `📍 ${city}, ${country}`;
-                } catch(e) {
-                    document.getElementById('locationName').innerHTML = `📍 ${lat.toFixed(2)}, ${lon.toFixed(2)}`;
-                }
-                
-                return true;
-            }
-        } catch(e) {
-            console.log('Prayer time error:', e);
-        }
-        return false;
-    }
-    
-    // ========== SCIENTIFIC MIRACLES DATABASE ==========
-    
-    const scienceDatabase = {
-        'baby': {
-            title: '🤰 Human Embryonic Development',
-            explanation: 'The Quran describes human creation in stages: Nutfah (drop) → Alaqah (clinging clot) → Mudghah (chewed lump) → bones → flesh. Professor Keith Moore confirmed these stages match modern embryology.',
-            surah: 23,
-            verse: 12,
-            verses: ['Surah Al-Mu\'minun (23:12-14)', 'Surah Al-Hajj (22:5)']
-        },
-        'iron': {
-            title: '⚙️ Iron - Sent Down from Space',
-            explanation: 'The Quran states iron was "sent down". Modern astrophysics confirms iron comes from supernova explosions.',
-            surah: 57,
-            verse: 25,
-            verses: ['Surah Al-Hadid (57:25)']
-        },
-        'sun': {
-            title: '☀️ The Sun\'s Orbit',
-            explanation: 'The Quran states the sun runs to a fixed resting place. Modern science confirms the sun orbits the galactic center.',
-            surah: 36,
-            verse: 38,
-            verses: ['Surah Ya-Sin (36:38)']
-        },
-        'moon': {
-            title: '🌙 The Moon\'s Reflected Light',
-            explanation: 'The Quran distinguishes between the sun as a lamp and the moon as reflected light.',
-            surah: 71,
-            verse: 16,
-            verses: ['Surah Nuh (71:16)']
-        },
-        'water': {
-            title: '💧 The Water Cycle',
-            explanation: 'The Quran describes evaporation, clouds, rain, and springs - the complete water cycle.',
-            surah: 39,
-            verse: 21,
-            verses: ['Surah Az-Zumar (39:21)']
-        },
-        'mountains': {
-            title: '⛰️ Mountains as Pegs',
-            explanation: 'The Quran describes mountains as pegs stabilizing the earth\'s crust.',
-            surah: 78,
-            verse: 6,
-            verses: ['Surah An-Naba (78:6-7)']
-        },
-        'universe': {
-            title: '🌌 The Expanding Universe',
-            explanation: 'The Quran states "We are expanding it." Hubble discovered this in 1929.',
-            surah: 51,
-            verse: 47,
-            verses: ['Surah Adh-Dhariyat (51:47)']
-        },
-        'big bang': {
-            title: '💥 The Big Bang',
-            explanation: 'The Quran describes the heavens and earth joined then separated.',
-            surah: 21,
-            verse: 30,
-            verses: ['Surah Al-Anbiya (21:30)']
-        }
+    // ========== ENHANCED ISLAMIC SEARCH (Hadith + Arabic + MODERN ENGLISH) ==========
+    const termMeanings = {
+        'mercy': '🤲 Mercy (Rahmah) — Allah’s compassion and forgiveness. "My mercy encompasses all things" (Quran 7:156)',
+        'patience': '⏳ Patience (Sabr) — Steadfastness in obedience. "Indeed, Allah is with the patient" (Quran 2:153)',
+        'woman': '👩 Woman (Nisa) — Honored and respected. "The best of you are those best to their women" (Hadith)',
+        'justice': '⚖️ Justice (Adl) — Fairness and equity. "Stand firmly for justice" (Quran 4:135)',
+        'charity': '💝 Charity (Sadaqah/Zakat) — Purifies wealth. "Charity extinguishes sin like water extinguishes fire" (Hadith)',
+        'prayer': '🕌 Prayer (Salah) — Connection with Allah five times daily.',
+        'forgiveness': '💚 Forgiveness (Maghfirah) — Allah loves to forgive.',
+        'love': '❤️ Love (Hubb) — Love for Allah and His Messenger.',
+        'knowledge': '📚 Knowledge (Ilm) — Seeking it is an obligation. "Are those who know equal to those who do not know?" (Quran 39:9)'
     };
     
-    // Quran API
+    const hadithDatabase = [
+        { reference: 'Sahih al-Bukhari, 13', arabic: 'لا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ', english: 'None of you truly believes until he loves for his brother what he loves for himself.', keywords: ['love','brother','faith'], topic: 'Love' },
+        { reference: 'Sahih al-Bukhari, 6011', arabic: 'الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ', english: 'Those who are merciful will be shown mercy by the Most Merciful.', keywords: ['mercy','merciful'], topic: 'Mercy' },
+        { reference: 'Sahih al-Bukhari, 5644', arabic: 'وَالصَّبْرُ ضِيَاءٌ', english: 'Patience is a light.', keywords: ['patience','light'], topic: 'Patience' },
+        { reference: 'Sahih Muslim, 2637', arabic: 'لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه', english: 'None of you believes until he loves for his brother what he loves for himself.', keywords: ['love','brother'], topic: 'Love' },
+        { reference: 'Sahih Muslim, 2318', arabic: 'الراحمون يرحمهم الرحمن', english: 'The merciful are shown mercy by the Most Merciful.', keywords: ['mercy'], topic: 'Mercy' },
+        { reference: 'Sunan Abi Dawud, 2144', arabic: 'خَيْرُكُمْ خَيْرُكُمْ لأَهْلِهِ', english: 'The best of you are those who are best to their womenfolk.', keywords: ['woman','best','family'], topic: 'Women' },
+        { reference: 'Jami at-Tirmidhi, 589', arabic: 'الصَّدَقَةُ تُطْفِئُ الْخَطِيئَةَ كَمَا يُطْفِئُ الْمَاءُ النَّارَ', english: 'Charity extinguishes sin as water extinguishes fire.', keywords: ['charity','sadaqah','sin'], topic: 'Charity' },
+        { reference: 'Sunan an-Nasai, 4991', arabic: 'لا تدخلون الجنة حتى تؤمنوا ولا تؤمنوا حتى تحابوا', english: 'You will not enter Paradise until you believe, and you will not believe until you love one another.', keywords: ['paradise','faith','love'], topic: 'Love' },
+        { reference: 'Sunan Ibn Majah, 224', arabic: 'طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ', english: 'Seeking knowledge is an obligation upon every Muslim.', keywords: ['knowledge','learn','ilm'], topic: 'Knowledge' }
+    ];
+    
     const QURAN_SEARCH_API = 'https://api.alquran.cloud/v1/search/';
     const QURAN_AYAH_API = 'https://api.alquran.cloud/v1/ayah/';
     
-    let currentAudio = null;
+    function getAudioUrl(surah, verse) { return `https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps/${surah.toString().padStart(3,'0')}${verse.toString().padStart(3,'0')}.mp3`; }
+    function playAudio(surah, verse, button) {
+        if (currentAudio) { currentAudio.pause(); currentAudio = null; document.querySelectorAll('.play-btn').forEach(btn => btn.innerHTML = '🔊 Play'); }
+        const audio = new Audio(getAudioUrl(surah, verse));
+        currentAudio = audio;
+        audio.onplay = () => button.innerHTML = '🎧 Playing...';
+        audio.onended = () => { button.innerHTML = '🔊 Play'; currentAudio = null; };
+        audio.play().catch(() => button.innerHTML = '🔊 Play');
+    }
+    
+    async function searchQuranWithModernEnglish(term) {
+        try {
+            const response = await fetch(QURAN_SEARCH_API + encodeURIComponent(term) + '/all/en');
+            if (response.ok) {
+                const data = await response.json();
+                const matches = data?.data?.matches || [];
+                const results = [];
+                for (let verse of matches.slice(0, 6)) {
+                    const surahNum = verse.surah.number;
+                    const ayahNum = verse.numberInSurah;
+                    let arabicText = verse.text;
+                    let englishText = verse.translation || 'Translation available';
+                    try {
+                        const [arabRes, engRes] = await Promise.all([
+                            fetch(QURAN_AYAH_API + `${surahNum}:${ayahNum}/editions/ar.sahih`),
+                            fetch(QURAN_AYAH_API + `${surahNum}:${ayahNum}/editions/en.sahih`)
+                        ]);
+                        const arabData = await arabRes.json();
+                        const engData = await engRes.json();
+                        if (arabData?.data) arabicText = arabData.data[0]?.text || arabicText;
+                        if (engData?.data) englishText = engData.data[0]?.text || englishText;
+                    } catch(e) {}
+                    results.push({
+                        surahName: verse.surah.name,
+                        surahNum: surahNum,
+                        ayahNum: ayahNum,
+                        arabic: arabicText,
+                        english: englishText
+                    });
+                }
+                return results;
+            }
+        } catch(e) { console.log('Quran API error'); }
+        return [];
+    }
+    
+    function searchHadithByTerm(term) {
+        const lower = term.toLowerCase();
+        return hadithDatabase.filter(h => 
+            h.english.toLowerCase().includes(lower) || 
+            h.keywords.some(k => lower.includes(k) || k.includes(lower)) ||
+            h.topic.toLowerCase().includes(lower)
+        );
+    }
+    
+    function getMeaningForTerm(term) {
+        const lower = term.toLowerCase();
+        for (let key in termMeanings) if (lower.includes(key) || key.includes(lower)) return termMeanings[key];
+        return null;
+    }
+    
+    let currentMode = 'quran';
+    
+    async function performSearch() {
+        const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+        const resultsGrid = document.getElementById('resultsGrid');
+        if (!searchTerm) { resultsGrid.innerHTML = '<div class="no-results">✨ Enter a word to search the Quran or discover scientific miracles</div>'; return; }
+        resultsGrid.innerHTML = '<div class="loading">Searching Quran, Hadith...</div>';
+        
+        if (currentMode === 'quran') {
+            const meaning = getMeaningForTerm(searchTerm);
+            const quranResults = await searchQuranWithModernEnglish(searchTerm);
+            const hadithResults = searchHadithByTerm(searchTerm);
+            if (quranResults.length === 0 && hadithResults.length === 0 && !meaning) {
+                resultsGrid.innerHTML = `<div class="no-results">📭 No results for "${escapeHtml(searchTerm)}". Try: mercy, justice, woman, prayer, charity, love</div>`;
+                return;
+            }
+            let html = '<div class="results-grid">';
+            if (meaning) html += `<div class="result-card"><div class="result-header"><span class="result-surah">📖 Islamic Meaning</span></div><div class="result-body" style="padding:20px"><div class="meaning-badge">📚 MEANING & CONTEXT</div><div class="english-text" style="font-size:1rem;">${escapeHtml(meaning)}</div></div></div>`;
+            for (const v of quranResults) html += `<div class="result-card"><div class="result-header"><span class="result-surah">📖 QURAN: ${escapeHtml(v.surahName)} (${v.surahNum}:${v.ayahNum})</span><span class="topic-tag">🕋 Revelation</span></div><div class="result-body" style="padding:20px"><div class="arabic-text">${escapeHtml(v.arabic)}</div><div class="english-text">${escapeHtml(v.english)}</div><div class="audio-player"><button class="play-btn" onclick="playAudio(${v.surahNum}, ${v.ayahNum}, this)">🔊 Play Recitation</button><span style="font-size:0.7rem;margin-left:8px;">🎙️ Sheikh Sudais</span></div></div></div>`;
+            for (const h of hadithResults) html += `<div class="result-card"><div class="result-header"><span class="result-surah">📜 HADITH: ${escapeHtml(h.reference)}</span><span class="topic-tag">🏷️ ${h.topic}</span></div><div class="result-body" style="padding:20px"><div class="arabic-text">${escapeHtml(h.arabic)}</div><div class="english-text">${escapeHtml(h.english)}</div></div></div>`;
+            html += '</div>';
+            resultsGrid.innerHTML = html;
+        } else { 
+            const scienceDatabase = { 'baby': { title: '🤰 Human Embryonic Development', explanation: 'The Quran describes human creation in stages: Nutfah → Alaqah → Mudghah → bones → flesh.', surah:23, verse:12, verses:['Surah Al-Mu\'minun (23:12-14)'] }, 'iron': { title: '⚙️ Iron - Sent Down from Space', explanation: 'Iron comes from supernova explosions – Quran states "sent down".', surah:57, verse:25, verses:['Surah Al-Hadid (57:25)'] }, 'sun': { title: '☀️ The Sun\'s Orbit', explanation: 'The sun runs to a fixed resting place – galactic orbit.', surah:36, verse:38, verses:['Surah Ya-Sin (36:38)'] }, 'moon': { title: '🌙 The Moon\'s Reflected Light', explanation: 'Moon reflects sunlight.', surah:71, verse:16, verses:['Surah Nuh (71:16)'] }, 'water': { title: '💧 The Water Cycle', explanation: 'Evaporation, clouds, rain described.', surah:39, verse:21, verses:['Surah Az-Zumar (39:21)'] }, 'mountains': { title: '⛰️ Mountains as Pegs', explanation: 'Mountains have deep roots stabilizing crust.', surah:78, verse:6, verses:['Surah An-Naba (78:6-7)'] }, 'universe': { title: '🌌 Expanding Universe', explanation: '"We are expanding it."', surah:51, verse:47, verses:['Surah Adh-Dhariyat (51:47)'] }, 'big bang': { title: '💥 The Big Bang', explanation: 'Heavens and earth joined then separated.', surah:21, verse:30, verses:['Surah Al-Anbiya (21:30)'] } };
+            let match = null;
+            for (let k in scienceDatabase) if (searchTerm.includes(k) || k.includes(searchTerm)) { match = scienceDatabase[k]; break; }
+            if (match) {
+                const fetchAyah = async (s,v) => { try{ const res=await fetch(`https://api.alquran.cloud/v1/ayah/${s}:${v}/editions/ar.sahih,en.sahih`); const d=await res.json(); if(d?.data){ return { arabic: d.data.find(e=>e.edition?.identifier==='ar.sahih')?.text||'', english: d.data.find(e=>e.edition?.identifier==='en.sahih')?.text||'' }; } }catch(e){} return null; };
+                const qd = await fetchAyah(match.surah, match.verse);
+                resultsGrid.innerHTML = `<div class="results-grid"><div class="result-card"><div class="result-header"><span class="result-surah">🔬 SCIENTIFIC MIRACLE</span></div><div class="result-body" style="padding:20px"><div class="science-box"><div class="science-title">${match.title}</div><div>${match.explanation}</div></div>${qd?`<div class="arabic-text">${qd.arabic}</div><div class="english-text">${qd.english}</div><div class="audio-player"><button class="play-btn" onclick="playAudio(${match.surah}, ${match.verse}, this)">🔊 Play Recitation</button></div>`:''}</div></div></div>`;
+            } else resultsGrid.innerHTML = `<div class="no-results">🔍 Try: baby, iron, sun, moon, water, mountains, universe, big bang</div>`;
+        }
+    }
     
     function setMode(mode) {
         currentMode = mode;
         document.getElementById('modeQuranBtn').classList.toggle('active', mode === 'quran');
         document.getElementById('modeScienceBtn').classList.toggle('active', mode === 'science');
-        
-        const searchBtn = document.getElementById('searchBtn');
-        const searchInput = document.getElementById('searchInput');
-        
+        const searchBtn = document.getElementById('searchBtn'), searchInput = document.getElementById('searchInput');
         if (mode === 'quran') {
-            searchBtn.innerHTML = '🔍 Search in Quran';
-            searchInput.placeholder = 'Type ANY word: mercy, justice, woman, iron, sun, moon, peace, love, water...';
-            document.getElementById('suggestionChips').innerHTML = `
-                <span class="chip" onclick="searchWord('mercy')">🤲 Mercy</span>
-                <span class="chip" onclick="searchWord('justice')">⚖️ Justice</span>
-                <span class="chip" onclick="searchWord('woman')">👩 Woman</span>
-                <span class="chip" onclick="searchWord('peace')">🕊️ Peace</span>
-                <span class="chip" onclick="searchWord('love')">❤️ Love</span>
-                <span class="chip" onclick="searchWord('iron')">⚙️ Iron</span>
-                <span class="chip" onclick="searchWord('sun')">☀️ Sun</span>
-                <span class="chip" onclick="searchWord('water')">💧 Water</span>
-            `;
+            searchBtn.innerHTML = '🔍 Search Quran & Hadith';
+            searchInput.placeholder = 'Type ANY word: mercy, justice, woman, prayer, charity, love...';
+            document.getElementById('suggestionChips').innerHTML = `<span class="chip" onclick="searchWord('mercy')">🤲 Mercy</span><span class="chip" onclick="searchWord('justice')">⚖️ Justice</span><span class="chip" onclick="searchWord('woman')">👩 Woman</span><span class="chip" onclick="searchWord('peace')">🕊️ Peace</span><span class="chip" onclick="searchWord('love')">❤️ Love</span><span class="chip" onclick="searchWord('charity')">💝 Charity</span><span class="chip" onclick="searchWord('patience')">⏳ Patience</span>`;
         } else {
             searchBtn.innerHTML = '🔬 Discover Scientific Miracle';
             searchInput.placeholder = 'Search: baby, iron, sun, moon, water, mountains, universe...';
-            document.getElementById('suggestionChips').innerHTML = `
-                <span class="chip" onclick="searchWord('baby')">🤰 Baby/Embryo</span>
-                <span class="chip" onclick="searchWord('iron')">⚙️ Iron</span>
-                <span class="chip" onclick="searchWord('sun')">☀️ Sun</span>
-                <span class="chip" onclick="searchWord('moon')">🌙 Moon</span>
-                <span class="chip" onclick="searchWord('water')">💧 Water Cycle</span>
-                <span class="chip" onclick="searchWord('mountains')">⛰️ Mountains</span>
-                <span class="chip" onclick="searchWord('universe')">🌌 Universe</span>
-                <span class="chip" onclick="searchWord('big bang')">💥 Big Bang</span>
-            `;
+            document.getElementById('suggestionChips').innerHTML = `<span class="chip" onclick="searchWord('baby')">🤰 Embryo</span><span class="chip" onclick="searchWord('iron')">⚙️ Iron</span><span class="chip" onclick="searchWord('sun')">☀️ Sun</span><span class="chip" onclick="searchWord('universe')">🌌 Universe</span>`;
         }
     }
+    async function searchWord(word) { document.getElementById('searchInput').value = word; await performSearch(); }
+    function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+    function showToast(msg) { const t = document.createElement('div'); t.className = 'toast'; t.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#00aa44; color:white; padding:10px 20px; border-radius:10px; z-index:9999; animation:fadeOut 3s ease; white-space:nowrap;'; t.innerHTML = msg; document.body.appendChild(t); setTimeout(()=>t.remove(),3000); }
     
-    async function searchWord(word) {
-        document.getElementById('searchInput').value = word;
-        await performSearch();
-    }
-    
-    async function fetchAyahText(surah, verse) {
-        try {
-            const response = await fetch(`${QURAN_AYAH_API}${surah}:${verse}/editions/ar.sahih,en.sahih`);
-            if (response.ok) {
-                const data = await response.json();
-                if (data && data.data) {
-                    const arabic = data.data.find(d => d.edition?.identifier === 'ar.sahih');
-                    const english = data.data.find(d => d.edition?.identifier === 'en.sahih');
-                    return {
-                        arabic: arabic?.text || '',
-                        english: english?.text || ''
-                    };
-                }
-            }
-        } catch(e) {
-            console.log('Error fetching ayah:', e);
-        }
-        return null;
-    }
-    
-    function getAudioUrl(surah, verse) {
-        return `https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps/${surah.toString().padStart(3, '0')}${verse.toString().padStart(3, '0')}.mp3`;
-    }
-    
-    function playAudio(surah, verse, button) {
-        const audioUrl = getAudioUrl(surah, verse);
-        
-        if (currentAudio) {
-            currentAudio.pause();
-            currentAudio = null;
-            document.querySelectorAll('.play-btn').forEach(btn => {
-                btn.innerHTML = '🔊 Play';
-            });
-        }
-        
-        const audio = new Audio(audioUrl);
-        currentAudio = audio;
-        
-        audio.onplay = () => button.innerHTML = '🎧 Playing...';
-        audio.onended = () => { button.innerHTML = '🔊 Play'; currentAudio = null; };
-        audio.onerror = () => button.innerHTML = '🔊 Play';
-        audio.play().catch(e => console.log('Audio error:', e));
-    }
-    
-    async function searchQuranAnyWord(term) {
-        try {
-            const response = await fetch(QURAN_SEARCH_API + encodeURIComponent(term) + '/all/en');
-            if (response.ok) {
-                const data = await response.json();
-                if (data && data.data && data.data.matches) {
-                    return data.data.matches.slice(0, 8);
-                }
-            }
-        } catch(e) {
-            console.log('Search error:', e);
-        }
-        return [];
-    }
-    
-    async function performSearch() {
-        const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
-        const resultsGrid = document.getElementById('resultsGrid');
-        
-        if (!searchTerm) {
-            resultsGrid.innerHTML = '<div class="no-results">✨ Enter a word to search the Quran or discover scientific miracles</div>';
-            return;
-        }
-        
-        trackUserActivity(true);  // record search in admin
-        
-        resultsGrid.innerHTML = '<div class="loading">Searching...</div>';
-        
-        if (currentMode === 'quran') {
-            const verses = await searchQuranAnyWord(searchTerm);
-            displayQuranResults(searchTerm, verses);
-        } else {
-            let scienceMatch = null;
-            for (const key in scienceDatabase) {
-                if (searchTerm.includes(key) || key.includes(searchTerm)) {
-                    scienceMatch = scienceDatabase[key];
-                    break;
-                }
-            }
-            
-            if (scienceMatch) {
-                const quranData = await fetchAyahText(scienceMatch.surah, scienceMatch.verse);
-                displayScienceResult(scienceMatch, quranData);
-            } else {
-                resultsGrid.innerHTML = `
-                    <div class="results-grid">
-                        <div class="result-card">
-                            <div class="result-header"><span class="result-surah">🔍 SCIENTIFIC MIRACLES</span></div>
-                            <div class="result-body" style="padding: 20px;">
-                                <div class="science-box">
-                                    <div class="science-title">📚 No direct match for "${escapeHtml(searchTerm)}"</div>
-                                    <div>Try searching: baby, iron, sun, moon, water, mountains, universe, big bang</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-    }
-    
-    function displayQuranResults(searchTerm, verses) {
-        const resultsGrid = document.getElementById('resultsGrid');
-        
-        if (!verses || verses.length === 0) {
-            resultsGrid.innerHTML = `
-                <div class="no-results">
-                    📭 No verses found containing "${escapeHtml(searchTerm)}"<br>
-                    <span style="font-size:0.8rem;">Try: mercy, justice, peace, love, woman, iron, sun, water, mountains</span>
-                </div>`;
-            return;
-        }
-        
-        let html = '<div class="results-grid">';
-        
-        for (const verse of verses) {
-            const surahNum = verse.surah?.number || '';
-            const ayahNum = verse.numberInSurah || '';
-            const surahName = verse.surah?.name || 'Quran';
-            const arabicText = verse.text || '';
-            const englishText = verse.translation || '';
-            
-            html += `
-                <div class="result-card">
-                    <div class="result-header">
-                        <span class="result-surah">📖 ${escapeHtml(surahName)} (${surahNum}:${ayahNum})</span>
-                        <span>🔍 Contains "${escapeHtml(searchTerm)}"</span>
-                    </div>
-                    <div class="result-body" style="padding: 20px;">
-                        <div class="arabic-text">${escapeHtml(arabicText)}</div>
-                        <div class="english-text">${escapeHtml(englishText)}</div>
-                        <div class="audio-player">
-                            <button class="play-btn" onclick="playAudio(${surahNum}, ${ayahNum}, this)">🔊 Play Recitation</button>
-                            <span style="font-size:0.7rem; color:#aaa;">🎙️ Sheikh Sudais</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-        
-        html += '</div>';
-        resultsGrid.innerHTML = html;
-    }
-    
-    function displayScienceResult(scienceMatch, quranData) {
-        const resultsGrid = document.getElementById('resultsGrid');
-        
-        let html = '<div class="results-grid">';
-        
-        html += `
-            <div class="result-card">
-                <div class="result-header">
-                    <span class="result-surah">🔬 SCIENTIFIC MIRACLE</span>
-                </div>
-                <div class="result-body" style="padding: 20px;">
-                    <div class="science-box">
-                        <div class="science-title">${scienceMatch.title}</div>
-                        <div>${scienceMatch.explanation}</div>
-                    </div>
-        `;
-        
-        if (quranData && quranData.arabic) {
-            html += `
-                <div style="margin-top: 15px;">
-                    <strong>📖 Quran Verse (${scienceMatch.surah}:${scienceMatch.verse})</strong>
-                    <div class="arabic-text">${escapeHtml(quranData.arabic)}</div>
-                    <div class="english-text">${escapeHtml(quranData.english)}</div>
-                    <div class="audio-player">
-                        <button class="play-btn" onclick="playAudio(${scienceMatch.surah}, ${scienceMatch.verse}, this)">🔊 Play Recitation</button>
-                    </div>
-                </div>
-            `;
-        }
-        
-        html += `<div style="margin-top: 15px;"><strong>📖 Related Verses:</strong><br>${scienceMatch.verses.map(v => `• ${v}`).join('<br>')}</div>`;
-        html += `</div></div>`;
-        
-        html += `
-            <div class="result-card">
-                <div class="result-header"><span class="result-surah">📚 MORE SCIENTIFIC MIRACLES</span></div>
-                <div class="result-body" style="padding: 20px;">
-                    <div style="display: grid; grid-template-columns: repeat(2,1fr); gap: 10px;">
-                        ${Object.keys(scienceDatabase).filter(k => k !== Object.keys(scienceMatch)[0]).map(key => 
-                            `<div onclick="searchWord('${key}')" style="color:#FFD700; cursor:pointer; padding:5px; background:rgba(0,0,0,0.3); border-radius:8px;">🔬 ${scienceDatabase[key].title}</div>`
-                        ).join('')}
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        html += '</div>';
-        resultsGrid.innerHTML = html;
-    }
-    
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-    
-    function showToast(msg) {
-        const toast = document.createElement('div');
-        toast.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#00aa44; color:white; padding:10px 20px; border-radius:10px; z-index:9999; animation:fadeOut 3s ease; white-space:nowrap;';
-        toast.innerHTML = msg;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-    }
-    
-    // Event listeners
     document.getElementById('searchBtn').addEventListener('click', performSearch);
-    document.getElementById('searchInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') performSearch();
-    });
-    
-    // Auto-request location on load for prayer times and user tracking
-    setTimeout(() => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(async (position) => {
-                userLat = position.coords.latitude;
-                userLon = position.coords.longitude;
-                trackUserActivity(false);
-                await getPrayerTimes(userLat, userLon);
-            }, () => {
-                trackUserActivity(false);
-            });
-        } else {
-            trackUserActivity(false);
-        }
-    }, 1000);
-    
-    // Initial user tracking
-    trackUserActivity(false);
-    
-    // Welcome message
-    setTimeout(() => {
-        showToast('🏆 MPRIMO Quran & Science | Find Nearest Masjid | Prayer Times 🕌');
-    }, 1000);
+    document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') performSearch(); });
+    setTimeout(() => { if (navigator.geolocation) navigator.geolocation.getCurrentPosition(async (pos) => { userLat = pos.coords.latitude; userLon = pos.coords.longitude; await getPrayerTimes(userLat, userLon); }, () => {}); }, 1000);
+    setMode('quran');
+    displayRandomFlag(); // show random flag on page load
+    setTimeout(() => showToast('🏆 MPRIMO | Quran & Hadith with Arabic + Modern English | Prayer Times | Masjid Locator'), 1000);
 </script>
 
 <style>
@@ -1178,6 +815,7 @@
         70% { opacity: 1; }
         100% { opacity: 0; visibility: hidden; }
     }
+    .toast { animation: fadeOut 3s ease; }
 </style>
 </body>
 </html>
