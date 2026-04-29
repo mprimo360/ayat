@@ -32,7 +32,6 @@
             border-radius: 25px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,215,0,0.3);
-            position: relative;
         }
         
         .header h1 {
@@ -55,34 +54,6 @@
             padding: 5px 15px;
             border-radius: 30px;
             display: inline-block;
-        }
-        
-        /* Random Muslim Country Flag (top right corner) */
-        .flag-corner {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            background: rgba(0,0,0,0.5);
-            border-radius: 30px;
-            padding: 6px 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,215,0,0.4);
-            font-size: 0.9rem;
-            font-weight: bold;
-            z-index: 10;
-        }
-        
-        .flag-emoji {
-            font-size: 2rem;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-        }
-        
-        .country-name {
-            color: #FFD700;
-            font-family: monospace;
         }
         
         /* Prayer & Masjid Section */
@@ -244,7 +215,7 @@
             text-align: center;
         }
         
-        /* Search Section */
+        /* Search Section (Hadith + Arabic + Modern English) */
         .search-card {
             background: rgba(0,0,0,0.5);
             border-radius: 25px;
@@ -421,6 +392,7 @@
             margin-bottom: 10px;
         }
         
+        /* Meaning & topic badges */
         .meaning-badge {
             display: inline-block;
             background: #FFD700;
@@ -483,9 +455,6 @@
             .results-grid { grid-template-columns: 1fr; }
             .header h1 { font-size: 1.6rem; }
             .prayer-times { grid-template-columns: repeat(2, 1fr); }
-            .flag-corner { top: 8px; right: 10px; padding: 4px 8px; }
-            .flag-emoji { font-size: 1.4rem; }
-            .country-name { font-size: 0.7rem; }
         }
     </style>
 </head>
@@ -493,18 +462,12 @@
 
 <div class="container">
     <div class="header">
-        <!-- Randomized Muslim country flag (appears each load) -->
-        <div class="flag-corner" id="randomFlagContainer">
-            <span class="flag-emoji" id="flagEmoji">🏳️</span>
-            <span class="country-name" id="countryName">Loading...</span>
-        </div>
-        
         <h1>🔬 القرآن والعلم | Quran & Science</h1>
         <div class="creator-name"><span>✨ Created by: MPRIMO ✨</span></div>
         <p>Search ANY word in the Quran & Hadith • Arabic + Modern English Translation • Prayer Times • Nearest Masjid</p>
     </div>
     
-    <!-- Prayer Times & Masjid Locator Section -->
+    <!-- Prayer Times & Masjid Locator Section (Adhan completely removed) -->
     <div class="prayer-section">
         <div class="prayer-card">
             <div class="prayer-title">🕌 Find Nearest Masjid</div>
@@ -543,7 +506,7 @@
         </div>
     </div>
     
-    <!-- Enhanced Search Card -->
+    <!-- ENHANCED SEARCH CARD (Hadith + Meaning + Arabic + Modern English + Audio) -->
     <div class="search-card">
         <div class="mode-selector">
             <div class="mode-btn active" id="modeQuranBtn" onclick="setMode('quran')">📖 Quran & Hadith Search (Any Word)</div>
@@ -569,42 +532,6 @@
 </div>
 
 <script>
-    // ========== RANDOM MUSLIM COUNTRY FLAG ==========
-    const muslimCountries = [
-        { name: "Saudi Arabia", emoji: "🇸🇦" },
-        { name: "Egypt", emoji: "🇪🇬" },
-        { name: "Turkey", emoji: "🇹🇷" },
-        { name: "Pakistan", emoji: "🇵🇰" },
-        { name: "Indonesia", emoji: "🇮🇩" },
-        { name: "Malaysia", emoji: "🇲🇾" },
-        { name: "UAE", emoji: "🇦🇪" },
-        { name: "Morocco", emoji: "🇲🇦" },
-        { name: "Nigeria", emoji: "🇳🇬" },
-        { name: "Bangladesh", emoji: "🇧🇩" },
-        { name: "Iran", emoji: "🇮🇷" },
-        { name: "Iraq", emoji: "🇮🇶" },
-        { name: "Jordan", emoji: "🇯🇴" },
-        { name: "Lebanon", emoji: "🇱🇧" },
-        { name: "Palestine", emoji: "🇵🇸" },
-        { name: "Qatar", emoji: "🇶🇦" },
-        { name: "Kuwait", emoji: "🇰🇼" },
-        { name: "Oman", emoji: "🇴 " },
-        { name: "Bahrain", emoji: "🇧🇭" },
-        { name: "Tunisia", emoji: "🇹🇳" },
-        { name: "Algeria", emoji: "🇩🇿" },
-        { name: "Libya", emoji: "🇱🇾" },
-        { name: "Sudan", emoji: "🇸🇩" },
-        { name: "Somalia", emoji: "🇸🇴" },
-        { name: "Afghanistan", emoji: "🇦🇫" }
-    ];
-    
-    function displayRandomFlag() {
-        const randomIndex = Math.floor(Math.random() * muslimCountries.length);
-        const country = muslimCountries[randomIndex];
-        document.getElementById('flagEmoji').innerHTML = country.emoji;
-        document.getElementById('countryName').innerHTML = country.name;
-    }
-    
     // ========== MASJID LOCATOR + PRAYER TIMES (Adhan removed) ==========
     let userLat = null, userLon = null;
     let closestMasjids = [];
@@ -659,7 +586,9 @@
             try{ const geo=await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`); const geoData=await geo.json(); document.getElementById('locationName').innerHTML=`📍 ${geoData.address?.city||geoData.address?.town||'Your Location'}`; }catch(e){}
         } }catch(e){console.log(e);} }
     
-    // ========== ENHANCED ISLAMIC SEARCH (Hadith + Arabic + MODERN ENGLISH) ==========
+    // ========== ENHANCED ISLAMIC SEARCH (Hadith + Arabic + CLEAR MODERN ENGLISH) ==========
+    
+    // Meaning for common search terms
     const termMeanings = {
         'mercy': '🤲 Mercy (Rahmah) — Allah’s compassion and forgiveness. "My mercy encompasses all things" (Quran 7:156)',
         'patience': '⏳ Patience (Sabr) — Steadfastness in obedience. "Indeed, Allah is with the patient" (Quran 2:153)',
@@ -672,6 +601,7 @@
         'knowledge': '📚 Knowledge (Ilm) — Seeking it is an obligation. "Are those who know equal to those who do not know?" (Quran 39:9)'
     };
     
+    // Authentic Hadith database (Sahih International style English)
     const hadithDatabase = [
         { reference: 'Sahih al-Bukhari, 13', arabic: 'لا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ', english: 'None of you truly believes until he loves for his brother what he loves for himself.', keywords: ['love','brother','faith'], topic: 'Love' },
         { reference: 'Sahih al-Bukhari, 6011', arabic: 'الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ', english: 'Those who are merciful will be shown mercy by the Most Merciful.', keywords: ['mercy','merciful'], topic: 'Mercy' },
@@ -684,6 +614,7 @@
         { reference: 'Sunan Ibn Majah, 224', arabic: 'طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ', english: 'Seeking knowledge is an obligation upon every Muslim.', keywords: ['knowledge','learn','ilm'], topic: 'Knowledge' }
     ];
     
+    // Quran API – we fetch both Arabic and modern English (Sahih International)
     const QURAN_SEARCH_API = 'https://api.alquran.cloud/v1/search/';
     const QURAN_AYAH_API = 'https://api.alquran.cloud/v1/ayah/';
     
@@ -709,6 +640,7 @@
                     const ayahNum = verse.numberInSurah;
                     let arabicText = verse.text;
                     let englishText = verse.translation || 'Translation available';
+                    // fetch the most accurate Arabic from the cloud API
                     try {
                         const [arabRes, engRes] = await Promise.all([
                             fetch(QURAN_AYAH_API + `${surahNum}:${ayahNum}/editions/ar.sahih`),
@@ -744,7 +676,9 @@
     
     function getMeaningForTerm(term) {
         const lower = term.toLowerCase();
-        for (let key in termMeanings) if (lower.includes(key) || key.includes(lower)) return termMeanings[key];
+        for (let key in termMeanings) {
+            if (lower.includes(key) || key.includes(lower)) return termMeanings[key];
+        }
         return null;
     }
     
@@ -760,25 +694,67 @@
             const meaning = getMeaningForTerm(searchTerm);
             const quranResults = await searchQuranWithModernEnglish(searchTerm);
             const hadithResults = searchHadithByTerm(searchTerm);
+            
             if (quranResults.length === 0 && hadithResults.length === 0 && !meaning) {
                 resultsGrid.innerHTML = `<div class="no-results">📭 No results for "${escapeHtml(searchTerm)}". Try: mercy, justice, woman, prayer, charity, love</div>`;
                 return;
             }
+            
             let html = '<div class="results-grid">';
-            if (meaning) html += `<div class="result-card"><div class="result-header"><span class="result-surah">📖 Islamic Meaning</span></div><div class="result-body" style="padding:20px"><div class="meaning-badge">📚 MEANING & CONTEXT</div><div class="english-text" style="font-size:1rem;">${escapeHtml(meaning)}</div></div></div>`;
-            for (const v of quranResults) html += `<div class="result-card"><div class="result-header"><span class="result-surah">📖 QURAN: ${escapeHtml(v.surahName)} (${v.surahNum}:${v.ayahNum})</span><span class="topic-tag">🕋 Revelation</span></div><div class="result-body" style="padding:20px"><div class="arabic-text">${escapeHtml(v.arabic)}</div><div class="english-text">${escapeHtml(v.english)}</div><div class="audio-player"><button class="play-btn" onclick="playAudio(${v.surahNum}, ${v.ayahNum}, this)">🔊 Play Recitation</button><span style="font-size:0.7rem;margin-left:8px;">🎙️ Sheikh Sudais</span></div></div></div>`;
-            for (const h of hadithResults) html += `<div class="result-card"><div class="result-header"><span class="result-surah">📜 HADITH: ${escapeHtml(h.reference)}</span><span class="topic-tag">🏷️ ${h.topic}</span></div><div class="result-body" style="padding:20px"><div class="arabic-text">${escapeHtml(h.arabic)}</div><div class="english-text">${escapeHtml(h.english)}</div></div></div>`;
+            // Meaning badge
+            if (meaning) {
+                html += `<div class="result-card">
+                    <div class="result-header"><span class="result-surah">📖 Islamic Meaning</span></div>
+                    <div class="result-body" style="padding:20px">
+                        <div class="meaning-badge">📚 MEANING & CONTEXT</div>
+                        <div class="english-text" style="font-size:1rem;">${escapeHtml(meaning)}</div>
+                    </div>
+                </div>`;
+            }
+            // Quran results with ARABIC + modern English
+            for (const v of quranResults) {
+                html += `<div class="result-card">
+                    <div class="result-header"><span class="result-surah">📖 QURAN: ${escapeHtml(v.surahName)} (${v.surahNum}:${v.ayahNum})</span><span class="topic-tag">🕋 Revelation</span></div>
+                    <div class="result-body" style="padding:20px">
+                        <div class="arabic-text">${escapeHtml(v.arabic)}</div>
+                        <div class="english-text">${escapeHtml(v.english)}</div>
+                        <div class="audio-player"><button class="play-btn" onclick="playAudio(${v.surahNum}, ${v.ayahNum}, this)">🔊 Play Recitation</button><span style="font-size:0.7rem;margin-left:8px;">🎙️ Sheikh Sudais</span></div>
+                    </div>
+                </div>`;
+            }
+            // Hadith results with ARABIC + modern English
+            for (const h of hadithResults) {
+                html += `<div class="result-card">
+                    <div class="result-header"><span class="result-surah">📜 HADITH: ${escapeHtml(h.reference)}</span><span class="topic-tag">🏷️ ${h.topic}</span></div>
+                    <div class="result-body" style="padding:20px">
+                        <div class="arabic-text">${escapeHtml(h.arabic)}</div>
+                        <div class="english-text">${escapeHtml(h.english)}</div>
+                    </div>
+                </div>`;
+            }
             html += '</div>';
             resultsGrid.innerHTML = html;
-        } else { 
-            const scienceDatabase = { 'baby': { title: '🤰 Human Embryonic Development', explanation: 'The Quran describes human creation in stages: Nutfah → Alaqah → Mudghah → bones → flesh.', surah:23, verse:12, verses:['Surah Al-Mu\'minun (23:12-14)'] }, 'iron': { title: '⚙️ Iron - Sent Down from Space', explanation: 'Iron comes from supernova explosions – Quran states "sent down".', surah:57, verse:25, verses:['Surah Al-Hadid (57:25)'] }, 'sun': { title: '☀️ The Sun\'s Orbit', explanation: 'The sun runs to a fixed resting place – galactic orbit.', surah:36, verse:38, verses:['Surah Ya-Sin (36:38)'] }, 'moon': { title: '🌙 The Moon\'s Reflected Light', explanation: 'Moon reflects sunlight.', surah:71, verse:16, verses:['Surah Nuh (71:16)'] }, 'water': { title: '💧 The Water Cycle', explanation: 'Evaporation, clouds, rain described.', surah:39, verse:21, verses:['Surah Az-Zumar (39:21)'] }, 'mountains': { title: '⛰️ Mountains as Pegs', explanation: 'Mountains have deep roots stabilizing crust.', surah:78, verse:6, verses:['Surah An-Naba (78:6-7)'] }, 'universe': { title: '🌌 Expanding Universe', explanation: '"We are expanding it."', surah:51, verse:47, verses:['Surah Adh-Dhariyat (51:47)'] }, 'big bang': { title: '💥 The Big Bang', explanation: 'Heavens and earth joined then separated.', surah:21, verse:30, verses:['Surah Al-Anbiya (21:30)'] } };
+        } 
+        else {  // Science mode preserved
+            const scienceDatabase = {
+                'baby': { title: '🤰 Human Embryonic Development', explanation: 'The Quran describes human creation in stages: Nutfah → Alaqah → Mudghah → bones → flesh.', surah:23, verse:12, verses:['Surah Al-Mu\'minun (23:12-14)'] },
+                'iron': { title: '⚙️ Iron - Sent Down from Space', explanation: 'Iron comes from supernova explosions – Quran states "sent down".', surah:57, verse:25, verses:['Surah Al-Hadid (57:25)'] },
+                'sun': { title: '☀️ The Sun\'s Orbit', explanation: 'The sun runs to a fixed resting place – galactic orbit.', surah:36, verse:38, verses:['Surah Ya-Sin (36:38)'] },
+                'moon': { title: '🌙 The Moon\'s Reflected Light', explanation: 'Moon reflects sunlight.', surah:71, verse:16, verses:['Surah Nuh (71:16)'] },
+                'water': { title: '💧 The Water Cycle', explanation: 'Evaporation, clouds, rain described.', surah:39, verse:21, verses:['Surah Az-Zumar (39:21)'] },
+                'mountains': { title: '⛰️ Mountains as Pegs', explanation: 'Mountains have deep roots stabilizing crust.', surah:78, verse:6, verses:['Surah An-Naba (78:6-7)'] },
+                'universe': { title: '🌌 Expanding Universe', explanation: '"We are expanding it."', surah:51, verse:47, verses:['Surah Adh-Dhariyat (51:47)'] },
+                'big bang': { title: '💥 The Big Bang', explanation: 'Heavens and earth joined then separated.', surah:21, verse:30, verses:['Surah Al-Anbiya (21:30)'] }
+            };
             let match = null;
             for (let k in scienceDatabase) if (searchTerm.includes(k) || k.includes(searchTerm)) { match = scienceDatabase[k]; break; }
             if (match) {
                 const fetchAyah = async (s,v) => { try{ const res=await fetch(`https://api.alquran.cloud/v1/ayah/${s}:${v}/editions/ar.sahih,en.sahih`); const d=await res.json(); if(d?.data){ return { arabic: d.data.find(e=>e.edition?.identifier==='ar.sahih')?.text||'', english: d.data.find(e=>e.edition?.identifier==='en.sahih')?.text||'' }; } }catch(e){} return null; };
                 const qd = await fetchAyah(match.surah, match.verse);
                 resultsGrid.innerHTML = `<div class="results-grid"><div class="result-card"><div class="result-header"><span class="result-surah">🔬 SCIENTIFIC MIRACLE</span></div><div class="result-body" style="padding:20px"><div class="science-box"><div class="science-title">${match.title}</div><div>${match.explanation}</div></div>${qd?`<div class="arabic-text">${qd.arabic}</div><div class="english-text">${qd.english}</div><div class="audio-player"><button class="play-btn" onclick="playAudio(${match.surah}, ${match.verse}, this)">🔊 Play Recitation</button></div>`:''}</div></div></div>`;
-            } else resultsGrid.innerHTML = `<div class="no-results">🔍 Try: baby, iron, sun, moon, water, mountains, universe, big bang</div>`;
+            } else {
+                resultsGrid.innerHTML = `<div class="no-results">🔍 Try: baby, iron, sun, moon, water, mountains, universe, big bang</div>`;
+            }
         }
     }
     
@@ -786,7 +762,8 @@
         currentMode = mode;
         document.getElementById('modeQuranBtn').classList.toggle('active', mode === 'quran');
         document.getElementById('modeScienceBtn').classList.toggle('active', mode === 'science');
-        const searchBtn = document.getElementById('searchBtn'), searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
         if (mode === 'quran') {
             searchBtn.innerHTML = '🔍 Search Quran & Hadith';
             searchInput.placeholder = 'Type ANY word: mercy, justice, woman, prayer, charity, love...';
@@ -801,11 +778,11 @@
     function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
     function showToast(msg) { const t = document.createElement('div'); t.className = 'toast'; t.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#00aa44; color:white; padding:10px 20px; border-radius:10px; z-index:9999; animation:fadeOut 3s ease; white-space:nowrap;'; t.innerHTML = msg; document.body.appendChild(t); setTimeout(()=>t.remove(),3000); }
     
+    // Event listeners
     document.getElementById('searchBtn').addEventListener('click', performSearch);
     document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') performSearch(); });
     setTimeout(() => { if (navigator.geolocation) navigator.geolocation.getCurrentPosition(async (pos) => { userLat = pos.coords.latitude; userLon = pos.coords.longitude; await getPrayerTimes(userLat, userLon); }, () => {}); }, 1000);
     setMode('quran');
-    displayRandomFlag(); // show random flag on page load
     setTimeout(() => showToast('🏆 MPRIMO | Quran & Hadith with Arabic + Modern English | Prayer Times | Masjid Locator'), 1000);
 </script>
 
