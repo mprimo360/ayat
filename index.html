@@ -473,6 +473,84 @@
             color: #000;
         }
         
+        /* Scientific Miracles Section */
+        .miracles-section {
+            background: rgba(0,0,0,0.5);
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+        .miracles-title {
+            color: #FFD700;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            border-left: 3px solid #FFD700;
+            padding-left: 10px;
+        }
+        .miracles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 20px;
+        }
+        .miracle-card {
+            background: rgba(0,0,0,0.4);
+            border-radius: 18px;
+            padding: 18px;
+            transition: 0.2s;
+            border: 1px solid #333;
+        }
+        .miracle-card:hover {
+            border-color: #FFD700;
+            transform: translateY(-3px);
+        }
+        .miracle-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .miracle-arabic {
+            font-size: 1.1rem;
+            font-family: 'Amiri', serif;
+            color: #00cc44;
+            text-align: right;
+            direction: rtl;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        .miracle-reference {
+            color: #FFD700;
+            font-size: 0.7rem;
+            margin-bottom: 8px;
+        }
+        .miracle-explanation {
+            font-size: 0.85rem;
+            color: #eee;
+            line-height: 1.5;
+        }
+        .scientific-fact {
+            background: rgba(0,100,50,0.3);
+            border-radius: 10px;
+            padding: 8px;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            border-left: 3px solid #4ECDC4;
+        }
+        .miracle-audio-btn {
+            background: #2a6e3a;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 25px;
+            margin-top: 12px;
+            margin-right: 8px;
+            cursor: pointer;
+            color: white;
+            font-size: 0.7rem;
+        }
+        .miracle-audio-btn:hover {
+            background: #FFD700;
+            color: #000;
+        }
+        
         .loading { text-align: center; padding: 60px; font-size: 1.2rem; color: #FFD700; }
         .no-results { text-align: center; padding: 60px; color: #888; }
         .footer { text-align: center; margin-top: 50px; padding: 25px; color: #555; border-top: 1px solid #333; }
@@ -481,6 +559,7 @@
             .results-grid { grid-template-columns: 1fr; }
             .prayer-times { grid-template-columns: repeat(2, 1fr); }
             .duas-grid { grid-template-columns: 1fr; }
+            .miracles-grid { grid-template-columns: 1fr; }
             .compass-box { width: 160px; height: 160px; }
             .compass-needle { height: 65px; }
         }
@@ -549,11 +628,17 @@
         </div>
     </div>
     
+    <!-- Scientific Miracles Section (WITH AUDIO RECITATION) -->
+    <div class="miracles-section">
+        <div class="miracles-title">🔬 Scientific Miracles of the Quran | الإعجاز العلمي في القرآن</div>
+        <div class="miracles-grid" id="miraclesGrid"></div>
+    </div>
+    
     <!-- Enhanced Search Card -->
     <div class="search-card">
         <div class="mode-selector">
             <div class="mode-btn active" id="modeQuranBtn" onclick="setMode('quran')">📖 Quran & Hadith Search (Any Word)</div>
-            <div class="mode-btn" id="modeScienceBtn" onclick="setMode('science')">🔬 Scientific Miracles</div>
+            <div class="mode-btn" id="modeScienceBtn" onclick="setMode('science')">🔬 Scientific Miracles (Search)</div>
         </div>
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="Type ANY word: mercy, justice, woman, prayer, charity, love, patience..." autocomplete="off">
@@ -576,6 +661,173 @@
 </div>
 
 <script>
+    // Global audio variable
+    let currentMiracleAudio = null;
+    
+    // Helper function to get surah and ayah numbers from reference string
+    function getSurahAyahFromReference(ref) {
+        const match = ref.match(/(\d+):(\d+)/);
+        if (match) {
+            return { surah: parseInt(match[1]), ayah: parseInt(match[2]) };
+        }
+        return null;
+    }
+    
+    // Play audio for miracle verse
+    function playMiracleAudio(surah, ayah, btnElement) {
+        if (currentMiracleAudio) {
+            currentMiracleAudio.pause();
+            currentMiracleAudio = null;
+            // Reset all miracle audio buttons
+            document.querySelectorAll('.miracle-audio-btn').forEach(btn => {
+                if (btn.innerHTML !== '🔊 Listen') btn.innerHTML = '🔊 Listen';
+            });
+        }
+        const url = `https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps/${String(surah).padStart(3, '0')}${String(ayah).padStart(3, '0')}.mp3`;
+        const audio = new Audio(url);
+        currentMiracleAudio = audio;
+        audio.onplay = () => {
+            if (btnElement) btnElement.innerHTML = '🎧 Playing...';
+        };
+        audio.onended = () => {
+            if (btnElement) btnElement.innerHTML = '🔊 Listen';
+            currentMiracleAudio = null;
+        };
+        audio.onerror = () => {
+            if (btnElement) btnElement.innerHTML = '🔊 Listen';
+            showToast('Audio not available for this verse');
+            currentMiracleAudio = null;
+        };
+        audio.play().catch(() => {
+            if (btnElement) btnElement.innerHTML = '🔊 Listen';
+            showToast('Unable to play audio');
+        });
+    }
+    
+    // Scientific Miracles Database with audio references
+    const scientificMiracles = [
+        {
+            icon: "🌌",
+            arabic: "أَوَلَمْ يَرَ الَّذِينَ كَفَرُوا أَنَّ السَّمَاوَاتِ وَالْأَرْضَ كَانَتَا رَتْقًا فَفَتَقْنَاهُمَا",
+            translation: "Do the disbelievers not see that the heavens and the earth were joined together, then I split them apart?",
+            reference: "Surah Al-Anbiya (21:30)",
+            surahNum: 21,
+            ayahNum: 30,
+            explanation: "The Big Bang theory - the universe originated from a single primordial mass that exploded and expanded.",
+            scientificFact: "Modern cosmology confirms the universe began with a massive expansion from an infinitely dense point about 13.8 billion years ago."
+        },
+        {
+            icon: "💧",
+            arabic: "وَجَعَلْنَا مِنَ الْمَاءِ كُلَّ شَيْءٍ حَيٍّ",
+            translation: "And We made from water every living thing.",
+            reference: "Surah Al-Anbiya (21:30)",
+            surahNum: 21,
+            ayahNum: 30,
+            explanation: "All living organisms are composed primarily of water and depend on it for survival.",
+            scientificFact: "Biology confirms that water makes up 60-70% of living cells and life originated in aquatic environments."
+        },
+        {
+            icon: "👶",
+            arabic: "ثُمَّ خَلَقْنَا النُّطْفَةَ عَلَقَةً فَخَلَقْنَا الْعَلَقَةَ مُضْغَةً فَخَلَقْنَا الْمُضْغَةَ عِظَامًا فَكَسَوْنَا الْعِظَامَ لَحْمًا",
+            translation: "Then We made the drop into a clinging clot, then made the clot into a chewed lump, then made the lump into bones, then clothed the bones with flesh.",
+            reference: "Surah Al-Mu'minun (23:14)",
+            surahNum: 23,
+            ayahNum: 14,
+            explanation: "The stages of human embryonic development described with precision 1400 years before microscopes.",
+            scientificFact: "Embryology confirms the zygote becomes an 'alaqah (clinging clot), then mudghah (chewed-like lump), then bones, then muscles form around them."
+        },
+        {
+            icon: "⛰️",
+            arabic: "وَأَلْقَىٰ فِي الْأَرْضِ رَوَاسِيَ أَن تَمِيدَ بِكُمْ",
+            translation: "And He placed on the earth firm mountains, lest it should sway with you.",
+            reference: "Surah An-Nahl (16:15)",
+            surahNum: 16,
+            ayahNum: 15,
+            explanation: "Mountains act as stabilizers preventing the earth's crust from shaking.",
+            scientificFact: "Mountains have deep roots extending 3-4 times their height into the earth's crust, stabilizing tectonic plates."
+        },
+        {
+            icon: "🪨",
+            arabic: "وَأَنزَلْنَا الْحَدِيدَ فِيهِ بَأْسٌ شَدِيدٌ وَمَنَافِعُ لِلنَّاسِ",
+            translation: "And We sent down iron, wherein is great military might and benefits for the people.",
+            reference: "Surah Al-Hadid (57:25)",
+            surahNum: 57,
+            ayahNum: 25,
+            explanation: "Iron was 'sent down' to Earth - not naturally formed here, but from outer space.",
+            scientificFact: "Iron is formed in massive stellar explosions (supernovae) and meteorites brought it to Earth. No iron naturally forms on Earth."
+        },
+        {
+            icon: "☀️",
+            arabic: "وَالشَّمْسُ تَجْرِي لِمُسْتَقَرٍّ لَّهَا",
+            translation: "And the sun runs to a fixed resting place.",
+            reference: "Surah Ya-Sin (36:38)",
+            surahNum: 36,
+            ayahNum: 38,
+            explanation: "The sun is moving towards a specific destination in the galaxy.",
+            scientificFact: "The sun orbits the center of the Milky Way galaxy at 828,000 km/hr, taking 225 million years to complete one orbit."
+        },
+        {
+            icon: "🌊",
+            arabic: "مَرَجَ الْبَحْرَيْنِ يَلْتَقِيَانِ بَيْنَهُمَا بَرْزَخٌ لَّا يَبْغِيَانِ",
+            translation: "He merged the two seas that meet, between them is a barrier they do not transgress.",
+            reference: "Surah Ar-Rahman (55:19-20)",
+            surahNum: 55,
+            ayahNum: 19,
+            explanation: "Different seas meet but maintain distinct properties with a barrier between them.",
+            scientificFact: "Oceanography confirms the 'halocline' - distinct temperature, salinity, and density boundaries where seas meet without mixing."
+        },
+        {
+            icon: "🌍",
+            arabic: "غُلِبَتِ الرُّومُ فِي أَدْنَى الْأَرْضِ وَهُم مِّن بَعْدِ غَلَبِهِمْ سَيَغْلِبُونَ",
+            translation: "The Romans have been defeated in the lowest land. But after their defeat, they will triumph within a few years.",
+            reference: "Surah Ar-Rum (30:2-4)",
+            surahNum: 30,
+            ayahNum: 2,
+            explanation: "Prediction of Roman victory at the lowest point on Earth - the Dead Sea basin.",
+            scientificFact: "The Dead Sea is 395 meters below sea level - Earth's lowest point on land. The Romans defeated the Persians exactly 7 years later as prophesied."
+        },
+        {
+            icon: "🌌",
+            arabic: "ثُمَّ اسْتَوَىٰ إِلَى السَّمَاءِ وَهِيَ دُخَانٌ",
+            translation: "Then He turned to the heaven when it was smoke.",
+            reference: "Surah Fussilat (41:11)",
+            surahNum: 41,
+            ayahNum: 11,
+            explanation: "The early universe consisted of gaseous 'smoke' (nebula) before star formation.",
+            scientificFact: "Galaxies formed from primordial nebula clouds of dust and gas. 'Dukhaan' perfectly describes this early state."
+        },
+        {
+            icon: "🔢",
+            arabic: "الْبَحْرُ - الْبَرُّ",
+            translation: "The Sea - The Land (Word Repetition Miracle)",
+            reference: "Quranic Numerical Miracle",
+            surahNum: null,
+            ayahNum: null,
+            explanation: "The word 'Sea' appears 32 times, 'Land' appears 13 times in the Quran.",
+            scientificFact: "32/45 = 71.111% - exactly matching earth's water coverage! Land is 13/45 = 28.888%."
+        }
+    ];
+    
+    function loadMiracles() {
+        const container = document.getElementById('miraclesGrid');
+        if (!container) return;
+        container.innerHTML = scientificMiracles.map((m, idx) => {
+            const audioButton = (m.surahNum && m.ayahNum) ? 
+                `<button class="miracle-audio-btn" onclick="playMiracleAudio(${m.surahNum}, ${m.ayahNum}, this)">🔊 Listen to Recitation</button>` : 
+                `<button class="miracle-audio-btn" style="opacity:0.6; cursor:not-allowed;" disabled>🎙️ Audio Not Available</button>`;
+            return `
+            <div class="miracle-card">
+                <div class="miracle-icon">${m.icon}</div>
+                <div class="miracle-arabic">${m.arabic}</div>
+                <div class="miracle-reference">📖 ${m.reference}</div>
+                <div class="english-text" style="font-size:0.85rem; margin:10px 0;"><strong>Translation:</strong> "${m.translation}"</div>
+                <div class="miracle-explanation"><strong>📚 Explanation:</strong> ${m.explanation}</div>
+                <div class="scientific-fact"><strong>🔬 Modern Science Confirms:</strong> ${m.scientificFact}</div>
+                <div style="margin-top: 12px;">${audioButton}</div>
+            </div>
+        `}).join('');
+    }
+    
     // ========== MAIN APP - DATA STORAGE FOR EXTERNAL ADMIN PANEL ==========
     let userLat = null, userLon = null;
     let closestMasjids = [];
@@ -583,7 +835,6 @@
     let qiblaBearingValue = 0;
     let currentHeading = 0;
     
-    // Generate unique user ID per device/browser
     function getUserId() {
         let id = localStorage.getItem('mprimo_user_id');
         if (!id) {
@@ -663,33 +914,26 @@
         if (heading !== null) { currentHeading = heading; updateCompass(); }
     }
     
-    // ---------- MASJID LOCATOR (IMPROVED - MULTIPLE FALLBACKS) ----------
+    // ---------- MASJID LOCATOR ----------
     function calculateDistance(lat1, lon1, lat2, lon2) {
         const R = 6371;
         const dLat = (lat2 - lat1) * Math.PI / 180;
         const dLon = (lon2 - lon1) * Math.PI / 180;
-        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                  Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
-                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) * Math.sin(dLon/2) * Math.sin(dLon/2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         return R * c;
     }
     
     async function findNearestMasjid() {
         if (!navigator.geolocation) { showToast('⚠️ Geolocation not supported'); return; }
-        
         const loadingIndicator = document.getElementById('loadingIndicator');
         loadingIndicator.style.display = 'block';
         showToast('📍 Getting your location...');
-        
         navigator.geolocation.getCurrentPosition(async (pos) => {
             userLat = pos.coords.latitude;
             userLon = pos.coords.longitude;
             showToast('📍 Searching for mosques within 5km...');
-            
             let allMasjids = [];
-            
-            // Method 1: Overpass API
             try {
                 const radius = 5000;
                 const query = `[out:json][timeout:12];(node["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${userLat},${userLon});node["amenity"="mosque"](around:${radius},${userLat},${userLon}););out body;`;
@@ -703,46 +947,12 @@
                         if (el.lat && el.lon) {
                             const dist = calculateDistance(userLat, userLon, el.lat, el.lon);
                             if (dist <= 5) {
-                                allMasjids.push({
-                                    name: el.tags?.name || 'Masjid',
-                                    lat: el.lat,
-                                    lon: el.lon,
-                                    distance: dist,
-                                    address: el.tags?.addr_street || el.tags?.addr_city || 'Nearby'
-                                });
+                                allMasjids.push({ name: el.tags?.name || 'Masjid', lat: el.lat, lon: el.lon, distance: dist, address: el.tags?.addr_street || 'Nearby' });
                             }
                         }
                     }
                 }
             } catch(e) { console.log('Overpass error:', e); }
-            
-            // Method 2: Alternative Overpass server
-            if (allMasjids.length === 0) {
-                try {
-                    const radius = 5000;
-                    const query = `[out:json];node[amenity=mosque](around:${radius},${userLat},${userLon});out body;`;
-                    const response = await fetch(`https://overpass.kumi.systems/api/interpreter?data=${encodeURIComponent(query)}`);
-                    if (response.ok) {
-                        const data = await response.json();
-                        for (let el of data.elements || []) {
-                            if (el.lat && el.lon) {
-                                const dist = calculateDistance(userLat, userLon, el.lat, el.lon);
-                                if (dist <= 5) {
-                                    allMasjids.push({
-                                        name: el.tags?.name || 'Mosque',
-                                        lat: el.lat,
-                                        lon: el.lon,
-                                        distance: dist,
-                                        address: 'Nearby location'
-                                    });
-                                }
-                            }
-                        }
-                    }
-                } catch(e) { console.log('Alt Overpass error:', e); }
-            }
-            
-            // Method 3: Nominatim search
             if (allMasjids.length === 0) {
                 try {
                     const response = await fetch(`https://nominatim.openstreetmap.org/search?q=mosque&format=json&limit=10&bounded=1&viewbox=${userLon-0.05},${userLat-0.05},${userLon+0.05},${userLat+0.05}`);
@@ -753,58 +963,26 @@
                             const lon = parseFloat(el.lon);
                             const dist = calculateDistance(userLat, userLon, lat, lon);
                             if (dist <= 5) {
-                                allMasjids.push({
-                                    name: el.display_name.split(',')[0] || 'Islamic Center',
-                                    lat: lat,
-                                    lon: lon,
-                                    distance: dist,
-                                    address: el.display_name.substring(0, 50)
-                                });
+                                allMasjids.push({ name: el.display_name.split(',')[0] || 'Islamic Center', lat: lat, lon: lon, distance: dist, address: el.display_name.substring(0, 50) });
                             }
                         }
                     }
                 } catch(e) { console.log('Nominatim error:', e); }
             }
-            
-            // Remove duplicates
-            const uniqueMasjids = [];
-            const seen = new Set();
-            for (const m of allMasjids) {
-                const key = `${m.name}_${m.lat.toFixed(3)}_${m.lon.toFixed(3)}`;
-                if (!seen.has(key)) {
-                    seen.add(key);
-                    uniqueMasjids.push(m);
-                }
-            }
-            
-            uniqueMasjids.sort((a,b) => a.distance - b.distance);
-            closestMasjids = uniqueMasjids.slice(0, 10);
+            allMasjids.sort((a,b) => a.distance - b.distance);
+            closestMasjids = allMasjids.slice(0, 10);
             const container = document.getElementById('masjidList');
             loadingIndicator.style.display = 'none';
-            
             if (closestMasjids.length === 0) {
-                container.innerHTML = '<div style="text-align:center;color:#aaa;padding:15px;">⚠️ No mosques found within 5km.<br><br>💡 Tips:<br>• Make sure location is enabled<br>• Try again in a different area<br>• Use Google Maps to search manually</div>';
+                container.innerHTML = '<div style="text-align:center;color:#aaa;padding:15px;">⚠️ No mosques found within 5km.</div>';
                 document.getElementById('masjidInfo').style.display = 'none';
-                showToast('No mosques found within 5km');
             } else {
-                container.innerHTML = closestMasjids.map((m,i)=>`
-                    <div class="masjid-item" onclick="selectMasjid(${i})">
-                        <div class="masjid-item-name">🕌 ${escapeHtml(m.name)}</div>
-                        <div class="masjid-item-dist">📏 ${m.distance.toFixed(1)} km away</div>
-                        <div style="font-size:0.65rem; color:#aaa;">${escapeHtml(m.address.substring(0, 40))}</div>
-                    </div>
-                `).join('');
+                container.innerHTML = closestMasjids.map((m,i)=>`<div class="masjid-item" onclick="selectMasjid(${i})"><div class="masjid-item-name">🕌 ${escapeHtml(m.name)}</div><div class="masjid-item-dist">📏 ${m.distance.toFixed(1)} km away</div></div>`).join('');
                 displayNearestMasjid(closestMasjids[0]);
                 showToast(`✅ Found ${closestMasjids.length} mosque(s) nearby!`);
             }
             await getPrayerTimes(userLat, userLon);
-        }, (err) => {
-            loadingIndicator.style.display = 'none';
-            let msg = '⚠️ Unable to get location. Please enable GPS.';
-            if (err.code === 1) msg = '🔒 Location permission denied. Please allow location access.';
-            showToast(msg);
-            document.getElementById('masjidList').innerHTML = '<div style="text-align:center;color:#aaa;">📍 Please allow location access to find mosques.</div>';
-        });
+        }, (err) => { loadingIndicator.style.display = 'none'; showToast('🔒 Please allow location access'); });
     }
     
     function selectMasjid(idx) { if (closestMasjids[idx]) displayNearestMasjid(closestMasjids[idx]); }
@@ -816,13 +994,9 @@
         window.selectedMasjid = m;
     }
     function openMaps() {
-        if (window.selectedMasjid) {
-            window.open(`https://www.google.com/maps/dir/?api=1&destination=${window.selectedMasjid.lat},${window.selectedMasjid.lon}`, '_blank');
-        } else if (userLat && userLon) {
-            window.open(`https://www.google.com/maps/search/mosque/@${userLat},${userLon},13z`, '_blank');
-        } else {
-            showToast('📍 Please find mosques first');
-        }
+        if (window.selectedMasjid) window.open(`https://www.google.com/maps/dir/?api=1&destination=${window.selectedMasjid.lat},${window.selectedMasjid.lon}`, '_blank');
+        else if (userLat && userLon) window.open(`https://www.google.com/maps/search/mosque/@${userLat},${userLon},13z`, '_blank');
+        else showToast('📍 Please find mosques first');
     }
     
     // ---------- PRAYER TIMES ----------
@@ -850,7 +1024,7 @@
                 try {
                     const geo = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`);
                     const geoData = await geo.json();
-                    const cityName = geoData.address?.city || geoData.address?.town || geoData.address?.village || geoData.address?.state || 'Your Location';
+                    const cityName = geoData.address?.city || geoData.address?.town || geoData.address?.state || 'Your Location';
                     document.getElementById('locationName').innerHTML = `📍 ${cityName}`;
                     saveUserData(lat, lon, cityName);
                 } catch(e) { saveUserData(lat, lon, 'Unknown Area'); }
@@ -924,14 +1098,19 @@
             if (!quranResults.length && !hadithResults.length && !meaning) { grid.innerHTML = `<div class="no-results">📭 No results for "${escapeHtml(term)}"</div>`; return; }
             let html = '<div class="results-grid">';
             if (meaning) html += `<div class="result-card"><div class="result-header"><span class="result-surah">📖 Islamic Meaning</span></div><div class="result-body" style="padding:20px"><div class="meaning-badge">📚 MEANING</div><div class="english-text">${escapeHtml(meaning)}</div></div></div>`;
-            for (let v of quranResults) { html += `<div class="result-card"><div class="result-header"><span class="result-surah">📖 QURAN: ${v.surahName} (${v.surahNum}:${v.ayahNum})</span><span class="topic-tag">🕋 Revelation</span></div><div class="result-body" style="padding:20px"><div class="arabic-text">${escapeHtml(v.arabic)}</div><div class="english-text">${escapeHtml(v.english)}</div><div class="audio-player"><button class="play-btn" onclick="playAudio(${v.surahNum},${v.ayahNum},this)">🔊 Play Recitation</button><span style="font-size:0.7rem;">🎙️ Sheikh Sudais</span></div></div></div>`; }
+            for (let v of quranResults) { html += `<div class="result-card"><div class="result-header"><span class="result-surah">📖 QURAN: ${v.surahName} (${v.surahNum}:${v.ayahNum})</span><span class="topic-tag">🕋 Revelation</span></div><div class="result-body" style="padding:20px"><div class="arabic-text">${escapeHtml(v.arabic)}</div><div class="english-text">${escapeHtml(v.english)}</div><div class="audio-player"><button class="play-btn" onclick="playAudio(${v.surahNum},${v.ayahNum},this)">🔊 Play Recitation</button></div></div></div>`; }
             for (let h of hadithResults) { html += `<div class="result-card"><div class="result-header"><span class="result-surah">📜 HADITH: ${h.reference}</span><span class="topic-tag">🏷️ ${h.topic}</span></div><div class="result-body" style="padding:20px"><div class="arabic-text">${escapeHtml(h.arabic)}</div><div class="english-text">${escapeHtml(h.english)}</div></div></div>`; }
             html += '</div>'; grid.innerHTML = html;
         } else {
-            const scienceDB = { 'baby': { title: '🤰 Embryonic Development', explanation: 'Stages: Nutfah → Alaqah → Mudghah → bones → flesh.' }, 'iron': { title: '⚙️ Iron from Space', explanation: 'Sent down from supernovae.' }, 'sun': { title: '☀️ Sun\'s Orbit', explanation: 'Fixed resting place.' }, 'universe': { title: '🌌 Expanding Universe', explanation: '"We are expanding it."' } };
-            let match = null; for (let k in scienceDB) if (term.includes(k) || k.includes(term)) match = scienceDB[k];
-            if (match) grid.innerHTML = `<div class="results-grid"><div class="result-card"><div class="result-header"><span class="result-surah">🔬 SCIENTIFIC MIRACLE</span></div><div class="result-body" style="padding:20px"><div class="meaning-badge">📚 ${match.title}</div><div class="english-text">${match.explanation}</div></div></div></div>`;
-            else grid.innerHTML = `<div class="no-results">Try: baby, iron, sun, universe</div>`;
+            const scienceMatches = scientificMiracles.filter(m => m.explanation.toLowerCase().includes(term) || m.translation.toLowerCase().includes(term));
+            if (scienceMatches.length > 0) {
+                let html = '<div class="results-grid">';
+                for (let m of scienceMatches.slice(0, 6)) {
+                    const audioBtn = (m.surahNum && m.ayahNum) ? `<button class="play-btn" style="margin-top:8px;" onclick="playMiracleAudio(${m.surahNum}, ${m.ayahNum}, this)">🔊 Listen</button>` : '';
+                    html += `<div class="result-card"><div class="result-header"><span class="result-surah">🔬 SCIENTIFIC MIRACLE</span></div><div class="result-body" style="padding:20px"><div class="miracle-arabic">${m.arabic}</div><div class="meaning-badge">📖 ${m.reference}</div><div class="english-text"><strong>Translation:</strong> "${m.translation}"</div><div class="miracle-explanation">${m.explanation}</div><div class="scientific-fact">🔬 ${m.scientificFact}</div>${audioBtn}</div></div>`;
+                }
+                html += '</div>'; grid.innerHTML = html;
+            } else { grid.innerHTML = `<div class="no-results">Try: big bang, embryo, iron, mountains, sea, romans</div>`; }
         }
     }
     function setMode(mode) {
@@ -943,9 +1122,9 @@
             document.getElementById('searchInput').placeholder = 'Type ANY word: mercy, justice, woman...';
             document.getElementById('suggestionChips').innerHTML = `<span class="chip" onclick="searchWord('mercy')">🤲 Mercy</span><span class="chip" onclick="searchWord('justice')">⚖️ Justice</span><span class="chip" onclick="searchWord('woman')">👩 Woman</span><span class="chip" onclick="searchWord('love')">❤️ Love</span><span class="chip" onclick="searchWord('charity')">💝 Charity</span>`;
         } else {
-            document.getElementById('searchBtn').innerHTML = '🔬 Scientific Miracles';
-            document.getElementById('searchInput').placeholder = 'Search: baby, iron, sun...';
-            document.getElementById('suggestionChips').innerHTML = `<span class="chip" onclick="searchWord('baby')">🤰 Embryo</span><span class="chip" onclick="searchWord('iron')">⚙️ Iron</span><span class="chip" onclick="searchWord('universe')">🌌 Universe</span>`;
+            document.getElementById('searchBtn').innerHTML = '🔬 Search Scientific Miracles';
+            document.getElementById('searchInput').placeholder = 'Search: big bang, embryo, iron, mountains, sea...';
+            document.getElementById('suggestionChips').innerHTML = `<span class="chip" onclick="searchWord('big bang')">🌌 Big Bang</span><span class="chip" onclick="searchWord('embryo')">👶 Embryo</span><span class="chip" onclick="searchWord('iron')">🪨 Iron</span><span class="chip" onclick="searchWord('mountains')">⛰️ Mountains</span><span class="chip" onclick="searchWord('sea')">🌊 Seas</span>`;
         }
     }
     async function searchWord(word) { document.getElementById('searchInput').value = word; await performSearch(); }
@@ -970,6 +1149,7 @@
     // ---------- INIT ALL ----------
     (function initAll() {
         setMode('quran');
+        loadMiracles();
         const masjidBtn = document.getElementById('findMasjidBtn');
         if (masjidBtn) masjidBtn.onclick = findNearestMasjid;
         const driveBtn = document.getElementById('driveBtn');
@@ -984,7 +1164,7 @@
             else { window.addEventListener('deviceorientation', handleOrientation); }
         }
         loadDuas();
-        setTimeout(() => showToast('🏆 Quran, Hadith, Duas with Audio | Qibla + Mosques'), 1200);
+        setTimeout(() => showToast('🏆 Quran, Hadith, Scientific Miracles, Duas with Audio | Qibla + Mosques'), 1200);
     })();
 </script>
 <style>
