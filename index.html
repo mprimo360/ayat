@@ -477,24 +477,6 @@
         .no-results { text-align: center; padding: 60px; color: #888; }
         .footer { text-align: center; margin-top: 50px; padding: 25px; color: #555; border-top: 1px solid #333; }
         
-        .admin-link {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #FFD700;
-            color: #000;
-            padding: 8px 15px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.8rem;
-            z-index: 999;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        .admin-link:hover {
-            background: #fff;
-        }
-        
         @media (max-width: 768px) {
             .results-grid { grid-template-columns: 1fr; }
             .prayer-times { grid-template-columns: repeat(2, 1fr); }
@@ -532,12 +514,13 @@
             </div>
         </div>
         
-        <!-- Masjid Locator (FIXED) -->
+        <!-- Masjid Locator (OPTIMIZED - 5km radius for faster results) -->
         <div class="prayer-card">
             <div class="prayer-title">🕌 Find Nearest Masjid</div>
             <div class="masjid-container">
                 <div class="masjid-icon">🕌</div>
                 <button class="location-btn" id="findMasjidBtn">📍 Find Mosques Near Me</button>
+                <div id="loadingIndicator" style="display:none; margin-top:10px; color:#FFD700;">🔍 Searching for mosques...</div>
                 <div id="masjidInfo" class="masjid-info" style="display: none;">
                     <div class="masjid-name" id="masjidName">Loading...</div>
                     <div class="masjid-distance" id="masjidDistance">---</div>
@@ -546,7 +529,7 @@
                 </div>
                 <div id="masjidList" class="masjid-list"></div>
                 <div class="instruction-text" style="margin-top: 10px; font-size:0.75rem; color:#aaa;">
-                    📍 Click the button above to find mosques near you
+                    📍 Finds mosques within 5km radius (for faster results)
                 </div>
             </div>
         </div>
@@ -592,19 +575,15 @@
     </div>
 </div>
 
-<!-- Link to Admin Panel (opens in new tab/window) -->
-<a href="admin.html" class="admin-link" target="_blank">👑 Admin Dashboard</a>
-
 <script>
-    // ========== ALL ORIGINAL FUNCTIONALITY PRESERVED ==========
+    // ========== MAIN APP - NO ADMIN CODE, ONLY DATA STORAGE FOR EXTERNAL ADMIN PANEL ==========
     let userLat = null, userLon = null;
     let closestMasjids = [];
     let currentAudio = null;
     let qiblaBearingValue = 0;
     let currentHeading = 0;
-    let userId = null;
     
-    // Generate or retrieve unique user ID
+    // Generate or retrieve unique user ID for admin tracking
     function getUserId() {
         let id = localStorage.getItem('mprimo_user_id');
         if (!id) {
@@ -614,9 +593,9 @@
         return id;
     }
     
-    // Save user data to localStorage for admin panel
+    // Save user data to localStorage for external admin panel (NO ADMIN UI IN THIS FILE)
     function saveUserData(lat, lon, locationName) {
-        userId = getUserId();
+        const userId = getUserId();
         const users = JSON.parse(localStorage.getItem('admin_users')) || {};
         
         if (!users[userId]) {
@@ -635,9 +614,9 @@
         localStorage.setItem('admin_users', JSON.stringify(users));
     }
     
-    // Update search count
+    // Update search count for admin panel
     function updateSearchCount() {
-        userId = getUserId();
+        const userId = getUserId();
         const users = JSON.parse(localStorage.getItem('admin_users')) || {};
         if (users[userId]) {
             users[userId].searches = (users[userId].searches || 0) + 1;
@@ -684,7 +663,7 @@
         if (heading !== null) { currentHeading = heading; updateCompass(); }
     }
     
-    // ---------- MASJID LOCATOR (FIXED - working properly) ----------
+    // ---------- MASJID LOCATOR (OPTIMIZED - 5km radius for faster results) ----------
     function calculateDistance(lat1, lon1, lat2, lon2) {
         const R = 6371;
         const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -701,78 +680,83 @@
             showToast('⚠️ Geolocation not supported'); 
             return; 
         }
+        
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        loadingIndicator.style.display = 'block';
         showToast('📍 Getting your location...');
         
         navigator.geolocation.getCurrentPosition(async (pos) => {
             userLat = pos.coords.latitude;
             userLon = pos.coords.longitude;
-            showToast('📍 Searching for mosques within 10km...');
+            showToast('📍 Searching for mosques within 5km...');
             
-            // Multiple Overpass queries to ensure we find mosques
-            const queries = [
-                `[out:json];(node["amenity"="place_of_worship"]["religion"="muslim"](around:10000,${userLat},${userLon}););out body;`,
-                `[out:json];(node["amenity"="mosque"](around:10000,${userLat},${userLon}););out body;`,
-                `[out:json];(way["amenity"="place_of_worship"]["religion"="muslim"](around:10000,${userLat},${userLon}););out body;`
-            ];
+            // OPTIMIZED: Using 5km radius instead of 10km for faster results
+            const radius = 5000; // 5km radius - much faster!
+            const query = `[out:json][timeout:15];(node["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${userLat},${userLon});node["amenity"="mosque"](around:${radius},${userLat},${userLon});way["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${userLat},${userLon});way["amenity"="mosque"](around:${radius},${userLat},${userLon}););out body;`;
             
-            const allMasjids = [];
-            
-            for (const query of queries) {
-                try {
-                    const response = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`);
-                    const data = await response.json();
-                    for (let el of data.elements || []) {
-                        let lat = el.lat || (el.center && el.center.lat);
-                        let lon = el.lon || (el.center && el.center.lon);
-                        if (lat && lon) {
-                            const dist = calculateDistance(userLat, userLon, lat, lon);
-                            if (dist <= 10) {
-                                let name = el.tags?.name || (el.tags?.name_en) || 'Islamic Center';
-                                allMasjids.push({
-                                    name: name,
-                                    lat: lat,
-                                    lon: lon,
-                                    distance: dist,
-                                    address: el.tags?.addr_street || el.tags?.addr_city || 'Nearby'
-                                });
-                            }
+            try {
+                const response = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                const masjids = [];
+                
+                for (let el of data.elements || []) {
+                    let lat = el.lat || (el.center && el.center.lat);
+                    let lon = el.lon || (el.center && el.center.lon);
+                    if (lat && lon) {
+                        const dist = calculateDistance(userLat, userLon, lat, lon);
+                        if (dist <= 5) { // Only within 5km
+                            let name = el.tags?.name || (el.tags?.name_en) || 'Islamic Center';
+                            masjids.push({
+                                name: name,
+                                lat: lat,
+                                lon: lon,
+                                distance: dist,
+                                address: el.tags?.addr_street || el.tags?.addr_city || 'Nearby'
+                            });
                         }
                     }
-                } catch(e) { console.warn('Query failed:', e); }
-            }
-            
-            // Remove duplicates by name and location
-            const uniqueMasjids = [];
-            const seen = new Set();
-            for (const m of allMasjids) {
-                const key = `${m.name}_${m.lat.toFixed(4)}_${m.lon.toFixed(4)}`;
-                if (!seen.has(key)) {
-                    seen.add(key);
-                    uniqueMasjids.push(m);
                 }
+                
+                // Remove duplicates
+                const uniqueMasjids = [];
+                const seen = new Set();
+                for (const m of masjids) {
+                    const key = `${m.name}_${m.lat.toFixed(4)}_${m.lon.toFixed(4)}`;
+                    if (!seen.has(key)) {
+                        seen.add(key);
+                        uniqueMasjids.push(m);
+                    }
+                }
+                
+                uniqueMasjids.sort((a,b) => a.distance - b.distance);
+                closestMasjids = uniqueMasjids.slice(0, 8);
+                const container = document.getElementById('masjidList');
+                loadingIndicator.style.display = 'none';
+                
+                if (closestMasjids.length === 0) {
+                    container.innerHTML = '<div style="text-align:center;color:#aaa;">⚠️ No mosques found within 5km. Try moving to a different area.</div>';
+                    document.getElementById('masjidInfo').style.display = 'none';
+                    showToast('No mosques found within 5km');
+                } else {
+                    container.innerHTML = closestMasjids.map((m,i)=>`
+                        <div class="masjid-item" onclick="selectMasjid(${i})">
+                            <div class="masjid-item-name">🕌 ${escapeHtml(m.name)}</div>
+                            <div class="masjid-item-dist">📏 ${m.distance.toFixed(1)} km away</div>
+                        </div>
+                    `).join('');
+                    displayNearestMasjid(closestMasjids[0]);
+                    showToast(`✅ Found ${closestMasjids.length} mosque(s) nearby!`);
+                }
+                
+                await getPrayerTimes(userLat, userLon);
+            } catch(e) { 
+                console.error(e);
+                loadingIndicator.style.display = 'none';
+                showToast('Network issue. Please try again.'); 
+                document.getElementById('masjidList').innerHTML = '<div style="text-align:center;color:#aaa;">Unable to fetch mosques. Try again.</div>';
             }
-            
-            uniqueMasjids.sort((a,b) => a.distance - b.distance);
-            closestMasjids = uniqueMasjids.slice(0, 10);
-            const container = document.getElementById('masjidList');
-            
-            if (closestMasjids.length === 0) {
-                container.innerHTML = '<div style="text-align:center;color:#aaa;">⚠️ No mosques found within 10km. Try again or search manually.</div>';
-                document.getElementById('masjidInfo').style.display = 'none';
-                showToast('No mosques found nearby');
-            } else {
-                container.innerHTML = closestMasjids.map((m,i)=>`
-                    <div class="masjid-item" onclick="selectMasjid(${i})">
-                        <div class="masjid-item-name">🕌 ${escapeHtml(m.name)}</div>
-                        <div class="masjid-item-dist">📏 ${m.distance.toFixed(1)} km away</div>
-                    </div>
-                `).join('');
-                displayNearestMasjid(closestMasjids[0]);
-                showToast(`✅ Found ${closestMasjids.length} mosque(s) nearby!`);
-            }
-            
-            await getPrayerTimes(userLat, userLon);
         }, (err) => {
+            loadingIndicator.style.display = 'none';
             console.error(err);
             let msg = '⚠️ Unable to get location. Please enable GPS.';
             if (err.code === 1) msg = '🔒 Location permission denied. Please allow location access.';
@@ -841,6 +825,7 @@
                     const geoData = await geo.json();
                     const cityName = geoData.address?.city || geoData.address?.town || geoData.address?.village || geoData.address?.state || 'Your Location';
                     document.getElementById('locationName').innerHTML = `📍 ${cityName}`;
+                    // Save to localStorage for external admin panel
                     saveUserData(lat, lon, cityName);
                 } catch(e) {
                     saveUserData(lat, lon, 'Unknown Area');
@@ -921,7 +906,7 @@
         const grid = document.getElementById('resultsGrid');
         if (!term) { grid.innerHTML = '<div class="no-results">✨ Enter a word...</div>'; return; }
         
-        updateSearchCount();
+        updateSearchCount(); // Track for admin panel
         grid.innerHTML = '<div class="loading">Searching...</div>';
         
         if (currentMode === 'quran') {
@@ -1059,7 +1044,7 @@
         }
         
         loadDuas();
-        setTimeout(() => showToast('🏆 Quran, Hadith, Duas with Audio | Qibla + Mosques'), 1200);
+        setTimeout(() => showToast('🏆 Quran, Hadith, Duas with Audio | Qibla + Mosques (5km radius)'), 1200);
     })();
 </script>
 <style>
