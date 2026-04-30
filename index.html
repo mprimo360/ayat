@@ -514,7 +514,7 @@
             </div>
         </div>
         
-        <!-- Masjid Locator (OPTIMIZED - 5km radius for faster results) -->
+        <!-- Masjid Locator -->
         <div class="prayer-card">
             <div class="prayer-title">🕌 Find Nearest Masjid</div>
             <div class="masjid-container">
@@ -529,7 +529,7 @@
                 </div>
                 <div id="masjidList" class="masjid-list"></div>
                 <div class="instruction-text" style="margin-top: 10px; font-size:0.75rem; color:#aaa;">
-                    📍 Finds mosques within 5km radius (for faster results)
+                    📍 Finds mosques within 5km radius
                 </div>
             </div>
         </div>
@@ -576,66 +576,45 @@
 </div>
 
 <script>
-    // ========== MAIN APP - NO ADMIN CODE, ONLY DATA STORAGE FOR EXTERNAL ADMIN PANEL ==========
+    // ========== MAIN APP - DATA STORAGE FOR EXTERNAL ADMIN PANEL ==========
     let userLat = null, userLon = null;
     let closestMasjids = [];
     let currentAudio = null;
     let qiblaBearingValue = 0;
     let currentHeading = 0;
     
-    // IMPROVED: Generate unique user ID per device/browser using multiple factors
+    // Generate unique user ID per device/browser
     function getUserId() {
         let id = localStorage.getItem('mprimo_user_id');
         if (!id) {
-            // Create a truly unique ID for this specific browser/device
             const timeStamp = Date.now();
             const randomStr = Math.random().toString(36).substr(2, 15);
             const browserInfo = navigator.userAgent.substring(0, 50);
             const screenInfo = `${screen.width}x${screen.height}x${screen.colorDepth}`;
-            const language = navigator.language || 'en';
-            
-            // Combine multiple unique factors to ensure different devices get different IDs
-            const uniqueString = `${timeStamp}_${randomStr}_${browserInfo}_${screenInfo}_${language}`;
-            
-            // Use btoa (base64) to create a compact unique ID
+            const uniqueString = `${timeStamp}_${randomStr}_${browserInfo}_${screenInfo}`;
             try {
                 id = btoa(uniqueString).substring(0, 35);
             } catch(e) {
-                // Fallback if btoa fails (rare)
                 id = 'user_' + timeStamp + '_' + randomStr;
             }
-            
             localStorage.setItem('mprimo_user_id', id);
-            
-            // Also store a device fingerprint timestamp to help with debugging
-            localStorage.setItem('mprimo_device_created', timeStamp.toString());
         }
         return id;
     }
     
-    // Save user data to localStorage for external admin panel (NO ADMIN UI IN THIS FILE)
     function saveUserData(lat, lon, locationName) {
         const userId = getUserId();
         const users = JSON.parse(localStorage.getItem('admin_users')) || {};
-        
         if (!users[userId]) {
-            users[userId] = {
-                id: userId,
-                createdAt: new Date().toISOString(),
-                searches: 0,
-                deviceInfo: navigator.userAgent.substring(0, 100) // Store device info for admin
-            };
+            users[userId] = { id: userId, createdAt: new Date().toISOString(), searches: 0 };
         }
-        
         users[userId].lat = lat;
         users[userId].lon = lon;
         users[userId].location = locationName || 'Unknown';
         users[userId].lastActive = new Date().toISOString();
-        
         localStorage.setItem('admin_users', JSON.stringify(users));
     }
     
-    // Update search count for admin panel
     function updateSearchCount() {
         const userId = getUserId();
         const users = JSON.parse(localStorage.getItem('admin_users')) || {};
@@ -684,7 +663,7 @@
         if (heading !== null) { currentHeading = heading; updateCompass(); }
     }
     
-    // ---------- MASJID LOCATOR (OPTIMIZED - 5km radius for faster results) ----------
+    // ---------- MASJID LOCATOR (IMPROVED - MULTIPLE FALLBACKS) ----------
     function calculateDistance(lat1, lon1, lat2, lon2) {
         const R = 6371;
         const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -697,10 +676,7 @@
     }
     
     async function findNearestMasjid() {
-        if (!navigator.geolocation) { 
-            showToast('⚠️ Geolocation not supported'); 
-            return; 
-        }
+        if (!navigator.geolocation) { showToast('⚠️ Geolocation not supported'); return; }
         
         const loadingIndicator = document.getElementById('loadingIndicator');
         loadingIndicator.style.display = 'block';
@@ -711,85 +687,127 @@
             userLon = pos.coords.longitude;
             showToast('📍 Searching for mosques within 5km...');
             
-            // OPTIMIZED: Using 5km radius instead of 10km for faster results
-            const radius = 5000; // 5km radius - much faster!
-            const query = `[out:json][timeout:15];(node["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${userLat},${userLon});node["amenity"="mosque"](around:${radius},${userLat},${userLon});way["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${userLat},${userLon});way["amenity"="mosque"](around:${radius},${userLat},${userLon}););out body;`;
+            let allMasjids = [];
             
+            // Method 1: Overpass API
             try {
-                const response = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`);
-                const data = await response.json();
-                const masjids = [];
-                
-                for (let el of data.elements || []) {
-                    let lat = el.lat || (el.center && el.center.lat);
-                    let lon = el.lon || (el.center && el.center.lon);
-                    if (lat && lon) {
-                        const dist = calculateDistance(userLat, userLon, lat, lon);
-                        if (dist <= 5) { // Only within 5km
-                            let name = el.tags?.name || (el.tags?.name_en) || 'Islamic Center';
-                            masjids.push({
-                                name: name,
-                                lat: lat,
-                                lon: lon,
-                                distance: dist,
-                                address: el.tags?.addr_street || el.tags?.addr_city || 'Nearby'
-                            });
+                const radius = 5000;
+                const query = `[out:json][timeout:12];(node["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${userLat},${userLon});node["amenity"="mosque"](around:${radius},${userLat},${userLon}););out body;`;
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+                const response = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                if (response.ok) {
+                    const data = await response.json();
+                    for (let el of data.elements || []) {
+                        if (el.lat && el.lon) {
+                            const dist = calculateDistance(userLat, userLon, el.lat, el.lon);
+                            if (dist <= 5) {
+                                allMasjids.push({
+                                    name: el.tags?.name || 'Masjid',
+                                    lat: el.lat,
+                                    lon: el.lon,
+                                    distance: dist,
+                                    address: el.tags?.addr_street || el.tags?.addr_city || 'Nearby'
+                                });
+                            }
                         }
                     }
                 }
-                
-                // Remove duplicates
-                const uniqueMasjids = [];
-                const seen = new Set();
-                for (const m of masjids) {
-                    const key = `${m.name}_${m.lat.toFixed(4)}_${m.lon.toFixed(4)}`;
-                    if (!seen.has(key)) {
-                        seen.add(key);
-                        uniqueMasjids.push(m);
+            } catch(e) { console.log('Overpass error:', e); }
+            
+            // Method 2: Alternative Overpass server
+            if (allMasjids.length === 0) {
+                try {
+                    const radius = 5000;
+                    const query = `[out:json];node[amenity=mosque](around:${radius},${userLat},${userLon});out body;`;
+                    const response = await fetch(`https://overpass.kumi.systems/api/interpreter?data=${encodeURIComponent(query)}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        for (let el of data.elements || []) {
+                            if (el.lat && el.lon) {
+                                const dist = calculateDistance(userLat, userLon, el.lat, el.lon);
+                                if (dist <= 5) {
+                                    allMasjids.push({
+                                        name: el.tags?.name || 'Mosque',
+                                        lat: el.lat,
+                                        lon: el.lon,
+                                        distance: dist,
+                                        address: 'Nearby location'
+                                    });
+                                }
+                            }
+                        }
                     }
-                }
-                
-                uniqueMasjids.sort((a,b) => a.distance - b.distance);
-                closestMasjids = uniqueMasjids.slice(0, 8);
-                const container = document.getElementById('masjidList');
-                loadingIndicator.style.display = 'none';
-                
-                if (closestMasjids.length === 0) {
-                    container.innerHTML = '<div style="text-align:center;color:#aaa;">⚠️ No mosques found within 5km. Try moving to a different area.</div>';
-                    document.getElementById('masjidInfo').style.display = 'none';
-                    showToast('No mosques found within 5km');
-                } else {
-                    container.innerHTML = closestMasjids.map((m,i)=>`
-                        <div class="masjid-item" onclick="selectMasjid(${i})">
-                            <div class="masjid-item-name">🕌 ${escapeHtml(m.name)}</div>
-                            <div class="masjid-item-dist">📏 ${m.distance.toFixed(1)} km away</div>
-                        </div>
-                    `).join('');
-                    displayNearestMasjid(closestMasjids[0]);
-                    showToast(`✅ Found ${closestMasjids.length} mosque(s) nearby!`);
-                }
-                
-                await getPrayerTimes(userLat, userLon);
-            } catch(e) { 
-                console.error(e);
-                loadingIndicator.style.display = 'none';
-                showToast('Network issue. Please try again.'); 
-                document.getElementById('masjidList').innerHTML = '<div style="text-align:center;color:#aaa;">Unable to fetch mosques. Try again.</div>';
+                } catch(e) { console.log('Alt Overpass error:', e); }
             }
+            
+            // Method 3: Nominatim search
+            if (allMasjids.length === 0) {
+                try {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/search?q=mosque&format=json&limit=10&bounded=1&viewbox=${userLon-0.05},${userLat-0.05},${userLon+0.05},${userLat+0.05}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        for (let el of data) {
+                            const lat = parseFloat(el.lat);
+                            const lon = parseFloat(el.lon);
+                            const dist = calculateDistance(userLat, userLon, lat, lon);
+                            if (dist <= 5) {
+                                allMasjids.push({
+                                    name: el.display_name.split(',')[0] || 'Islamic Center',
+                                    lat: lat,
+                                    lon: lon,
+                                    distance: dist,
+                                    address: el.display_name.substring(0, 50)
+                                });
+                            }
+                        }
+                    }
+                } catch(e) { console.log('Nominatim error:', e); }
+            }
+            
+            // Remove duplicates
+            const uniqueMasjids = [];
+            const seen = new Set();
+            for (const m of allMasjids) {
+                const key = `${m.name}_${m.lat.toFixed(3)}_${m.lon.toFixed(3)}`;
+                if (!seen.has(key)) {
+                    seen.add(key);
+                    uniqueMasjids.push(m);
+                }
+            }
+            
+            uniqueMasjids.sort((a,b) => a.distance - b.distance);
+            closestMasjids = uniqueMasjids.slice(0, 10);
+            const container = document.getElementById('masjidList');
+            loadingIndicator.style.display = 'none';
+            
+            if (closestMasjids.length === 0) {
+                container.innerHTML = '<div style="text-align:center;color:#aaa;padding:15px;">⚠️ No mosques found within 5km.<br><br>💡 Tips:<br>• Make sure location is enabled<br>• Try again in a different area<br>• Use Google Maps to search manually</div>';
+                document.getElementById('masjidInfo').style.display = 'none';
+                showToast('No mosques found within 5km');
+            } else {
+                container.innerHTML = closestMasjids.map((m,i)=>`
+                    <div class="masjid-item" onclick="selectMasjid(${i})">
+                        <div class="masjid-item-name">🕌 ${escapeHtml(m.name)}</div>
+                        <div class="masjid-item-dist">📏 ${m.distance.toFixed(1)} km away</div>
+                        <div style="font-size:0.65rem; color:#aaa;">${escapeHtml(m.address.substring(0, 40))}</div>
+                    </div>
+                `).join('');
+                displayNearestMasjid(closestMasjids[0]);
+                showToast(`✅ Found ${closestMasjids.length} mosque(s) nearby!`);
+            }
+            await getPrayerTimes(userLat, userLon);
         }, (err) => {
             loadingIndicator.style.display = 'none';
-            console.error(err);
             let msg = '⚠️ Unable to get location. Please enable GPS.';
             if (err.code === 1) msg = '🔒 Location permission denied. Please allow location access.';
-            if (err.code === 2) msg = '📍 Location unavailable. Try again.';
             showToast(msg);
+            document.getElementById('masjidList').innerHTML = '<div style="text-align:center;color:#aaa;">📍 Please allow location access to find mosques.</div>';
         });
     }
     
-    function selectMasjid(idx) { 
-        if (closestMasjids[idx]) displayNearestMasjid(closestMasjids[idx]); 
-    }
-    
+    function selectMasjid(idx) { if (closestMasjids[idx]) displayNearestMasjid(closestMasjids[idx]); }
     function displayNearestMasjid(m) {
         document.getElementById('masjidInfo').style.display = 'block';
         document.getElementById('masjidName').innerHTML = `🕌 ${escapeHtml(m.name)}`;
@@ -797,7 +815,6 @@
         document.getElementById('masjidAddress').innerHTML = `📍 ${escapeHtml(m.address)}`;
         window.selectedMasjid = m;
     }
-    
     function openMaps() {
         if (window.selectedMasjid) {
             window.open(`https://www.google.com/maps/dir/?api=1&destination=${window.selectedMasjid.lat},${window.selectedMasjid.lon}`, '_blank');
@@ -822,35 +839,21 @@
                 document.getElementById('asr').innerHTML = t.Asr;
                 document.getElementById('maghrib').innerHTML = t.Maghrib;
                 document.getElementById('isha').innerHTML = t.Isha;
-                
                 const now = new Date();
                 const cur = now.getHours() * 60 + now.getMinutes();
-                const prayers = [
-                    { name: 'Fajr', time: t.Fajr },
-                    { name: 'Dhuhr', time: t.Dhuhr },
-                    { name: 'Asr', time: t.Asr },
-                    { name: 'Maghrib', time: t.Maghrib },
-                    { name: 'Isha', time: t.Isha }
-                ];
+                const prayers = [{name:'Fajr',time:t.Fajr},{name:'Dhuhr',time:t.Dhuhr},{name:'Asr',time:t.Asr},{name:'Maghrib',time:t.Maghrib},{name:'Isha',time:t.Isha}];
                 for (let p of prayers) {
-                    let [h, m] = p.time.split(':').map(Number);
+                    let [h,m] = p.time.split(':').map(Number);
                     let mins = h * 60 + m;
-                    if (mins > cur) {
-                        document.getElementById('nextPrayer').innerHTML = `⏰ Next: <strong>${p.name}</strong> in ${Math.floor((mins-cur)/60)}h ${(mins-cur)%60}m`;
-                        break;
-                    }
+                    if (mins > cur) { document.getElementById('nextPrayer').innerHTML = `⏰ Next: <strong>${p.name}</strong> in ${Math.floor((mins-cur)/60)}h ${(mins-cur)%60}m`; break; }
                 }
-                
                 try {
                     const geo = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`);
                     const geoData = await geo.json();
                     const cityName = geoData.address?.city || geoData.address?.town || geoData.address?.village || geoData.address?.state || 'Your Location';
                     document.getElementById('locationName').innerHTML = `📍 ${cityName}`;
-                    // Save to localStorage for external admin panel
                     saveUserData(lat, lon, cityName);
-                } catch(e) {
-                    saveUserData(lat, lon, 'Unknown Area');
-                }
+                } catch(e) { saveUserData(lat, lon, 'Unknown Area'); }
             }
         } catch(e) { console.warn(e); }
     }
@@ -873,9 +876,7 @@
     ];
     const QURAN_SEARCH_API = 'https://api.alquran.cloud/v1/search/';
     const QURAN_AYAH_API = 'https://api.alquran.cloud/v1/ayah/';
-    
     function getAudioUrl(s, v) { return `https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps/${String(s).padStart(3,'0')}${String(v).padStart(3,'0')}.mp3`; }
-    
     function playAudio(s, v, btn) {
         if (currentAudio) { currentAudio.pause(); currentAudio = null; document.querySelectorAll('.play-btn').forEach(b=>b.innerHTML='🔊 Play'); }
         const audio = new Audio(getAudioUrl(s, v));
@@ -884,7 +885,6 @@
         audio.onended = () => { btn.innerHTML = '🔊 Play'; currentAudio = null; };
         audio.play().catch(() => btn.innerHTML = '🔊 Play');
     }
-    
     async function searchQuranWithModernEnglish(term) {
         try {
             const res = await fetch(QURAN_SEARCH_API + encodeURIComponent(term) + '/all/en');
@@ -908,87 +908,49 @@
             return results;
         } catch(e) { return []; }
     }
-    
-    function searchHadithByTerm(term) {
-        const lower = term.toLowerCase();
-        return hadithDatabase.filter(h => h.english.toLowerCase().includes(lower) || h.topic.toLowerCase().includes(lower));
-    }
-    
-    function getMeaningForTerm(term) {
-        const lower = term.toLowerCase();
-        for (let k in termMeanings) if (lower.includes(k) || k.includes(lower)) return termMeanings[k];
-        return null;
-    }
-    
+    function searchHadithByTerm(term) { const lower = term.toLowerCase(); return hadithDatabase.filter(h => h.english.toLowerCase().includes(lower) || h.topic.toLowerCase().includes(lower)); }
+    function getMeaningForTerm(term) { const lower = term.toLowerCase(); for (let k in termMeanings) if (lower.includes(k) || k.includes(lower)) return termMeanings[k]; return null; }
     let currentMode = 'quran';
-    
     async function performSearch() {
         const term = document.getElementById('searchInput').value.trim().toLowerCase();
         const grid = document.getElementById('resultsGrid');
         if (!term) { grid.innerHTML = '<div class="no-results">✨ Enter a word...</div>'; return; }
-        
-        updateSearchCount(); // Track for admin panel
+        updateSearchCount();
         grid.innerHTML = '<div class="loading">Searching...</div>';
-        
         if (currentMode === 'quran') {
             const meaning = getMeaningForTerm(term);
             const quranResults = await searchQuranWithModernEnglish(term);
             const hadithResults = searchHadithByTerm(term);
-            
-            if (!quranResults.length && !hadithResults.length && !meaning) {
-                grid.innerHTML = `<div class="no-results">📭 No results for "${escapeHtml(term)}"</div>`;
-                return;
-            }
-            
+            if (!quranResults.length && !hadithResults.length && !meaning) { grid.innerHTML = `<div class="no-results">📭 No results for "${escapeHtml(term)}"</div>`; return; }
             let html = '<div class="results-grid">';
             if (meaning) html += `<div class="result-card"><div class="result-header"><span class="result-surah">📖 Islamic Meaning</span></div><div class="result-body" style="padding:20px"><div class="meaning-badge">📚 MEANING</div><div class="english-text">${escapeHtml(meaning)}</div></div></div>`;
-            for (let v of quranResults) {
-                html += `<div class="result-card"><div class="result-header"><span class="result-surah">📖 QURAN: ${v.surahName} (${v.surahNum}:${v.ayahNum})</span><span class="topic-tag">🕋 Revelation</span></div><div class="result-body" style="padding:20px"><div class="arabic-text">${escapeHtml(v.arabic)}</div><div class="english-text">${escapeHtml(v.english)}</div><div class="audio-player"><button class="play-btn" onclick="playAudio(${v.surahNum},${v.ayahNum},this)">🔊 Play Recitation</button><span style="font-size:0.7rem;">🎙️ Sheikh Sudais</span></div></div></div>`;
-            }
-            for (let h of hadithResults) {
-                html += `<div class="result-card"><div class="result-header"><span class="result-surah">📜 HADITH: ${h.reference}</span><span class="topic-tag">🏷️ ${h.topic}</span></div><div class="result-body" style="padding:20px"><div class="arabic-text">${escapeHtml(h.arabic)}</div><div class="english-text">${escapeHtml(h.english)}</div></div></div>`;
-            }
-            html += '</div>';
-            grid.innerHTML = html;
+            for (let v of quranResults) { html += `<div class="result-card"><div class="result-header"><span class="result-surah">📖 QURAN: ${v.surahName} (${v.surahNum}:${v.ayahNum})</span><span class="topic-tag">🕋 Revelation</span></div><div class="result-body" style="padding:20px"><div class="arabic-text">${escapeHtml(v.arabic)}</div><div class="english-text">${escapeHtml(v.english)}</div><div class="audio-player"><button class="play-btn" onclick="playAudio(${v.surahNum},${v.ayahNum},this)">🔊 Play Recitation</button><span style="font-size:0.7rem;">🎙️ Sheikh Sudais</span></div></div></div>`; }
+            for (let h of hadithResults) { html += `<div class="result-card"><div class="result-header"><span class="result-surah">📜 HADITH: ${h.reference}</span><span class="topic-tag">🏷️ ${h.topic}</span></div><div class="result-body" style="padding:20px"><div class="arabic-text">${escapeHtml(h.arabic)}</div><div class="english-text">${escapeHtml(h.english)}</div></div></div>`; }
+            html += '</div>'; grid.innerHTML = html;
         } else {
-            const scienceDB = {
-                'baby': { title: '🤰 Embryonic Development', explanation: 'Stages: Nutfah → Alaqah → Mudghah → bones → flesh.' },
-                'iron': { title: '⚙️ Iron from Space', explanation: 'Sent down from supernovae.' },
-                'sun': { title: '☀️ Sun\'s Orbit', explanation: 'Fixed resting place.' },
-                'universe': { title: '🌌 Expanding Universe', explanation: '"We are expanding it."' }
-            };
-            let match = null;
-            for (let k in scienceDB) if (term.includes(k) || k.includes(term)) match = scienceDB[k];
+            const scienceDB = { 'baby': { title: '🤰 Embryonic Development', explanation: 'Stages: Nutfah → Alaqah → Mudghah → bones → flesh.' }, 'iron': { title: '⚙️ Iron from Space', explanation: 'Sent down from supernovae.' }, 'sun': { title: '☀️ Sun\'s Orbit', explanation: 'Fixed resting place.' }, 'universe': { title: '🌌 Expanding Universe', explanation: '"We are expanding it."' } };
+            let match = null; for (let k in scienceDB) if (term.includes(k) || k.includes(term)) match = scienceDB[k];
             if (match) grid.innerHTML = `<div class="results-grid"><div class="result-card"><div class="result-header"><span class="result-surah">🔬 SCIENTIFIC MIRACLE</span></div><div class="result-body" style="padding:20px"><div class="meaning-badge">📚 ${match.title}</div><div class="english-text">${match.explanation}</div></div></div></div>`;
             else grid.innerHTML = `<div class="no-results">Try: baby, iron, sun, universe</div>`;
         }
     }
-    
     function setMode(mode) {
         currentMode = mode;
         document.getElementById('modeQuranBtn').classList.toggle('active', mode === 'quran');
         document.getElementById('modeScienceBtn').classList.toggle('active', mode === 'science');
-        const btn = document.getElementById('searchBtn'), inp = document.getElementById('searchInput');
         if (mode === 'quran') {
-            btn.innerHTML = '🔍 Search Quran & Hadith';
-            inp.placeholder = 'Type ANY word: mercy, justice, woman...';
+            document.getElementById('searchBtn').innerHTML = '🔍 Search Quran & Hadith';
+            document.getElementById('searchInput').placeholder = 'Type ANY word: mercy, justice, woman...';
             document.getElementById('suggestionChips').innerHTML = `<span class="chip" onclick="searchWord('mercy')">🤲 Mercy</span><span class="chip" onclick="searchWord('justice')">⚖️ Justice</span><span class="chip" onclick="searchWord('woman')">👩 Woman</span><span class="chip" onclick="searchWord('love')">❤️ Love</span><span class="chip" onclick="searchWord('charity')">💝 Charity</span>`;
         } else {
-            btn.innerHTML = '🔬 Scientific Miracles';
-            inp.placeholder = 'Search: baby, iron, sun...';
+            document.getElementById('searchBtn').innerHTML = '🔬 Scientific Miracles';
+            document.getElementById('searchInput').placeholder = 'Search: baby, iron, sun...';
             document.getElementById('suggestionChips').innerHTML = `<span class="chip" onclick="searchWord('baby')">🤰 Embryo</span><span class="chip" onclick="searchWord('iron')">⚙️ Iron</span><span class="chip" onclick="searchWord('universe')">🌌 Universe</span>`;
         }
     }
-    
     async function searchWord(word) { document.getElementById('searchInput').value = word; await performSearch(); }
     function escapeHtml(t) { if (!t) return ''; const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
-    function showToast(msg) { 
-        const t = document.createElement('div'); 
-        t.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#00aa44; color:white; padding:10px 20px; border-radius:10px; z-index:9999; animation:fadeOut 3s ease;'; 
-        t.innerHTML = msg; 
-        document.body.appendChild(t); 
-        setTimeout(() => t.remove(), 3000); 
-    }
+    function showToast(msg) { const t = document.createElement('div'); t.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#00aa44; color:white; padding:10px 20px; border-radius:10px; z-index:9999; animation:fadeOut 3s ease;'; t.innerHTML = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
     
     // ========== DUAS SECTION ==========
     const duasList = [
@@ -998,82 +960,35 @@
         { arabic: "حَسْبِيَ اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ", translation: "Allah is sufficient for me. There is no deity except Him.", reference: "Quran 9:129", context: "When anxious", audio: "009129" },
         { arabic: "رَبَّنَا لَا تُؤَاخِذْنَا إِنْ نَسِينَا أَوْ أَخْطَأْنَا", translation: "Our Lord, do not blame us if we forget or make a mistake.", reference: "Quran 2:286", context: "Morning/evening", audio: "002286" }
     ];
-    
     function loadDuas() {
         const container = document.getElementById('duasGrid');
         if (!container) return;
-        container.innerHTML = duasList.map(dua => `
-            <div class="dua-card-item">
-                <div class="dua-arabic">${dua.arabic}</div>
-                <div class="dua-translation">${dua.translation}</div>
-                <div class="dua-reference">📚 ${dua.reference}<br>📖 ${dua.context}</div>
-                <button class="dua-audio-btn" data-surah="${dua.audio.slice(0,3)}" data-ayah="${dua.audio.slice(3)}">🔊 Listen to Dua</button>
-            </div>
-        `).join('');
-        document.querySelectorAll('.dua-audio-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const surah = parseInt(btn.dataset.surah);
-                const ayah = parseInt(btn.dataset.ayah);
-                if (currentAudio) { currentAudio.pause(); currentAudio = null; }
-                const url = `https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps/${String(surah).padStart(3,'0')}${String(ayah).padStart(3,'0')}.mp3`;
-                const audio = new Audio(url);
-                currentAudio = audio;
-                audio.play().catch(() => showToast('Audio unavailable'));
-                btn.textContent = '🎧 Playing...';
-                audio.onended = () => btn.textContent = '🔊 Listen to Dua';
-            });
-        });
+        container.innerHTML = duasList.map(dua => `<div class="dua-card-item"><div class="dua-arabic">${dua.arabic}</div><div class="dua-translation">${dua.translation}</div><div class="dua-reference">📚 ${dua.reference}<br>📖 ${dua.context}</div><button class="dua-audio-btn" data-surah="${dua.audio.slice(0,3)}" data-ayah="${dua.audio.slice(3)}">🔊 Listen to Dua</button></div>`).join('');
+        document.querySelectorAll('.dua-audio-btn').forEach(btn => { btn.addEventListener('click', () => { const surah = parseInt(btn.dataset.surah); const ayah = parseInt(btn.dataset.ayah); if (currentAudio) { currentAudio.pause(); currentAudio = null; } const url = `https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps/${String(surah).padStart(3,'0')}${String(ayah).padStart(3,'0')}.mp3`; const audio = new Audio(url); currentAudio = audio; audio.play().catch(() => showToast('Audio unavailable')); btn.textContent = '🎧 Playing...'; audio.onended = () => btn.textContent = '🔊 Listen to Dua'; }); });
     }
     
     // ---------- INIT ALL ----------
     (function initAll() {
         setMode('quran');
-        
-        // Attach event listeners
         const masjidBtn = document.getElementById('findMasjidBtn');
         if (masjidBtn) masjidBtn.onclick = findNearestMasjid;
         const driveBtn = document.getElementById('driveBtn');
         if (driveBtn) driveBtn.onclick = openMaps;
         document.getElementById('searchBtn').addEventListener('click', performSearch);
         document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') performSearch(); });
-        
-        // Get initial location
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(pos => {
-                userLat = pos.coords.latitude;
-                userLon = pos.coords.longitude;
-                qiblaBearingValue = calculateQibla(userLat, userLon);
-                updateCompass();
-                getPrayerTimes(userLat, userLon);
-            }, (err) => {
-                console.warn(err);
-                showToast('📍 Allow location for prayer times & Qibla');
-            });
+            navigator.geolocation.getCurrentPosition(pos => { userLat = pos.coords.latitude; userLon = pos.coords.longitude; qiblaBearingValue = calculateQibla(userLat, userLon); updateCompass(); getPrayerTimes(userLat, userLon); }, (err) => { console.warn(err); showToast('📍 Allow location for prayer times & Qibla'); });
         }
-        
-        // Orientation for compass
         if (window.DeviceOrientationEvent) {
-            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                document.body.addEventListener('click', () => {
-                    DeviceOrientationEvent.requestPermission().then(perm => {
-                        if (perm === 'granted') window.addEventListener('deviceorientation', handleOrientation);
-                    }).catch(() => {});
-                }, { once: true });
-            } else {
-                window.addEventListener('deviceorientation', handleOrientation);
-            }
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') { document.body.addEventListener('click', () => { DeviceOrientationEvent.requestPermission().then(perm => { if (perm === 'granted') window.addEventListener('deviceorientation', handleOrientation); }).catch(() => {}); }, { once: true }); } 
+            else { window.addEventListener('deviceorientation', handleOrientation); }
         }
-        
         loadDuas();
-        setTimeout(() => showToast('🏆 Quran, Hadith, Duas with Audio | Qibla + Mosques (5km radius)'), 1200);
+        setTimeout(() => showToast('🏆 Quran, Hadith, Duas with Audio | Qibla + Mosques'), 1200);
     })();
 </script>
 <style>
-    @keyframes fadeOut {
-        0% { opacity: 1; }
-        70% { opacity: 1; }
-        100% { opacity: 0; visibility: hidden; }
-    }
+    @keyframes fadeOut { 0% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
     .toast { animation: fadeOut 3s ease; }
 </style>
 </body>
