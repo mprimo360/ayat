@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Al-Nuur Kassel | Build a Mosque | Donation Project 2025</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7f0 0%, #e8efe8 100%);
+            color: #1a2f2a;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+        .arabic-text {
+            font-family: 'Noto Naskh Arabic', serif;
+            font-size: 1.5rem;
+            line-height: 1.8;
+            text-align: right;
+            direction: rtl;
+            font-weight: 500;
+        }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        /* Back Button Bar */
+        .back-bar {
+            margin-bottom: 1.5rem;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #1a6b58, #0f4a3d);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            text-decoration: none;
+        }
+        .back-btn i {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+        .back-btn:hover {
+            background: linear-gradient(135deg, #0f4a3d, #0a3a32);
+            transform: translateX(-5px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+        }
+        .back-btn:hover i {
+            transform: translateX(-3px);
+        }
+        /* Language Switcher */
+        .lang-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .lang-btn {
+            background: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #c8ddd4;
+        }
+        .lang-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+            background: #e8f3ef;
+        }
+        .lang-btn.active {
+            background: #1a6b58;
+            color: white;
+            border-color: #1a6b58;
+        }
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0a3a32, #136d58);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .hero:hover {
+            transform: scale(1.01);
+        }
+        .hero::before {
+            content: "﷽";
+            font-family: 'Noto Naskh Arabic', serif;
+            font-size: 8rem;
+            position: absolute;
+            bottom: -20px;
+            right: 10px;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+        .mosque-icon {
+            background: #f5b342;
+            width: 75px;
+            height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 35px;
+            margin-bottom: 1rem;
+            font-size: 2.3rem;
+            color: #1a5a4a;
+            transition: all 0.3s ease;
+        }
+        .mosque-icon:hover {
+            transform: rotate(5deg) scale(1.05);
+            background: #ffc55a;
+        }
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            border-left: 4px solid #f5b342;
+            padding-left: 1rem;
+            margin: 0.8rem 0 0.5rem;
+            font-style: italic;
+        }
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.15);
+        }
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            border-left: 5px solid #1a6b58;
+            padding-left: 1rem;
+            margin-bottom: 1.3rem;
+            color: #1a453c;
+        }
+        h3 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.8rem;
+            color: #1a6b58;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .quran-card, .hadith-card {
+            background: linear-gradient(135deg, #fef8eb 0%, #fff7e8 100%);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin: 1.2rem 0;
+            border-right: 6px solid #e2b144;
+            transition: all 0.3s ease;
+        }
+        .quran-card:hover, .hadith-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 20px rgba(226, 177, 68, 0.15);
+        }
+        /* Bank Details */
+        .bank-details {
+            background: linear-gradient(135deg, #eef5f2 0%, #e8f1ee 100%);
+            border-radius: 1.5rem;
+            padding: 1.8rem;
+            margin: 1rem 0;
+        }
+        .bank-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            margin-top: 1rem;
+        }
+        .bank-item {
+            background: white;
+            padding: 1.2rem;
+            border-radius: 1.2rem;
+            flex: 1;
+            min-width: 220px;
+            transition: all 0.3s ease;
+            border: 1px solid #d4e6df;
+        }
+        .bank-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+            border-color: #1a6b58;
+        }
+        .bank-label {
+            font-weight: 800;
+            color: #1a6b58;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .bank-value {
+            font-family: monospace;
+            font-weight: 700;
+            word-break: break-all;
+            margin-top: 8px;
+            font-size: 1rem;
+            color: #1a2f2a;
+        }
+        .btn-copy {
+            background: #eef3f0;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            margin-top: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            color: #1a6b58;
+        }
+        .btn-copy:hover {
+            background: #1a6b58;
+            color: white;
+            transform: scale(1.02);
+        }
+        .contact-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 1.2rem;
+            font-size: 0.9rem;
+            background: #f9fcfb;
+            padding: 1rem;
+            border-radius: 1rem;
+        }
+        .contact-row span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .contact-row i {
+            color: #1a6b58;
+            width: 24px;
+        }
+        .donate-btn {
+            background: linear-gradient(135deg, #f4b942, #e0a12e);
+            color: #1a3a2f;
+            width: 100%;
+            padding: 1.2rem;
+            font-size: 1.2rem;
+            font-weight: 800;
+            border: none;
+            border-radius: 60px;
+            margin-top: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 16px rgba(244, 185, 66, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .donate-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(244, 185, 66, 0.4);
+            background: linear-gradient(135deg, #ffc555, #f0b240);
+        }
+        .donate-btn:active {
+            transform: scale(0.98);
+        }
+        .benefits-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .benefit-card {
+            flex: 1;
+            min-width: 200px;
+            background: linear-gradient(135deg, #f9faf8, #ffffff);
+            padding: 1.5rem;
+            border-radius: 1.2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid #e0ece7;
+        }
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+            border-color: #f5b342;
+        }
+        .benefit-card i {
+            font-size: 2.5rem;
+            color: #f5b342;
+            margin-bottom: 0.8rem;
+        }
+        footer {
+            text-align: center;
+            padding: 2rem 0 1rem;
+            font-size: 0.8rem;
+            color: #5b7c72;
+            border-top: 1px solid #cce2da;
+            margin-top: 1rem;
+        }
+        .lang-content {
+            display: none;
+        }
+        .lang-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        [dir="rtl"] h2 {
+            border-left: none;
+            border-right: 5px solid #1a6b58;
+            padding-left: 0;
+            padding-right: 1rem;
+            text-align: right;
+        }
+        [dir="rtl"] .tagline {
+            border-left: none;
+            border-right: 4px solid #f5b342;
+            padding-left: 0;
+            padding-right: 1rem;
+            text-align: right;
+        }
+        [dir="rtl"] .back-bar {
+            text-align: right;
+        }
+        @media (max-width: 700px) {
+            .arabic-text { font-size: 1.2rem; }
+            h1 { font-size: 1.8rem; }
+            .container { padding: 1rem; }
+            .card { padding: 1.3rem; }
+        }
+        .highlight {
+            background: linear-gradient(120deg, #f5b34220, #f5b34240);
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- BACK BUTTON BAR - This is new! -->
+    <div class="back-bar">
+        <button class="back-btn" onclick="window.location.href='index.html'">
+            <i class="fas fa-arrow-left"></i>
+            <span>🏠 Back to Main Page | القرآن والعلم</span>
+        </button>
+    </div>
+
+    <!-- Language Switcher -->
+    <div class="lang-bar">
+        <button class="lang-btn" data-lang="en">🇬🇧 English</button>
+        <button class="lang-btn" data-lang="de">🇩🇪 Deutsch</button>
+        <button class="lang-btn" data-lang="so">🇸🇴 Soomaali</button>
+        <button class="lang-btn" data-lang="ar">🇸🇦 العربية</button>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="mosque-icon"><i class="fas fa-mosque"></i></div>
+        <h1 id="heroTitle">Masjidka Al-Nuur Kassel</h1>
+        <p id="heroTagline" class="tagline">"Whoever builds a mosque for Allah, Allah builds for him a house in Paradise."</p>
+        <p id="heroDesc">Support the new mosque construction in Kassel — an ongoing charity (Sadaqah Jariyah).</p>
+    </div>
+
+    <!-- ==================== ENGLISH ==================== -->
+    <div id="lang-en" class="lang-content active">
+        <div class="card">
+            <h2><i class="fas fa-quran"></i> Virtue of Building Allah's House</h2>
+            <p>Building a mosque is a <span class="highlight">continuous charity (Sadaqah Jariyah)</span>. Every prayer, every dhikr, every Quran lesson inside it brings you rewards even after your life.</p>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card"><i class="fas fa-praying-hands"></i><h3>Endless Reward</h3><p>Every prayer prayed inside earns you ajr forever</p></div>
+                <div class="benefit-card"><i class="fas fa-children"></i><h3>Future Generations</h3><p>Children learn Quran & Islam in a safe place</p></div>
+                <div class="benefit-card"><i class="fas fa-heart"></i><h3>Love of Allah</h3><p>Building His house brings His special mercy</p></div>
+            </div>
+
+            <div class="quran-card">
+                <div class="arabic-text">إِنَّمَا يَعْمُرُ مَسَاجِدَ اللَّهِ مَنْ آمَنَ بِاللَّهِ وَالْيَوْمِ الْآخِرِ وَأَقَامَ الصَّلَاةَ وَآتَى الزَّكَاةَ وَلَمْ يَخْشَ إِلَّا اللَّهَ</div>
+                <p><strong>Surah At-Tawbah (9:18):</strong> "The mosques of Allah are only to be maintained by those who believe in Allah and the Last Day, establish prayer, give zakah, and fear none but Allah."</p>
+            </div>
+
+            <div class="hadith-card">
+                <h3>📜 Hadith of Prophet ﷺ</h3>
+                <p>The Messenger of Allah ﷺ said: <strong>"Whoever builds a mosque for Allah, even if it be the size of a nest of a sandgrouse, Allah will build for him a house in Paradise."</strong> <em>(Musnad Ahmad, Sahih)</em></p>
+            </div>
+
+            <div class="quran-card">
+                <div class="arabic-text">مَّثَلُ ٱلَّذِينَ يُنفِقُونَ أَمْوَٰلَهُمْ فِى سَبِيلِ ٱللَّهِ كَمَثَلِ حَبَّةٍ أَنۢبَتَتْ سَبْعَ سَنَابِلَ فِى كُلِّ سُنۢبُلَةٍۭ مِّائَةُ حَبَّةٍۢ</div>
+                <p><strong>Surah Al-Baqarah (2:261):</strong> "The example of those who spend their wealth in the way of Allah is like a seed of grain that sprouts seven ears; in every ear there are a hundred grains."</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-donate"></i> Donation for New Mosque Project 2025</h2>
+            <p class="highlight">"Ka qaybqaado Walal Dhiska Dhulka Cusub ee Majidka Al-Nuur Kassel"</p>
+            <div class="bank-details">
+                <div class="bank-grid">
+                    <div class="bank-item"><span class="bank-label"><i class="fas fa-building"></i> Association</span><div class="bank-value">Somalischer Kulturverein Kassel e.V.</div></div>
+                    <div class="bank-item"><span class="bank-label"><i class="fas fa-university"></i> IBAN</span><div class="bank-value" id="ibanEn">DE79520400210321803901</div><button class="btn-copy" onclick="copyTextById('ibanEn')">📋 Copy IBAN</button></div>
+                    <div class="bank-item"><span class="bank-label"><i class="fas fa-tag"></i> Reference</span><div class="bank-value"><strong>Bauprojekt 2025</strong></div></div>
+                    <div class="bank-item"><span class="bank-label"><i class="fab fa-paypal"></i> PayPal</span><div class="bank-value" id="paypalEn">Alnurmoschee2@gmail.com</div><button class="btn-copy" onclick="copyTextById('paypalEn')">📧 Copy Email</button></div>
+                </div>
+            </div>
+            <div class="contact-row">
+                <span><i class="fas fa-map-marker-alt"></i> Maybachstraße 7, 34127 Kassel</span>
+                <span><i class="fas fa-phone-alt"></i> 015772524128 / 017646146350</span>
+                <span><i class="fas fa-registered"></i> VR: 5113</span>
+            </div>
+            <button class="donate-btn" data-donate-lang="en"><i class="fas fa-hand-holding-heart"></i> DONATE NOW – Build Your House in Jannah</button>
+        </div>
+    </div>
+
+    <!-- ==================== GERMAN ==================== -->
+    <div id="lang-de" class="lang-content">
+        <div class="card">
+            <h2><i class="fas fa-quran"></i> Die Tugend, ein Haus Allahs zu bauen</h2>
+            <p>Eine Moschee zu bauen ist eine <span class="highlight">laufende Wohltätigkeit (Sadaqah Jariyah)</span>. Jedes Gebet, jedes Dhikr, jede Quran-Stunde bringt dir noch nach deinem Leben Belohnung.</p>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card"><i class="fas fa-praying-hands"></i><h3>Endlose Belohnung</h3><p>Jedes Gebet bringt ewige Belohnung</p></div>
+                <div class="benefit-card"><i class="fas fa-children"></i><h3>Zukünftige Generationen</h3><p>Kinder lernen Quran & Islam sicher</p></div>
+                <div class="benefit-card"><i class="fas fa-heart"></i><h3>Allahs Liebe</h3><p>Sein Haus zu bauen bringt besondere Barmherzigkeit</p></div>
+            </div>
+
+            <div class="quran-card">
+                <div class="arabic-text">إِنَّمَا يَعْمُرُ مَسَاجِدَ اللَّهِ مَنْ آمَنَ بِاللَّهِ وَالْيَوْمِ الْآخِرِ</div>
+                <p><strong>Sure At-Tawbah (9:18):</strong> "Die Moscheen Allahs unterhält nur, wer an Allah und den Jüngsten Tag glaubt, das Gebet verrichtet, die Zakah entrichtet und nur Allah fürchtet."</p>
+            </div>
+            <div class="hadith-card">
+                <h3>📜 Hadith des Propheten ﷺ</h3>
+                <p>Der Gesandte Allahs ﷺ sagte: <strong>"Wer für Allah eine Moschee baut, selbst so klein wie ein Vogelnest, für den baut Allah ein Haus im Paradies."</strong> <em>(Ahmad, authentisch)</em></p>
+            </div>
+            <div class="quran-card">
+                <div class="arabic-text">مَّثَلُ ٱلَّذِينَ يُنفِقُونَ أَمْوَٰلَهُمْ فِى سَبِيلِ ٱللَّهِ كَمَثَلِ حَبَّةٍ</div>
+                <p><strong>Sure Al-Baqarah (2:261):</strong> "Das Gleichnis derer, die ihr Vermögen auf dem Weg Allahs ausgeben, gleicht einem Korn, das sieben Ähren treibt, in jeder Ähre hundert Körner."</p>
+            </div>
+        </div>
+        <div class="card">
+            <h2>Spendenaufruf für das neue Moscheeprojekt 2025</h2>
+            <p class="highlight">"Ka qaybqaado Walal Dhiska Dhulka Cusub ee Majidka Al-Nuur Kassel"</p>
+            <div class="bank-details">
+                <div class="bank-grid">
+                    <div class="bank-item"><span class="bank-label">Verein</span><div class="bank-value">Somalischer Kulturverein Kassel e.V.</div></div>
+                    <div class="bank-item"><span class="bank-label">IBAN</span><div class="bank-value">DE79520400210321803901</div><button class="btn-copy" onclick="copyRawText('DE79520400210321803901')">📋 Kopieren</button></div>
+                    <div class="bank-item"><span class="bank-label">Verwendungszweck</span><div class="bank-value"><strong>Bauprojekt 2025</strong></div></div>
+                    <div class="bank-item"><span class="bank-label">PayPal</span><div class="bank-value">Alnurmoschee2@gmail.com</div><button class="btn-copy" onclick="copyRawText('Alnurmoschee2@gmail.com')">📧 Kopieren</button></div>
+                </div>
+            </div>
+            <div class="contact-row"><span><i class="fas fa-map-marker-alt"></i> Maybachstraße 7, 34127 Kassel</span><span><i class="fas fa-phone-alt"></i> 015772524128 / 017646146350</span><span><i class="fas fa-registered"></i> VR: 5113</span></div>
+            <button class="donate-btn" data-donate-lang="de"><i class="fas fa-hand-holding-heart"></i> JETZT SPENDEN – Baue dein Haus im Paradies</button>
+        </div>
+    </div>
+
+    <!-- ==================== SOMALI ==================== -->
+    <div id="lang-so" class="lang-content">
+        <div class="card">
+            <h2><i class="fas fa-quran"></i> Faa'iidada Dhismaha Guryaha Eebbe</h2>
+            <p>Dhismaha masjidka waa <span class="highlight">sadaqo jariya</span>. Salaad kasta, dhikr kasta, cashar kasta oo Qur'aan ah waxay kuu keenaysaa ajar weligeed.</p>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card"><i class="fas fa-praying-hands"></i><h3>Ajar aan Dhamaaneyn</h3><p>Salaad kasta oo gudaha laga tukado ajar weyn</p></div>
+                <div class="benefit-card"><i class="fas fa-children"></i><h3>Jiilalka Mustaqbalka</h3><p>Carruurtu waxay ku bartaan Quraanka</p></div>
+                <div class="benefit-card"><i class="fas fa-heart"></i><h3>Jaceylka Eebbe</h3><p>Dhismaha gurigiisa waa calaamad jaceyl</p></div>
+            </div>
+
+            <div class="quran-card">
+                <div class="arabic-text">إِنَّمَا يَعْمُرُ مَسَاجِدَ اللَّهِ مَنْ آمَنَ بِاللَّهِ وَالْيَوْمِ الْآخِرِ</div>
+                <p><strong>Suurat Al-Tawbah (9:18):</strong> "Waxaa dhisa masjidka Eebbe kuwa rumeysan Eebbe iyo maalinta dambe, oo oogta salaadda, bixiya zakada oo Eebbe keliya ka cabsada."</p>
+            </div>
+            <div class="hadith-card">
+                <h3>📜 Xadiithka Nabiga ﷺ</h3>
+                <p>Rasuulka Eebbe ﷺ wuxuu yiri: <strong>"Qofkii u dhisay Eebbe masjid, xataa haddii uu yahay sidii buul shimbir, Eebbe wuxuu u dhisi guri Jannada."</strong> <em>(Musnad Ahmad, Saxiix)</em></p>
+            </div>
+            <div class="quran-card">
+                <div class="arabic-text">مَّثَلُ ٱلَّذِينَ يُنفِقُونَ أَمْوَٰلَهُمْ فِى سَبِيلِ ٱللَّهِ كَمَثَلِ حَبَّةٍ</div>
+                <p><strong>Suurat Al-Baqarah (2:261):</strong> "Tusaalaha kuwa ku bixiya maalkooda Jidka Eebbe waa sida iniin soo saartay todoba sabuul, sabuul kastana leh boqol xabbood."</p>
+            </div>
+        </div>
+        <div class="card">
+            <h2>Ku deeq Dhismaha Masjidka Cusub 2025</h2>
+            <p class="highlight">"Ka qaybqaado Walal Dhiska Dhulka Cusub ee Majidka Al-Nuur Kassel"</p>
+            <div class="bank-details">
+                <div class="bank-grid">
+                    <div class="bank-item"><span class="bank-label">Ururka</span><div class="bank-value">Somalischer Kulturverein Kassel e.V.</div></div>
+                    <div class="bank-item"><span class="bank-label">IBAN</span><div class="bank-value">DE79520400210321803901</div><button class="btn-copy" onclick="copyRawText('DE79520400210321803901')">📋 Copy</button></div>
+                    <div class="bank-item"><span class="bank-label">Sababta</span><div class="bank-value"><strong>Bauprojekt 2025</strong></div></div>
+                    <div class="bank-item"><span class="bank-label">PayPal</span><div class="bank-value">Alnurmoschee2@gmail.com</div><button class="btn-copy" onclick="copyRawText('Alnurmoschee2@gmail.com')">📧 Copy</button></div>
+                </div>
+            </div>
+            <div class="contact-row"><span><i class="fas fa-map-marker-alt"></i> Maybachstraße 7, 34127 Kassel</span><span><i class="fas fa-phone-alt"></i> 015772524128 / 017646146350</span><span><i class="fas fa-registered"></i> VR: 5113</span></div>
+            <button class="donate-btn" data-donate-lang="so"><i class="fas fa-hand-holding-heart"></i> DEEQ BIXI – Dhiso Guri Jannada Kuu Yaal</button>
+        </div>
+    </div>
+
+    <!-- ==================== ARABIC ==================== -->
+    <div id="lang-ar" class="lang-content" dir="rtl">
+        <div class="card">
+            <h2>فضل بناء بيوت الله</h2>
+            <p>بناء المسجد <span class="highlight">صدقة جارية</span>، كل صلاة وكل ذكر وكل درس قرآن في المسجد يجلب لك الأجر إلى الأبد.</p>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card"><i class="fas fa-praying-hands"></i><h3>أجر لا ينقطع</h3><p>كل صلاة داخل المسجد تكتب لك أجرها</p></div>
+                <div class="benefit-card"><i class="fas fa-children"></i><h3>الأجيال القادمة</h3><p>يتعلم الأطفال القرآن في مكان آمن</p></div>
+                <div class="benefit-card"><i class="fas fa-heart"></i><h3>محبة الله</h3><p>بناء بيته دليل على محبته</p></div>
+            </div>
+
+            <div class="quran-card">
+                <div class="arabic-text">إِنَّمَا يَعْمُرُ مَسَاجِدَ اللَّهِ مَنْ آمَنَ بِاللَّهِ وَالْيَوْمِ الْآخِرِ وَأَقَامَ الصَّلَاةَ وَآتَى الزَّكَاةَ وَلَمْ يَخْشَ إِلَّا اللَّهَ</div>
+                <p><strong>سورة التوبة (18:9)</strong> "إنما يعمر مساجد الله من آمن بالله واليوم الآخر وأقام الصلاة وآتى الزكاة ولم يخش إلا الله"</p>
+            </div>
+            <div class="hadith-card">
+                <h3>📜 حديث النبي ﷺ</h3>
+                <p>قال رسول الله ﷺ: <strong>"من بنى مسجدًا لله ولو كمفحص قطاة، بنى الله له بيتًا في الجنة"</strong> <em>(رواه أحمد، صحيح)</em></p>
+            </div>
+            <div class="quran-card">
+                <div class="arabic-text">مَّثَلُ ٱلَّذِينَ يُنفِقُونَ أَمْوَٰلَهُمْ فِى سَبِيلِ ٱللَّهِ كَمَثَلِ حَبَّةٍ أَنۢبَتَتْ سَبْعَ سَنَابِلَ</div>
+                <p><strong>سورة البقرة (261:2)</strong> "مثل الذين ينفقون أموالهم في سبيل الله كمثل حبة أنبتت سبع سنابل في كل سنبلة مائة حبة"</p>
+            </div>
+        </div>
+        <div class="card">
+            <h2>التبرع لمشروع بناء المسجد الجديد 2025</h2>
+            <p class="highlight">"Ka qaybqaado Walal Dhiska Dhulka Cusub ee Majidka Al-Nuur Kassel"</p>
+            <div class="bank-details">
+                <div class="bank-grid">
+                    <div class="bank-item"><span class="bank-label">الجمعية</span><div class="bank-value">Somalischer Kulturverein Kassel e.V.</div></div>
+                    <div class="bank-item"><span class="bank-label">IBAN</span><div class="bank-value">DE79520400210321803901</div><button class="btn-copy" onclick="copyRawText('DE79520400210321803901')">📋 نسخ</button></div>
+                    <div class="bank-item"><span class="bank-label">الغرض</span><div class="bank-value"><strong>Bauprojekt 2025</strong></div></div>
+                    <div class="bank-item"><span class="bank-label">باي بال</span><div class="bank-value">Alnurmoschee2@gmail.com</div><button class="btn-copy" onclick="copyRawText('Alnurmoschee2@gmail.com')">📧 نسخ</button></div>
+                </div>
+            </div>
+            <div class="contact-row"><span><i class="fas fa-map-marker-alt"></i> Maybachstraße 7, 34127 Kassel</span><span><i class="fas fa-phone-alt"></i> 015772524128 / 017646146350</span><span><i class="fas fa-registered"></i> VR: 5113</span></div>
+            <button class="donate-btn" data-donate-lang="ar"><i class="fas fa-hand-holding-heart"></i> تبرع الآن – ابنِ بيتك في الجنة</button>
+        </div>
+    </div>
+
+    <!-- Sadaqah Jariyah Reminder -->
+    <div class="card">
+        <h2 id="reminderTitle">🌙 Sadaqah Jariyah – Eternal Reward</h2>
+        <p id="reminderText">Every euro you donate for the new mosque in Kassel becomes a bridge to Paradise. The Prophet ﷺ said: "When a person dies, his deeds come to an end except for three: ongoing charity, beneficial knowledge, or a righteous child who prays for him." Building a mosque is the ultimate ongoing charity.</p>
+    </div>
+
+    <footer>
+        <i class="fas fa-mosque"></i> Somalischer Kulturverein Kassel e.V. | IBAN: DE79520400210321803901 | Verwendungszweck: Bauprojekt 2025<br>
+        PayPal: Alnurmoschee2@gmail.com | Maybachstraße 7, 34127 Kassel | VR 5113 | Tel: 015772524128 / 017646146350
+    </footer>
+</div>
+
+<script>
+    // Complete translations
+    const translations = {
+        en: {
+            title: "Masjidka Al-Nuur Kassel",
+            tagline: '"Whoever builds a mosque for Allah, Allah builds for him a house in Paradise."',
+            desc: "Support the new mosque construction in Kassel — an ongoing charity (Sadaqah Jariyah).",
+            remTitle: "🌙 Sadaqah Jariyah – Eternal Reward",
+            remText: "Every euro you donate for the new mosque in Kassel becomes a bridge to Paradise. The Prophet ﷺ said: 'When a person dies, his deeds come to an end except for three: ongoing charity, beneficial knowledge, or a righteous child who prays for him.' Building a mosque is the ultimate ongoing charity."
+        },
+        de: {
+            title: "Masjid Al-Nuur Kassel",
+            tagline: '"Wer für Allah eine Moschee baut, dem baut Allah ein Haus im Paradies."',
+            desc: "Unterstützen Sie den Bau der neuen Moschee in Kassel – eine laufende Wohltätigkeit (Sadaqah Jariyah).",
+            remTitle: "🌙 Sadaqah Jariyah – Ewige Belohnung",
+            remText: "Jeder Euro, den Sie für die neue Moschee in Kassel spenden, wird eine Brücke ins Paradies. Der Prophet ﷺ sagte: 'Wenn ein Mensch stirbt, hören seine Taten auf, außer bei dreien: laufende Wohltätigkeit, nützliches Wissen oder ein rechtschaffenes Kind, das für ihn betet.' Der Bau einer Moschee ist die beste laufende Wohltätigkeit."
+        },
+        so: {
+            title: "Masjidka Al-Nuur Kassel",
+            tagline: '"Qofkii u dhisay Eebbe masjid, Eebbe wuxuu u dhisi guri Jannada."',
+            desc: "Ka taageer dhismaha masjidka cusub ee Kassel – sadaqo jariya.",
+            remTitle: "🌙 Sadaqo Jariya – Ajar aan Dhamaaneyn",
+            remText: "Kunadii Euro ee aad ugu deeqdid masjidka cusub ee Kassel waxay noqonaysaa buundo Jannada. Nebigu ﷺ wuxuu yiri: 'Markuu qofku dhinto, camalkiisu wuu joogsadaa marka laga reebo saddex: sadaqo jariya, cilmi faa'iido leh, ama cun suubban oo u duceeya.' Dhismaha masjidku waa sadaqo jariya ugu wanaagsan."
+        },
+        ar: {
+            title: "مسجد النور كاسل",
+            tagline: '"من بنى مسجدًا لله بنى الله له بيتًا في الجنة"',
+            desc: "ادعم بناء المسجد الجديد في كاسل – صدقة جارية.",
+            remTitle: "🌙 صدقة جارية – أجر لا ينقطع",
+            remText: "كل يورو تتبرع به للمسجد الجديد في كاسل يصبح جسراً إلى الجنة. قال النبي ﷺ: 'إذا مات ابن آدم انقطع عمله إلا من ثلاث: صدقة جارية، أو علم ينتفع به، أو ولد صالح يدعو له'. بناء المسجد هو أسمى الصدقات الجارية."
+        }
+    };
+
+    function setLanguage(lang) {
+        document.querySelectorAll('.lang-content').forEach(el => el.classList.remove('active'));
+        const selected = document.getElementById(`lang-${lang}`);
+        if (selected) selected.classList.add('active');
+        
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            if (btn.dataset.lang === lang) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+        
+        if (lang === 'ar') {
+            document.body.setAttribute('dir', 'rtl');
+            document.querySelector('.container').setAttribute('dir', 'rtl');
+        } else {
+            document.body.setAttribute('dir', 'ltr');
+            document.querySelector('.container').setAttribute('dir', 'ltr');
+        }
+        
+        const t = translations[lang];
+        if (t) {
+            document.getElementById('heroTitle').innerText = t.title;
+            document.getElementById('heroTagline').innerText = t.tagline;
+            document.getElementById('heroDesc').innerText = t.desc;
+            document.getElementById('reminderTitle').innerHTML = t.remTitle;
+            document.getElementById('reminderText').innerText = t.remText;
+        }
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+    });
+    setLanguage('en');
+
+    window.copyTextById = function(id) {
+        const el = document.getElementById(id);
+        if (el) navigator.clipboard.writeText(el.innerText).then(() => alert('✅ Copied: ' + el.innerText));
+    };
+    window.copyRawText = function(text) {
+        navigator.clipboard.writeText(text).then(() => alert('✅ Copied: ' + text));
+    };
+
+    function showDonationInfo(langCode) {
+        const messages = {
+            en: "✨ Jazakallah Khair! ✨\n\nYou are supporting the New Mosque Project 2025 in Kassel.\n\nBank Transfer:\nIBAN: DE79520400210321803901\nPurpose: Bauprojekt 2025\n\nPayPal: Alnurmoschee2@gmail.com\n\nMay Allah accept your sadaqah and build you a house in Jannah. 🤲",
+            de: "✨ Jazakallah Khair! ✨\n\nSie unterstützen das Moschee-Neubauprojekt 2025 in Kassel.\n\nBanküberweisung:\nIBAN: DE79520400210321803901\nVerwendungszweck: Bauprojekt 2025\n\nPayPal: Alnurmoschee2@gmail.com\n\nMöge Allah Ihre Spende annehmen und Ihnen ein Haus im Paradies bauen. 🤲",
+            so: "✨ Jazakallah Khair! ✨\n\nWaxaad taageereysaa Mashruuca Dhismaha Masjidka Cusub 2025 ee Kassel.\n\nWareejin Bangi:\nIBAN: DE79520400210321803901\nUjeeddo: Bauprojekt 2025\n\nPayPal: Alnurmoschee2@gmail.com\n\nAllah ha aqbalo sadaqadaada, kuna siiyo guri Jannada. 🤲",
+            ar: "✨ جزاك الله خيرًا ✨\n\nأنت تدعم مشروع بناء المسجد الجديد 2025 في كاسل.\n\nالتحويل البنكي:\nIBAN: DE79520400210321803901\nالغرض: Bauprojekt 2025\n\nباي بال: Alnurmoschee2@gmail.com\n\nتقبل الله صدقتك وبنى لك بيتًا في الجنة. 🤲"
+        };
+        alert(messages[langCode] || messages.en);
+    }
+
+    document.querySelectorAll('.donate-btn').forEach(btn => {
+        btn.addEventListener('click', () => showDonationInfo(btn.dataset.donateLang));
+    });
+</script>
+</body>
+</html>
