@@ -149,6 +149,374 @@
             margin: 0.8rem 0 0.5rem;
             font-style: italic;
         }
+        /* Beautiful Mosque Complex Illustration */
+        .illustration-section {
+            background: linear-gradient(135deg, #87CEEB 0%, #98D8E8 100%);
+            border-radius: 2rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .illustration-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1a453c;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            background: rgba(255,255,255,0.8);
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            width: auto;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .mosque-complex {
+            position: relative;
+            width: 100%;
+            min-height: 500px;
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .mosque-complex:hover {
+            transform: scale(1.01);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        /* Sky and Sun */
+        .sky {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(135deg, #87CEEB, #B0E0FF);
+            border-radius: 1.5rem 1.5rem 0 0;
+        }
+        .sun {
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #FFD700, #FFA500);
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(255,215,0,0.5);
+            animation: sunGlow 3s ease-in-out infinite;
+        }
+        @keyframes sunGlow {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+        /* Clouds */
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+        .cloud1 { width: 80px; height: 50px; top: 60px; left: 80px; }
+        .cloud1:before, .cloud1:after { content: ''; position: absolute; background: white; border-radius: 50%; }
+        .cloud1:before { width: 50px; height: 50px; top: -25px; left: 10px; }
+        .cloud1:after { width: 60px; height: 60px; top: -30px; left: 35px; }
+        .cloud2 { width: 100px; height: 60px; top: 100px; right: 120px; }
+        .cloud2:before, .cloud2:after { content: ''; position: absolute; background: white; border-radius: 50%; }
+        .cloud2:before { width: 60px; height: 60px; top: -30px; left: 15px; }
+        .cloud2:after { width: 70px; height: 70px; top: -35px; left: 45px; }
+        /* Ground */
+        .ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            border-radius: 0 0 1.5rem 1.5rem;
+        }
+        /* Grass details */
+        .grass {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: repeating-linear-gradient(45deg, #388E3C, #388E3C 10px, #43A047 10px, #43A047 20px);
+        }
+        /* Main Mosque Building */
+        .main-mosque {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            z-index: 10;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .main-mosque:hover {
+            transform: translateX(-50%) scale(1.02);
+        }
+        .mosque-base {
+            background: #F5F5DC;
+            width: 100%;
+            height: 120px;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .mosque-door {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 70px;
+            background: #8B4513;
+            border-radius: 25px 25px 0 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .mosque-door:hover {
+            background: #A0522D;
+            width: 55px;
+        }
+        .mosque-dome {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 80px;
+            background: radial-gradient(ellipse at center, #C19A6B, #B8860B);
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .mosque-dome::before {
+            content: "☪";
+            position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            color: #FFD700;
+        }
+        .mosque-minaret {
+            position: absolute;
+            width: 25px;
+            height: 120px;
+            background: #D2B48C;
+            border-radius: 12px;
+            top: -80px;
+        }
+        .minaret-left {
+            left: -30px;
+        }
+        .minaret-right {
+            right: -30px;
+        }
+        .minaret-top {
+            position: absolute;
+            top: -20px;
+            left: -5px;
+            width: 35px;
+            height: 25px;
+            background: #B8860B;
+            border-radius: 20px 20px 0 0;
+        }
+        .minaret-top::before {
+            content: "☪";
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.2rem;
+            color: #FFD700;
+        }
+        /* Madrasah (School Building) */
+        .madrasah {
+            position: absolute;
+            bottom: 80px;
+            left: 50px;
+            width: 150px;
+            background: #FFE4B5;
+            border-radius: 15px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .madrasah:hover {
+            transform: translateY(-5px);
+            background: #FFDAB9;
+        }
+        .madrasah-roof {
+            background: #CD853F;
+            height: 15px;
+            width: 110%;
+            margin-left: -5%;
+            border-radius: 10px 10px 0 0;
+            margin-bottom: 8px;
+        }
+        .madrasah-title {
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #5D3A1A;
+        }
+        .madrasah-icon {
+            font-size: 1.5rem;
+            color: #2E7D32;
+        }
+        /* Supermarket / Shop */
+        .supermarket {
+            position: absolute;
+            bottom: 80px;
+            right: 50px;
+            width: 120px;
+            background: #FFB6C1;
+            border-radius: 15px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .supermarket:hover {
+            transform: translateY(-5px);
+            background: #FFC0CB;
+        }
+        .supermarket-title {
+            font-size: 0.65rem;
+            font-weight: bold;
+            color: #8B0000;
+        }
+        .supermarket-icon {
+            font-size: 1.3rem;
+            color: #FF6B6B;
+        }
+        /* Parking Area */
+        .parking {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            width: 180px;
+            height: 40px;
+            background: #808080;
+            border-radius: 10px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+        }
+        .parking-space {
+            width: 30px;
+            height: 30px;
+            background: #A9A9A9;
+            border: 1px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .parking-space i {
+            font-size: 0.7rem;
+            color: white;
+        }
+        /* Garden */
+        .garden {
+            position: absolute;
+            bottom: 30px;
+            right: 100px;
+            width: 150px;
+            height: 50px;
+            background: #228B22;
+            border-radius: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+        }
+        .tree {
+            width: 20px;
+            height: 30px;
+            background: #006400;
+            border-radius: 10px;
+            position: relative;
+        }
+        .tree::before {
+            content: "🌳";
+            position: absolute;
+            top: -15px;
+            left: -5px;
+            font-size: 1.2rem;
+        }
+        .flower {
+            font-size: 0.8rem;
+        }
+        /* Sheikhs Standing and Admiring */
+        .sheikh {
+            position: absolute;
+            bottom: 90px;
+            background: #3E2723;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        .sheikh:hover {
+            transform: scale(1.1);
+        }
+        .sheikh i {
+            font-size: 1.2rem;
+            color: #F5F5DC;
+        }
+        .sheikh1 { left: 120px; animation-delay: 0s; }
+        .sheikh2 { left: 160px; animation-delay: 0.3s; }
+        .sheikh3 { right: 150px; animation-delay: 0.6s; }
+        .sheikh4 { right: 110px; animation-delay: 0.9s; }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .speech-bubble {
+            position: absolute;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #1a6b58;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            pointer-events: none;
+        }
+        .bubble1 { bottom: 45px; left: 80px; }
+        .bubble2 { bottom: 45px; right: 230px; }
+        .bubble3 { bottom: 80px; right: 180px; }
+        .illustration-caption {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #fff;
+            background: rgba(0,0,0,0.5);
+            display: inline-block;
+            width: auto;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+        }
         /* Cards */
         .card {
             background: white;
@@ -282,16 +650,11 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 6px 16px rgba(244, 185, 66, 0.3);
-            position: relative;
-            overflow: hidden;
         }
         .donate-btn:hover {
             transform: scale(1.02);
             box-shadow: 0 10px 25px rgba(244, 185, 66, 0.4);
             background: linear-gradient(135deg, #ffc555, #f0b240);
-        }
-        .donate-btn:active {
-            transform: scale(0.98);
         }
         .benefits-grid {
             display: flex;
@@ -360,6 +723,16 @@
             h1 { font-size: 1.8rem; }
             .container { padding: 1rem; }
             .card { padding: 1.3rem; }
+            .main-mosque { width: 180px; bottom: 80px; }
+            .mosque-base { height: 90px; }
+            .mosque-minaret { height: 80px; top: -60px; }
+            .madrasah { width: 100px; left: 20px; }
+            .supermarket { width: 90px; right: 20px; }
+            .parking { width: 130px; }
+            .garden { width: 100px; }
+            .sheikh1, .sheikh2 { left: 60px; }
+            .sheikh3, .sheikh4 { right: 60px; }
+            .speech-bubble { display: none; }
         }
         .highlight {
             background: linear-gradient(120deg, #f5b34220, #f5b34240);
@@ -371,7 +744,7 @@
 </head>
 <body>
 <div class="container">
-    <!-- BACK BUTTON BAR - This is new! -->
+    <!-- BACK BUTTON BAR -->
     <div class="back-bar">
         <button class="back-btn" onclick="window.location.href='index.html'">
             <i class="fas fa-arrow-left"></i>
@@ -393,6 +766,85 @@
         <h1 id="heroTitle">Masjidka Al-Nuur Kassel</h1>
         <p id="heroTagline" class="tagline">"Whoever builds a mosque for Allah, Allah builds for him a house in Paradise."</p>
         <p id="heroDesc">Support the new mosque construction in Kassel — an ongoing charity (Sadaqah Jariyah).</p>
+    </div>
+
+    <!-- Beautiful Mosque Complex Illustration -->
+    <div class="illustration-section">
+        <div style="text-align: center;">
+            <div class="illustration-title" id="illustrationTitle">
+                <i class="fas fa-drafting-compass"></i> Our Vision: Al-Nuur Islamic Center
+            </div>
+        </div>
+        <div class="mosque-complex">
+            <!-- Sky -->
+            <div class="sky"></div>
+            <div class="sun"></div>
+            <div class="cloud cloud1"></div>
+            <div class="cloud cloud2"></div>
+            
+            <!-- Ground -->
+            <div class="ground"></div>
+            <div class="grass"></div>
+            
+            <!-- Parking Area -->
+            <div class="parking">
+                <div class="parking-space"><i class="fas fa-car"></i></div>
+                <div class="parking-space"><i class="fas fa-car"></i></div>
+                <div class="parking-space"><i class="fas fa-car"></i></div>
+                <div class="parking-space"><i class="fas fa-car"></i></div>
+            </div>
+            
+            <!-- Garden -->
+            <div class="garden">
+                <div class="tree"></div>
+                <div class="flower">🌻</div>
+                <div class="flower">🌷</div>
+                <div class="tree"></div>
+            </div>
+            
+            <!-- Madrasah -->
+            <div class="madrasah">
+                <div class="madrasah-roof"></div>
+                <div class="madrasah-icon"><i class="fas fa-chalkboard-user"></i></div>
+                <div class="madrasah-title">📚 MADRASAH</div>
+                <div style="font-size:0.6rem;">Islamic School</div>
+            </div>
+            
+            <!-- Supermarket -->
+            <div class="supermarket">
+                <div class="supermarket-icon"><i class="fas fa-store"></i></div>
+                <div class="supermarket-title">🛒 HALAL SUPERMARKET</div>
+                <div style="font-size:0.55rem;">Fresh & Halal</div>
+            </div>
+            
+            <!-- Main Mosque -->
+            <div class="main-mosque">
+                <div class="mosque-minaret minaret-left">
+                    <div class="minaret-top"></div>
+                </div>
+                <div class="mosque-minaret minaret-right">
+                    <div class="minaret-top"></div>
+                </div>
+                <div class="mosque-base">
+                    <div class="mosque-door"></div>
+                </div>
+                <div class="mosque-dome"></div>
+            </div>
+            
+            <!-- Sheikhs admiring the mosque -->
+            <div class="sheikh sheikh1"><i class="fas fa-user-astronaut"></i></div>
+            <div class="sheikh sheikh2"><i class="fas fa-user-astronaut"></i></div>
+            <div class="sheikh sheikh3"><i class="fas fa-user-astronaut"></i></div>
+            <div class="sheikh sheikh4"><i class="fas fa-user-astronaut"></i></div>
+            
+            <!-- Speech Bubbles -->
+            <div class="speech-bubble bubble1">🤲 Masha'Allah! Beautiful!</div>
+            <div class="speech-bubble bubble2">🕌 Our dream coming true!</div>
+            <div class="speech-bubble bubble3">💝 Every brick counts!</div>
+        </div>
+        <div class="illustration-caption" id="illustrationCaption">
+            🕌 Main Mosque | 📚 Madrasah (School) | 🛒 Halal Supermarket | 🚗 Parking | 🌳 Garden | 👳 Sheikhs admiring the construction
+        </div>
     </div>
 
     <!-- ==================== ENGLISH ==================== -->
@@ -586,28 +1038,36 @@
             tagline: '"Whoever builds a mosque for Allah, Allah builds for him a house in Paradise."',
             desc: "Support the new mosque construction in Kassel — an ongoing charity (Sadaqah Jariyah).",
             remTitle: "🌙 Sadaqah Jariyah – Eternal Reward",
-            remText: "Every euro you donate for the new mosque in Kassel becomes a bridge to Paradise. The Prophet ﷺ said: 'When a person dies, his deeds come to an end except for three: ongoing charity, beneficial knowledge, or a righteous child who prays for him.' Building a mosque is the ultimate ongoing charity."
+            remText: "Every euro you donate for the new mosque in Kassel becomes a bridge to Paradise. The Prophet ﷺ said: 'When a person dies, his deeds come to an end except for three: ongoing charity, beneficial knowledge, or a righteous child who prays for him.' Building a mosque is the ultimate ongoing charity.",
+            illustrationTitle: "🏗️ Our Vision: Al-Nuur Islamic Center",
+            illustrationCaption: "🕌 Main Mosque | 📚 Madrasah | 🛒 Halal Supermarket | 🚗 Parking | 🌳 Garden"
         },
         de: {
             title: "Masjid Al-Nuur Kassel",
             tagline: '"Wer für Allah eine Moschee baut, dem baut Allah ein Haus im Paradies."',
             desc: "Unterstützen Sie den Bau der neuen Moschee in Kassel – eine laufende Wohltätigkeit (Sadaqah Jariyah).",
             remTitle: "🌙 Sadaqah Jariyah – Ewige Belohnung",
-            remText: "Jeder Euro, den Sie für die neue Moschee in Kassel spenden, wird eine Brücke ins Paradies. Der Prophet ﷺ sagte: 'Wenn ein Mensch stirbt, hören seine Taten auf, außer bei dreien: laufende Wohltätigkeit, nützliches Wissen oder ein rechtschaffenes Kind, das für ihn betet.' Der Bau einer Moschee ist die beste laufende Wohltätigkeit."
+            remText: "Jeder Euro, den Sie für die neue Moschee in Kassel spenden, wird eine Brücke ins Paradies. Der Prophet ﷺ sagte: 'Wenn ein Mensch stirbt, hören seine Taten auf, außer bei dreien: laufende Wohltätigkeit, nützliches Wissen oder ein rechtschaffenes Kind, das für ihn betet.' Der Bau einer Moschee ist die beste laufende Wohltätigkeit.",
+            illustrationTitle: "🏗️ Unsere Vision: Al-Nuur Islamisches Zentrum",
+            illustrationCaption: "🕌 Hauptmoschee | 📚 Madrasa | 🛒 Halal Supermarkt | 🚗 Parkplatz | 🌳 Garten"
         },
         so: {
             title: "Masjidka Al-Nuur Kassel",
             tagline: '"Qofkii u dhisay Eebbe masjid, Eebbe wuxuu u dhisi guri Jannada."',
             desc: "Ka taageer dhismaha masjidka cusub ee Kassel – sadaqo jariya.",
             remTitle: "🌙 Sadaqo Jariya – Ajar aan Dhamaaneyn",
-            remText: "Kunadii Euro ee aad ugu deeqdid masjidka cusub ee Kassel waxay noqonaysaa buundo Jannada. Nebigu ﷺ wuxuu yiri: 'Markuu qofku dhinto, camalkiisu wuu joogsadaa marka laga reebo saddex: sadaqo jariya, cilmi faa'iido leh, ama cun suubban oo u duceeya.' Dhismaha masjidku waa sadaqo jariya ugu wanaagsan."
+            remText: "Kunadii Euro ee aad ugu deeqdid masjidka cusub ee Kassel waxay noqonaysaa buundo Jannada. Nebigu ﷺ wuxuu yiri: 'Markuu qofku dhinto, camalkiisu wuu joogsadaa marka laga reebo saddex: sadaqo jariya, cilmi faa'iido leh, ama cun suubban oo u duceeya.' Dhismaha masjidku waa sadaqo jariya ugu wanaagsan.",
+            illustrationTitle: "🏗️ Aragtideena: Xarunta Islaamka Al-Nuur",
+            illustrationCaption: "🕌 Masjidka weyn | 📚 Madarsa | 🛒 Suuqa Halal | 🚗 Baarkin | 🌳 Beerta"
         },
         ar: {
             title: "مسجد النور كاسل",
             tagline: '"من بنى مسجدًا لله بنى الله له بيتًا في الجنة"',
             desc: "ادعم بناء المسجد الجديد في كاسل – صدقة جارية.",
             remTitle: "🌙 صدقة جارية – أجر لا ينقطع",
-            remText: "كل يورو تتبرع به للمسجد الجديد في كاسل يصبح جسراً إلى الجنة. قال النبي ﷺ: 'إذا مات ابن آدم انقطع عمله إلا من ثلاث: صدقة جارية، أو علم ينتفع به، أو ولد صالح يدعو له'. بناء المسجد هو أسمى الصدقات الجارية."
+            remText: "كل يورو تتبرع به للمسجد الجديد في كاسل يصبح جسراً إلى الجنة. قال النبي ﷺ: 'إذا مات ابن آدم انقطع عمله إلا من ثلاث: صدقة جارية، أو علم ينتفع به، أو ولد صالح يدعو له'. بناء المسجد هو أسمى الصدقات الجارية.",
+            illustrationTitle: "🏗️ رؤيتنا: مركز النور الإسلامي",
+            illustrationCaption: "🕌 المسجد الرئيسي | 📚 المدرسة | 🛒 سوق حلال | 🚗 موقف سيارات | 🌳 حديقة"
         }
     };
 
@@ -636,6 +1096,11 @@
             document.getElementById('heroDesc').innerText = t.desc;
             document.getElementById('reminderTitle').innerHTML = t.remTitle;
             document.getElementById('reminderText').innerText = t.remText;
+            // Update illustration texts
+            const illustrationTitle = document.getElementById('illustrationTitle');
+            if (illustrationTitle) illustrationTitle.innerHTML = `<i class="fas fa-drafting-compass"></i> ${t.illustrationTitle}`;
+            const illustrationCaption = document.getElementById('illustrationCaption');
+            if (illustrationCaption) illustrationCaption.innerText = t.illustrationCaption;
         }
     }
 
