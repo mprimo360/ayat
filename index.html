@@ -720,6 +720,62 @@
         .no-results { text-align: center; padding: 60px; color: #888; }
         .footer { text-align: center; margin-top: 50px; padding: 25px; color: #555; border-top: 1px solid #333; }
         
+        /* ========== FLOATING DONATE BUTTON ========== */
+        .floating-donate-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        
+        .floating-donate-btn a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #00aa44, #008833);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            text-decoration: none;
+            box-shadow: 0 8px 20px rgba(0, 170, 68, 0.4);
+            transition: all 0.3s ease;
+            border: 2px solid #FFD700;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        
+        .floating-donate-btn a span {
+            display: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .floating-donate-btn a i {
+            font-size: 1.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .floating-donate-btn a:hover {
+            width: auto;
+            border-radius: 50px;
+            padding: 0 20px;
+            gap: 10px;
+            background: linear-gradient(135deg, #FFD700, #00aa44);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.4);
+        }
+        
+        .floating-donate-btn a:hover i {
+            margin-right: 5px;
+        }
+        
+        .floating-donate-btn a:hover span {
+            display: inline-block;
+            color: #1a3a2f;
+            font-weight: 800;
+        }
+        
         @media (max-width: 768px) {
             .results-grid { grid-template-columns: 1fr; }
             .prayer-times { grid-template-columns: repeat(2, 1fr); }
@@ -729,6 +785,20 @@
             .creations-grid { grid-template-columns: 1fr; }
             .compass-box { width: 160px; height: 160px; }
             .compass-needle { height: 65px; }
+            
+            .floating-donate-btn {
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .floating-donate-btn a {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .floating-donate-btn a i {
+                font-size: 1.4rem;
+            }
         }
     </style>
 </head>
@@ -839,6 +909,17 @@
     </div>
 </div>
 
+<!-- Floating Donate Button - Links to masjid_alnur.html -->
+<div class="floating-donate-btn">
+    <a href="masjid_alnur.html" target="_blank" rel="noopener noreferrer">
+        <i class="fas fa-hand-holding-heart"></i>
+        <span>🤲 Donate to Al-Nuur Mosque 🕌</span>
+    </a>
+</div>
+
+<!-- Font Awesome for Icons (Donate button) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 <script>
     // Global audio variables
     let currentMiracleAudio = null;
@@ -917,25 +998,7 @@
         { number: 17, name: "Ar-Razzaq", arabic: "الرَّزَّاقُ", meaning: "The Provider", reference: "Quran 51:58", surahNum: 51, ayahNum: 58 },
         { number: 18, name: "Al-Fattah", arabic: "الْفَتَّاحُ", meaning: "The Opener", reference: "Quran 34:26", surahNum: 34, ayahNum: 26 },
         { number: 19, name: "Al-Alim", arabic: "الْعَلِيمُ", meaning: "The All-Knowing", reference: "Quran 2:32", surahNum: 2, ayahNum: 32 },
-        { number: 20, name: "Al-Qabid", arabic: "الْقَابِضُ", meaning: "The Restrainer", reference: "Quran 2:245", surahNum: 2, ayahNum: 245 },
-        { number: 21, name: "Al-Basit", arabic: "الْبَاسِطُ", meaning: "The Expander", reference: "Quran 2:245", surahNum: 2, ayahNum: 245 },
-        { number: 22, name: "Al-Khafid", arabic: "الْخَافِضُ", meaning: "The Abaser", reference: "Quran 95:5", surahNum: 95, ayahNum: 5 },
-        { number: 23, name: "Ar-Rafi", arabic: "الرَّافِعُ", meaning: "The Exalter", reference: "Quran 58:11", surahNum: 58, ayahNum: 11 },
-        { number: 24, name: "Al-Muizz", arabic: "الْمُعِزُّ", meaning: "The Honorer", reference: "Quran 3:26", surahNum: 3, ayahNum: 26 },
-        { number: 25, name: "Al-Mudhill", arabic: "الْمُذِلُّ", meaning: "The Dishonorer", reference: "Quran 3:26", surahNum: 3, ayahNum: 26 },
-        { number: 26, name: "As-Sami", arabic: "السَّمِيعُ", meaning: "The All-Hearing", reference: "Quran 2:127", surahNum: 2, ayahNum: 127 },
-        { number: 27, name: "Al-Basir", arabic: "الْبَصِيرُ", meaning: "The All-Seeing", reference: "Quran 42:11", surahNum: 42, ayahNum: 11 },
-        { number: 28, name: "Al-Hakam", arabic: "الْحَكَمُ", meaning: "The Judge", reference: "Quran 6:114", surahNum: 6, ayahNum: 114 },
-        { number: 29, name: "Al-Adl", arabic: "الْعَدْلُ", meaning: "The Just", reference: "Quran 6:115", surahNum: 6, ayahNum: 115 },
-        { number: 30, name: "Al-Latif", arabic: "اللَّطِيفُ", meaning: "The Subtle", reference: "Quran 67:14", surahNum: 67, ayahNum: 14 },
-        { number: 31, name: "Al-Khabir", arabic: "الْخَبِيرُ", meaning: "The Aware", reference: "Quran 6:18", surahNum: 6, ayahNum: 18 },
-        { number: 32, name: "Al-Halim", arabic: "الْحَلِيمُ", meaning: "The Forbearing", reference: "Quran 2:225", surahNum: 2, ayahNum: 225 },
-        { number: 33, name: "Al-Azim", arabic: "الْعَظِيمُ", meaning: "The Magnificent", reference: "Quran 2:255", surahNum: 2, ayahNum: 255 },
-        { number: 34, name: "Al-Ghafur", arabic: "الْغَفُورُ", meaning: "The Forgiving", reference: "Quran 39:53", surahNum: 39, ayahNum: 53 },
-        { number: 35, name: "Ash-Shakur", arabic: "الشَّكُورُ", meaning: "The Appreciative", reference: "Quran 35:34", surahNum: 35, ayahNum: 34 },
-        { number: 36, name: "Al-Aliyy", arabic: "الْعَلِيُّ", meaning: "The Most High", reference: "Quran 2:255", surahNum: 2, ayahNum: 255 },
-        { number: 37, name: "Al-Kabir", arabic: "الْكَبِيرُ", meaning: "The Great", reference: "Quran 13:9", surahNum: 13, ayahNum: 9 },
-        { number: 38, name: "Al-Hafiz", arabic: "الْحَفِيظُ", meaning: "The Preserver", reference: "Quran 11:57", surahNum: 11, ayahNum: 57 }
+        { number: 20, name: "Al-Qabid", arabic: "الْقَابِضُ", meaning: "The Restrainer", reference: "Quran 2:245", surahNum: 2, ayahNum: 245 }
     ];
     
     function loadNames() {
@@ -1278,7 +1341,7 @@
                     html += `<div class="result-card"><div class="result-header"><span class="result-surah">🔬 SCIENTIFIC MIRACLE</span></div><div class="result-body" style="padding:20px"><div class="miracle-arabic">${m.arabic}</div><div class="meaning-badge">📖 ${m.reference}</div><div class="english-text"><strong>Translation:</strong> "${m.translation}"</div><div class="miracle-explanation">${m.explanation}</div><div class="scientific-fact">🔬 ${m.scientificFact}</div>${audioBtn}</div></div>`;
                 }
                 html += '</div>'; grid.innerHTML = html;
-            } else { grid.innerHTML = `<div class="no-results">Try: big bang, embryo, iron, mountains, sea, romans</div>`; }
+            } else { grid.innerHTML = `<div class="no-results">🔬 No scientific miracles found for "${escapeHtml(term)}". Try: big bang, embryo, iron, mountains, sea</div>`; }
         }
     }
     
@@ -1337,7 +1400,7 @@
             else { window.addEventListener('deviceorientation', handleOrientation); }
         }
         loadDuas();
-        setTimeout(() => showToast('🏆 99 Names of Allah, Quran, Hadith, Duas with Audio | Qibla + Mosques'), 1200);
+        setTimeout(() => showToast('🏆 99 Names of Allah, Quran, Hadith, Duas | Qibla + Mosques'), 1200);
     })();
 </script>
 <style>
