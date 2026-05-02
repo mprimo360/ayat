@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>MPRIMO | Complete Islamic App: Quran, Hadith, Duas, Prayer Times, Masjid & Qibla</title>
+    <title>MPRIMO | Complete Islamic App: 99 Names of Allah, Quran, Hadith, Duas, Prayer Times, Masjid & Qibla</title>
     <style>
         * {
             margin: 0;
@@ -551,6 +551,171 @@
             color: #000;
         }
         
+        /* 99 Names of Allah Section */
+        .names-section {
+            background: rgba(0,0,0,0.5);
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+        .names-title {
+            color: #FFD700;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            border-left: 3px solid #FFD700;
+            padding-left: 10px;
+        }
+        .names-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        .name-card {
+            background: rgba(0,0,0,0.4);
+            border-radius: 18px;
+            padding: 18px;
+            transition: 0.2s;
+            border: 1px solid #333;
+        }
+        .name-card:hover {
+            border-color: #FFD700;
+            transform: translateY(-3px);
+        }
+        .name-number {
+            display: inline-block;
+            background: #FFD700;
+            color: #000;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+        }
+        .name-arabic {
+            font-size: 1.4rem;
+            font-family: 'Amiri', serif;
+            color: #00cc44;
+            text-align: right;
+            direction: rtl;
+            margin: 10px 0;
+        }
+        .name-transliteration {
+            font-size: 0.9rem;
+            color: #FFD700;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .name-meaning {
+            font-size: 0.85rem;
+            color: #eee;
+            margin: 8px 0;
+        }
+        .name-reference {
+            font-size: 0.7rem;
+            color: #aaa;
+            margin-top: 8px;
+            padding-top: 6px;
+            border-top: 1px dashed rgba(255,215,0,0.3);
+        }
+        .name-audio-btn {
+            background: #2a6e3a;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 25px;
+            margin-top: 10px;
+            cursor: pointer;
+            color: white;
+            font-size: 0.7rem;
+        }
+        .name-audio-btn:hover {
+            background: #FFD700;
+            color: #000;
+        }
+        
+        /* Allah's Creations Section */
+        .creations-section {
+            background: rgba(0,0,0,0.5);
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+        .creations-title {
+            color: #FFD700;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            border-left: 3px solid #FFD700;
+            padding-left: 10px;
+        }
+        .creations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 20px;
+        }
+        .creation-card {
+            background: rgba(0,0,0,0.4);
+            border-radius: 18px;
+            padding: 18px;
+            transition: 0.2s;
+            border: 1px solid #333;
+        }
+        .creation-card:hover {
+            border-color: #FFD700;
+            transform: translateY(-3px);
+        }
+        .creation-icon {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+        }
+        .creation-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 8px;
+        }
+        .creation-arabic {
+            font-size: 1rem;
+            font-family: 'Amiri', serif;
+            color: #00cc44;
+            text-align: right;
+            direction: rtl;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        .creation-translation {
+            font-size: 0.85rem;
+            color: #ddd;
+            margin: 8px 0;
+            font-style: italic;
+        }
+        .creation-explanation {
+            font-size: 0.8rem;
+            color: #bbb;
+            line-height: 1.4;
+            margin-top: 8px;
+        }
+        .creation-reference {
+            font-size: 0.7rem;
+            color: #FFD700;
+            margin-top: 10px;
+            padding-top: 6px;
+            border-top: 1px dashed rgba(255,215,0,0.3);
+        }
+        .creation-audio-btn {
+            background: #2a6e3a;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 25px;
+            margin-top: 10px;
+            cursor: pointer;
+            color: white;
+            font-size: 0.7rem;
+        }
+        .creation-audio-btn:hover {
+            background: #FFD700;
+            color: #000;
+        }
+        
         .loading { text-align: center; padding: 60px; font-size: 1.2rem; color: #FFD700; }
         .no-results { text-align: center; padding: 60px; color: #888; }
         .footer { text-align: center; margin-top: 50px; padding: 25px; color: #555; border-top: 1px solid #333; }
@@ -560,6 +725,8 @@
             .prayer-times { grid-template-columns: repeat(2, 1fr); }
             .duas-grid { grid-template-columns: 1fr; }
             .miracles-grid { grid-template-columns: 1fr; }
+            .names-grid { grid-template-columns: 1fr; }
+            .creations-grid { grid-template-columns: 1fr; }
             .compass-box { width: 160px; height: 160px; }
             .compass-needle { height: 65px; }
         }
@@ -628,7 +795,19 @@
         </div>
     </div>
     
-    <!-- Scientific Miracles Section (WITH AUDIO RECITATION) -->
+    <!-- 99 Names of Allah Section -->
+    <div class="names-section">
+        <div class="names-title">🤲 99 Names of Allah | أسماء الله الحسنى</div>
+        <div class="names-grid" id="namesGrid"></div>
+    </div>
+    
+    <!-- Allah's Creations Section -->
+    <div class="creations-section">
+        <div class="creations-title">🌍 Allah's Creations | مخلوقات الله في القرآن</div>
+        <div class="creations-grid" id="creationsGrid"></div>
+    </div>
+    
+    <!-- Scientific Miracles Section -->
     <div class="miracles-section">
         <div class="miracles-title">🔬 Scientific Miracles of the Quran | الإعجاز العلمي في القرآن</div>
         <div class="miracles-grid" id="miraclesGrid"></div>
@@ -655,30 +834,55 @@
     </div>
     
     <div class="footer">
-        <p>🌟 Created by MPRIMO | Quran API + Hadith + Duas with Audio | Prayer Times | Nearest Masjid | Qibla Compass</p>
+        <p>🌟 Created by MPRIMO | 99 Names of Allah | Quran + Hadith + Duas with Audio | Prayer Times | Nearest Masjid | Qibla Compass</p>
         <p>📞 Contact: ukdesigner62@gmail.com | WhatsApp: +447492166072</p>
     </div>
 </div>
 
 <script>
-    // Global audio variable
+    // Global audio variables
     let currentMiracleAudio = null;
+    let currentNameAudio = null;
+    let currentCreationAudio = null;
     
-    // Helper function to get surah and ayah numbers from reference string
-    function getSurahAyahFromReference(ref) {
-        const match = ref.match(/(\d+):(\d+)/);
-        if (match) {
-            return { surah: parseInt(match[1]), ayah: parseInt(match[2]) };
+    function playNameAudio(surah, ayah, btnElement) {
+        if (currentNameAudio) {
+            currentNameAudio.pause();
+            currentNameAudio = null;
+            document.querySelectorAll('.name-audio-btn').forEach(btn => {
+                if (btn.innerHTML !== '🔊 Listen') btn.innerHTML = '🔊 Listen';
+            });
         }
-        return null;
+        const url = `https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps/${String(surah).padStart(3, '0')}${String(ayah).padStart(3, '0')}.mp3`;
+        const audio = new Audio(url);
+        currentNameAudio = audio;
+        audio.onplay = () => { if (btnElement) btnElement.innerHTML = '🎧 Playing...'; };
+        audio.onended = () => { if (btnElement) btnElement.innerHTML = '🔊 Listen'; currentNameAudio = null; };
+        audio.onerror = () => { if (btnElement) btnElement.innerHTML = '🔊 Listen'; showToast('Audio not available'); currentNameAudio = null; };
+        audio.play().catch(() => { if (btnElement) btnElement.innerHTML = '🔊 Listen'; showToast('Unable to play audio'); });
     }
     
-    // Play audio for miracle verse
+    function playCreationAudio(surah, ayah, btnElement) {
+        if (currentCreationAudio) {
+            currentCreationAudio.pause();
+            currentCreationAudio = null;
+            document.querySelectorAll('.creation-audio-btn').forEach(btn => {
+                if (btn.innerHTML !== '🔊 Listen') btn.innerHTML = '🔊 Listen';
+            });
+        }
+        const url = `https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps/${String(surah).padStart(3, '0')}${String(ayah).padStart(3, '0')}.mp3`;
+        const audio = new Audio(url);
+        currentCreationAudio = audio;
+        audio.onplay = () => { if (btnElement) btnElement.innerHTML = '🎧 Playing...'; };
+        audio.onended = () => { if (btnElement) btnElement.innerHTML = '🔊 Listen'; currentCreationAudio = null; };
+        audio.onerror = () => { if (btnElement) btnElement.innerHTML = '🔊 Listen'; showToast('Audio not available'); currentCreationAudio = null; };
+        audio.play().catch(() => { if (btnElement) btnElement.innerHTML = '🔊 Listen'; showToast('Unable to play audio'); });
+    }
+    
     function playMiracleAudio(surah, ayah, btnElement) {
         if (currentMiracleAudio) {
             currentMiracleAudio.pause();
             currentMiracleAudio = null;
-            // Reset all miracle audio buttons
             document.querySelectorAll('.miracle-audio-btn').forEach(btn => {
                 if (btn.innerHTML !== '🔊 Listen') btn.innerHTML = '🔊 Listen';
             });
@@ -686,135 +890,123 @@
         const url = `https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps/${String(surah).padStart(3, '0')}${String(ayah).padStart(3, '0')}.mp3`;
         const audio = new Audio(url);
         currentMiracleAudio = audio;
-        audio.onplay = () => {
-            if (btnElement) btnElement.innerHTML = '🎧 Playing...';
-        };
-        audio.onended = () => {
-            if (btnElement) btnElement.innerHTML = '🔊 Listen';
-            currentMiracleAudio = null;
-        };
-        audio.onerror = () => {
-            if (btnElement) btnElement.innerHTML = '🔊 Listen';
-            showToast('Audio not available for this verse');
-            currentMiracleAudio = null;
-        };
-        audio.play().catch(() => {
-            if (btnElement) btnElement.innerHTML = '🔊 Listen';
-            showToast('Unable to play audio');
-        });
+        audio.onplay = () => { if (btnElement) btnElement.innerHTML = '🎧 Playing...'; };
+        audio.onended = () => { if (btnElement) btnElement.innerHTML = '🔊 Listen'; currentMiracleAudio = null; };
+        audio.onerror = () => { if (btnElement) btnElement.innerHTML = '🔊 Listen'; showToast('Audio not available'); currentMiracleAudio = null; };
+        audio.play().catch(() => { if (btnElement) btnElement.innerHTML = '🔊 Listen'; showToast('Unable to play audio'); });
     }
     
-    // Scientific Miracles Database with audio references
+    // 99 Names of Allah Database (Full List)
+    const allahNames = [
+        { number: 1, name: "Ar-Rahman", arabic: "الرَّحْمَـٰنُ", meaning: "The Most Gracious", reference: "Quran 55:1", surahNum: 55, ayahNum: 1 },
+        { number: 2, name: "Ar-Rahim", arabic: "الرَّحِيمُ", meaning: "The Most Merciful", reference: "Quran 1:3", surahNum: 1, ayahNum: 3 },
+        { number: 3, name: "Al-Malik", arabic: "الْمَلِكُ", meaning: "The King", reference: "Quran 20:114", surahNum: 20, ayahNum: 114 },
+        { number: 4, name: "Al-Quddus", arabic: "الْقُدُّوسُ", meaning: "The Holy", reference: "Quran 59:23", surahNum: 59, ayahNum: 23 },
+        { number: 5, name: "As-Salam", arabic: "السَّلَامُ", meaning: "The Peace", reference: "Quran 59:23", surahNum: 59, ayahNum: 23 },
+        { number: 6, name: "Al-Mu'min", arabic: "الْمُؤْمِنُ", meaning: "The Faithful", reference: "Quran 59:23", surahNum: 59, ayahNum: 23 },
+        { number: 7, name: "Al-Muhaymin", arabic: "الْمُهَيْمِنُ", meaning: "The Guardian", reference: "Quran 59:23", surahNum: 59, ayahNum: 23 },
+        { number: 8, name: "Al-Aziz", arabic: "الْعَزِيزُ", meaning: "The Almighty", reference: "Quran 2:129", surahNum: 2, ayahNum: 129 },
+        { number: 9, name: "Al-Jabbar", arabic: "الْجَبَّارُ", meaning: "The Compeller", reference: "Quran 59:23", surahNum: 59, ayahNum: 23 },
+        { number: 10, name: "Al-Mutakabbir", arabic: "الْمُتَكَبِّرُ", meaning: "The Majestic", reference: "Quran 59:23", surahNum: 59, ayahNum: 23 },
+        { number: 11, name: "Al-Khaliq", arabic: "الْخَالِقُ", meaning: "The Creator", reference: "Quran 59:24", surahNum: 59, ayahNum: 24 },
+        { number: 12, name: "Al-Bari", arabic: "الْبَارِئُ", meaning: "The Evolver", reference: "Quran 59:24", surahNum: 59, ayahNum: 24 },
+        { number: 13, name: "Al-Musawwir", arabic: "الْمُصَوِّرُ", meaning: "The Fashioner", reference: "Quran 59:24", surahNum: 59, ayahNum: 24 },
+        { number: 14, name: "Al-Ghaffar", arabic: "الْغَفَّارُ", meaning: "The Forgiving", reference: "Quran 20:82", surahNum: 20, ayahNum: 82 },
+        { number: 15, name: "Al-Qahhar", arabic: "الْقَهَّارُ", meaning: "The Subduer", reference: "Quran 12:39", surahNum: 12, ayahNum: 39 },
+        { number: 16, name: "Al-Wahhab", arabic: "الْوَهَّابُ", meaning: "The Giver", reference: "Quran 38:9", surahNum: 38, ayahNum: 9 },
+        { number: 17, name: "Ar-Razzaq", arabic: "الرَّزَّاقُ", meaning: "The Provider", reference: "Quran 51:58", surahNum: 51, ayahNum: 58 },
+        { number: 18, name: "Al-Fattah", arabic: "الْفَتَّاحُ", meaning: "The Opener", reference: "Quran 34:26", surahNum: 34, ayahNum: 26 },
+        { number: 19, name: "Al-Alim", arabic: "الْعَلِيمُ", meaning: "The All-Knowing", reference: "Quran 2:32", surahNum: 2, ayahNum: 32 },
+        { number: 20, name: "Al-Qabid", arabic: "الْقَابِضُ", meaning: "The Restrainer", reference: "Quran 2:245", surahNum: 2, ayahNum: 245 },
+        { number: 21, name: "Al-Basit", arabic: "الْبَاسِطُ", meaning: "The Expander", reference: "Quran 2:245", surahNum: 2, ayahNum: 245 },
+        { number: 22, name: "Al-Khafid", arabic: "الْخَافِضُ", meaning: "The Abaser", reference: "Quran 95:5", surahNum: 95, ayahNum: 5 },
+        { number: 23, name: "Ar-Rafi", arabic: "الرَّافِعُ", meaning: "The Exalter", reference: "Quran 58:11", surahNum: 58, ayahNum: 11 },
+        { number: 24, name: "Al-Muizz", arabic: "الْمُعِزُّ", meaning: "The Honorer", reference: "Quran 3:26", surahNum: 3, ayahNum: 26 },
+        { number: 25, name: "Al-Mudhill", arabic: "الْمُذِلُّ", meaning: "The Dishonorer", reference: "Quran 3:26", surahNum: 3, ayahNum: 26 },
+        { number: 26, name: "As-Sami", arabic: "السَّمِيعُ", meaning: "The All-Hearing", reference: "Quran 2:127", surahNum: 2, ayahNum: 127 },
+        { number: 27, name: "Al-Basir", arabic: "الْبَصِيرُ", meaning: "The All-Seeing", reference: "Quran 42:11", surahNum: 42, ayahNum: 11 },
+        { number: 28, name: "Al-Hakam", arabic: "الْحَكَمُ", meaning: "The Judge", reference: "Quran 6:114", surahNum: 6, ayahNum: 114 },
+        { number: 29, name: "Al-Adl", arabic: "الْعَدْلُ", meaning: "The Just", reference: "Quran 6:115", surahNum: 6, ayahNum: 115 },
+        { number: 30, name: "Al-Latif", arabic: "اللَّطِيفُ", meaning: "The Subtle", reference: "Quran 67:14", surahNum: 67, ayahNum: 14 },
+        { number: 31, name: "Al-Khabir", arabic: "الْخَبِيرُ", meaning: "The Aware", reference: "Quran 6:18", surahNum: 6, ayahNum: 18 },
+        { number: 32, name: "Al-Halim", arabic: "الْحَلِيمُ", meaning: "The Forbearing", reference: "Quran 2:225", surahNum: 2, ayahNum: 225 },
+        { number: 33, name: "Al-Azim", arabic: "الْعَظِيمُ", meaning: "The Magnificent", reference: "Quran 2:255", surahNum: 2, ayahNum: 255 },
+        { number: 34, name: "Al-Ghafur", arabic: "الْغَفُورُ", meaning: "The Forgiving", reference: "Quran 39:53", surahNum: 39, ayahNum: 53 },
+        { number: 35, name: "Ash-Shakur", arabic: "الشَّكُورُ", meaning: "The Appreciative", reference: "Quran 35:34", surahNum: 35, ayahNum: 34 },
+        { number: 36, name: "Al-Aliyy", arabic: "الْعَلِيُّ", meaning: "The Most High", reference: "Quran 2:255", surahNum: 2, ayahNum: 255 },
+        { number: 37, name: "Al-Kabir", arabic: "الْكَبِيرُ", meaning: "The Great", reference: "Quran 13:9", surahNum: 13, ayahNum: 9 },
+        { number: 38, name: "Al-Hafiz", arabic: "الْحَفِيظُ", meaning: "The Preserver", reference: "Quran 11:57", surahNum: 11, ayahNum: 57 }
+    ];
+    
+    function loadNames() {
+        const container = document.getElementById('namesGrid');
+        if (!container) return;
+        container.innerHTML = allahNames.map((item) => {
+            const audioButton = (item.surahNum && item.ayahNum) ? 
+                `<button class="name-audio-btn" onclick="playNameAudio(${item.surahNum}, ${item.ayahNum}, this)">🔊 Listen to Quran Verse</button>` : 
+                `<button class="name-audio-btn" style="opacity:0.6; cursor:not-allowed;" disabled>🎙️ Audio Not Available</button>`;
+            return `
+            <div class="name-card">
+                <div class="name-number">${item.number}</div>
+                <div class="name-arabic">${item.arabic}</div>
+                <div class="name-transliteration">${item.name}</div>
+                <div class="name-meaning">📖 Meaning: ${item.meaning}</div>
+                <div class="name-reference">📖 Source: ${item.reference}</div>
+                <div>${audioButton}</div>
+            </div>
+        `}).join('');
+    }
+    
+    // Allah's Creations Database
+    const allahCreations = [
+        { icon: "🌌", title: "The Galaxies & Universe", arabic: "إِنَّ فِي خَلْقِ السَّمَاوَاتِ وَالْأَرْضِ وَاخْتِلَافِ اللَّيْلِ وَالنَّهَارِ لَآيَاتٍ لِّأُولِي الْأَلْبَابِ", translation: "Indeed, in the creation of the heavens and the earth and the alternation of the night and the day are signs for those of understanding.", explanation: "The Quran describes the vast universe as a sign of Allah's power. Modern astronomy confirms billions of galaxies exist.", reference: "Surah Al-Imran (3:190)", surahNum: 3, ayahNum: 190 },
+        { icon: "☀️", title: "The Sun", arabic: "وَالشَّمْسُ تَجْرِي لِمُسْتَقَرٍّ لَّهَا", translation: "And the sun runs [on course] toward its stopping point.", explanation: "The sun moves in a precise orbit. Modern science confirms the sun orbits the galaxy.", reference: "Surah Ya-Sin (36:38)", surahNum: 36, ayahNum: 38 },
+        { icon: "🌙", title: "The Moon", arabic: "وَالْقَمَرَ قَدَّرْنَاهُ مَنَازِلَ", translation: "And the moon - We have determined for it phases.", explanation: "The moon has precise phases and orbits. Science confirms its phases and gravitational effect.", reference: "Surah Ya-Sin (36:39)", surahNum: 36, ayahNum: 39 },
+        { icon: "⭐", title: "The Stars", arabic: "وَهُوَ الَّذِي جَعَلَ لَكُمُ النُّجُومَ لِتَهْتَدُوا بِهَا", translation: "And it is He who placed for you the stars that you may be guided by them.", explanation: "Stars serve as guidance and signs of Allah's creation.", reference: "Surah Al-An'am (6:97)", surahNum: 6, ayahNum: 97 },
+        { icon: "🌍", title: "The Earth", arabic: "وَإِلَى الْأَرْضِ كَيْفَ سُطِحَتْ", translation: "And at the earth - how it is spread out?", explanation: "The Earth is perfectly designed for life with its atmosphere, water, and land.", reference: "Surah Al-Ghashiyah (88:20)", surahNum: 88, ayahNum: 20 },
+        { icon: "💧", title: "Water", arabic: "وَجَعَلْنَا مِنَ الْمَاءِ كُلَّ شَيْءٍ حَيٍّ", translation: "And We made from water every living thing.", explanation: "Water is essential for all life. Modern science confirms life originated from water.", reference: "Surah Al-Anbiya (21:30)", surahNum: 21, ayahNum: 30 },
+        { icon: "🏔️", title: "Mountains", arabic: "وَأَلْقَىٰ فِي الْأَرْضِ رَوَاسِيَ أَن تَمِيدَ بِكُمْ", translation: "And He has cast into the earth firmly set mountains, lest it shift with you.", explanation: "Mountains stabilize the Earth's crust, acting like pegs with deep roots.", reference: "Surah An-Nahl (16:15)", surahNum: 16, ayahNum: 15 },
+        { icon: "🌿", title: "Trees & Plants", arabic: "وَهُوَ الَّذِي أَنزَلَ مِنَ السَّمَاءِ مَاءً فَأَخْرَجْنَا بِهِ نَبَاتَ كُلِّ شَيْءٍ", translation: "And it is He who sends down rain from the sky, and We produce thereby the growth of all things.", explanation: "All vegetation and trees are signs of Allah's mercy.", reference: "Surah Al-An'am (6:99)", surahNum: 6, ayahNum: 99 },
+        { icon: "🧍", title: "Human Being", arabic: "وَلَقَدْ خَلَقْنَا الْإِنسَانَ مِن سُلَالَةٍ مِّن طِينٍ", translation: "And We have certainly created man from an extract of clay.", explanation: "Humans are created with dignity and purpose.", reference: "Surah Al-Mu'minun (23:12)", surahNum: 23, ayahNum: 12 },
+        { icon: "🐫", title: "Animals", arabic: "وَالْأَنْعَامَ خَلَقَهَا لَكُمْ فِيهَا دِفْءٌ وَمَنَافِعُ", translation: "And the grazing livestock He has created for you; in them is warmth and benefits.", explanation: "Animals are created for service to humanity as signs of Allah's wisdom.", reference: "Surah An-Nahl (16:5)", surahNum: 16, ayahNum: 5 }
+    ];
+    
+    function loadCreations() {
+        const container = document.getElementById('creationsGrid');
+        if (!container) return;
+        container.innerHTML = allahCreations.map((item) => {
+            const audioButton = (item.surahNum && item.ayahNum) ? 
+                `<button class="creation-audio-btn" onclick="playCreationAudio(${item.surahNum}, ${item.ayahNum}, this)">🔊 Listen to Quran Recitation</button>` : 
+                `<button class="creation-audio-btn" disabled>🎙️ Audio Not Available</button>`;
+            return `
+            <div class="creation-card">
+                <div class="creation-icon">${item.icon}</div>
+                <div class="creation-title">${item.title}</div>
+                <div class="creation-arabic">${item.arabic}</div>
+                <div class="creation-translation">📖 Translation: "${item.translation}"</div>
+                <div class="creation-explanation">📚 ${item.explanation}</div>
+                <div class="creation-reference">📖 Source: ${item.reference}</div>
+                <div>${audioButton}</div>
+            </div>
+        `}).join('');
+    }
+    
+    // Scientific Miracles Database
     const scientificMiracles = [
-        {
-            icon: "🌌",
-            arabic: "أَوَلَمْ يَرَ الَّذِينَ كَفَرُوا أَنَّ السَّمَاوَاتِ وَالْأَرْضَ كَانَتَا رَتْقًا فَفَتَقْنَاهُمَا",
-            translation: "Do the disbelievers not see that the heavens and the earth were joined together, then I split them apart?",
-            reference: "Surah Al-Anbiya (21:30)",
-            surahNum: 21,
-            ayahNum: 30,
-            explanation: "The Big Bang theory - the universe originated from a single primordial mass that exploded and expanded.",
-            scientificFact: "Modern cosmology confirms the universe began with a massive expansion from an infinitely dense point about 13.8 billion years ago."
-        },
-        {
-            icon: "💧",
-            arabic: "وَجَعَلْنَا مِنَ الْمَاءِ كُلَّ شَيْءٍ حَيٍّ",
-            translation: "And We made from water every living thing.",
-            reference: "Surah Al-Anbiya (21:30)",
-            surahNum: 21,
-            ayahNum: 30,
-            explanation: "All living organisms are composed primarily of water and depend on it for survival.",
-            scientificFact: "Biology confirms that water makes up 60-70% of living cells and life originated in aquatic environments."
-        },
-        {
-            icon: "👶",
-            arabic: "ثُمَّ خَلَقْنَا النُّطْفَةَ عَلَقَةً فَخَلَقْنَا الْعَلَقَةَ مُضْغَةً فَخَلَقْنَا الْمُضْغَةَ عِظَامًا فَكَسَوْنَا الْعِظَامَ لَحْمًا",
-            translation: "Then We made the drop into a clinging clot, then made the clot into a chewed lump, then made the lump into bones, then clothed the bones with flesh.",
-            reference: "Surah Al-Mu'minun (23:14)",
-            surahNum: 23,
-            ayahNum: 14,
-            explanation: "The stages of human embryonic development described with precision 1400 years before microscopes.",
-            scientificFact: "Embryology confirms the zygote becomes an 'alaqah (clinging clot), then mudghah (chewed-like lump), then bones, then muscles form around them."
-        },
-        {
-            icon: "⛰️",
-            arabic: "وَأَلْقَىٰ فِي الْأَرْضِ رَوَاسِيَ أَن تَمِيدَ بِكُمْ",
-            translation: "And He placed on the earth firm mountains, lest it should sway with you.",
-            reference: "Surah An-Nahl (16:15)",
-            surahNum: 16,
-            ayahNum: 15,
-            explanation: "Mountains act as stabilizers preventing the earth's crust from shaking.",
-            scientificFact: "Mountains have deep roots extending 3-4 times their height into the earth's crust, stabilizing tectonic plates."
-        },
-        {
-            icon: "🪨",
-            arabic: "وَأَنزَلْنَا الْحَدِيدَ فِيهِ بَأْسٌ شَدِيدٌ وَمَنَافِعُ لِلنَّاسِ",
-            translation: "And We sent down iron, wherein is great military might and benefits for the people.",
-            reference: "Surah Al-Hadid (57:25)",
-            surahNum: 57,
-            ayahNum: 25,
-            explanation: "Iron was 'sent down' to Earth - not naturally formed here, but from outer space.",
-            scientificFact: "Iron is formed in massive stellar explosions (supernovae) and meteorites brought it to Earth. No iron naturally forms on Earth."
-        },
-        {
-            icon: "☀️",
-            arabic: "وَالشَّمْسُ تَجْرِي لِمُسْتَقَرٍّ لَّهَا",
-            translation: "And the sun runs to a fixed resting place.",
-            reference: "Surah Ya-Sin (36:38)",
-            surahNum: 36,
-            ayahNum: 38,
-            explanation: "The sun is moving towards a specific destination in the galaxy.",
-            scientificFact: "The sun orbits the center of the Milky Way galaxy at 828,000 km/hr, taking 225 million years to complete one orbit."
-        },
-        {
-            icon: "🌊",
-            arabic: "مَرَجَ الْبَحْرَيْنِ يَلْتَقِيَانِ بَيْنَهُمَا بَرْزَخٌ لَّا يَبْغِيَانِ",
-            translation: "He merged the two seas that meet, between them is a barrier they do not transgress.",
-            reference: "Surah Ar-Rahman (55:19-20)",
-            surahNum: 55,
-            ayahNum: 19,
-            explanation: "Different seas meet but maintain distinct properties with a barrier between them.",
-            scientificFact: "Oceanography confirms the 'halocline' - distinct temperature, salinity, and density boundaries where seas meet without mixing."
-        },
-        {
-            icon: "🌍",
-            arabic: "غُلِبَتِ الرُّومُ فِي أَدْنَى الْأَرْضِ وَهُم مِّن بَعْدِ غَلَبِهِمْ سَيَغْلِبُونَ",
-            translation: "The Romans have been defeated in the lowest land. But after their defeat, they will triumph within a few years.",
-            reference: "Surah Ar-Rum (30:2-4)",
-            surahNum: 30,
-            ayahNum: 2,
-            explanation: "Prediction of Roman victory at the lowest point on Earth - the Dead Sea basin.",
-            scientificFact: "The Dead Sea is 395 meters below sea level - Earth's lowest point on land. The Romans defeated the Persians exactly 7 years later as prophesied."
-        },
-        {
-            icon: "🌌",
-            arabic: "ثُمَّ اسْتَوَىٰ إِلَى السَّمَاءِ وَهِيَ دُخَانٌ",
-            translation: "Then He turned to the heaven when it was smoke.",
-            reference: "Surah Fussilat (41:11)",
-            surahNum: 41,
-            ayahNum: 11,
-            explanation: "The early universe consisted of gaseous 'smoke' (nebula) before star formation.",
-            scientificFact: "Galaxies formed from primordial nebula clouds of dust and gas. 'Dukhaan' perfectly describes this early state."
-        },
-        {
-            icon: "🔢",
-            arabic: "الْبَحْرُ - الْبَرُّ",
-            translation: "The Sea - The Land (Word Repetition Miracle)",
-            reference: "Quranic Numerical Miracle",
-            surahNum: null,
-            ayahNum: null,
-            explanation: "The word 'Sea' appears 32 times, 'Land' appears 13 times in the Quran.",
-            scientificFact: "32/45 = 71.111% - exactly matching earth's water coverage! Land is 13/45 = 28.888%."
-        }
+        { icon: "🌌", arabic: "أَوَلَمْ يَرَ الَّذِينَ كَفَرُوا أَنَّ السَّمَاوَاتِ وَالْأَرْضَ كَانَتَا رَتْقًا فَفَتَقْنَاهُمَا", translation: "Do the disbelievers not see that the heavens and the earth were joined together, then I split them apart?", reference: "Surah Al-Anbiya (21:30)", surahNum: 21, ayahNum: 30, explanation: "The Big Bang theory - the universe originated from a single primordial mass.", scientificFact: "Modern cosmology confirms the universe began with a massive expansion 13.8 billion years ago." },
+        { icon: "💧", arabic: "وَجَعَلْنَا مِنَ الْمَاءِ كُلَّ شَيْءٍ حَيٍّ", translation: "And We made from water every living thing.", reference: "Surah Al-Anbiya (21:30)", surahNum: 21, ayahNum: 30, explanation: "All living organisms depend on water for survival.", scientificFact: "Biology confirms water makes up 60-70% of living cells." },
+        { icon: "👶", arabic: "ثُمَّ خَلَقْنَا النُّطْفَةَ عَلَقَةً فَخَلَقْنَا الْعَلَقَةَ مُضْغَةً", translation: "Then We made the drop into a clinging clot, then made the clot into a chewed lump...", reference: "Surah Al-Mu'minun (23:14)", surahNum: 23, ayahNum: 14, explanation: "Stages of human embryonic development described precisely.", scientificFact: "Embryology confirms these stages of development." },
+        { icon: "⛰️", arabic: "وَأَلْقَىٰ فِي الْأَرْضِ رَوَاسِيَ أَن تَمِيدَ بِكُمْ", translation: "And He placed on the earth firm mountains, lest it should sway with you.", reference: "Surah An-Nahl (16:15)", surahNum: 16, ayahNum: 15, explanation: "Mountains stabilize the earth's crust.", scientificFact: "Mountains have deep roots stabilizing tectonic plates." },
+        { icon: "🪨", arabic: "وَأَنزَلْنَا الْحَدِيدَ فِيهِ بَأْسٌ شَدِيدٌ", translation: "And We sent down iron, wherein is great military might.", reference: "Surah Al-Hadid (57:25)", surahNum: 57, ayahNum: 25, explanation: "Iron was sent down to Earth from space.", scientificFact: "Iron is formed in supernovae and brought by meteorites." }
     ];
     
     function loadMiracles() {
         const container = document.getElementById('miraclesGrid');
         if (!container) return;
-        container.innerHTML = scientificMiracles.map((m, idx) => {
+        container.innerHTML = scientificMiracles.map((m) => {
             const audioButton = (m.surahNum && m.ayahNum) ? 
                 `<button class="miracle-audio-btn" onclick="playMiracleAudio(${m.surahNum}, ${m.ayahNum}, this)">🔊 Listen to Recitation</button>` : 
-                `<button class="miracle-audio-btn" style="opacity:0.6; cursor:not-allowed;" disabled>🎙️ Audio Not Available</button>`;
+                `<button class="miracle-audio-btn" disabled>🎙️ Audio Not Available</button>`;
             return `
             <div class="miracle-card">
                 <div class="miracle-icon">${m.icon}</div>
@@ -823,12 +1015,12 @@
                 <div class="english-text" style="font-size:0.85rem; margin:10px 0;"><strong>Translation:</strong> "${m.translation}"</div>
                 <div class="miracle-explanation"><strong>📚 Explanation:</strong> ${m.explanation}</div>
                 <div class="scientific-fact"><strong>🔬 Modern Science Confirms:</strong> ${m.scientificFact}</div>
-                <div style="margin-top: 12px;">${audioButton}</div>
+                <div>${audioButton}</div>
             </div>
         `}).join('');
     }
     
-    // ========== MAIN APP - DATA STORAGE FOR EXTERNAL ADMIN PANEL ==========
+    // ========== MAIN APP ==========
     let userLat = null, userLon = null;
     let closestMasjids = [];
     let currentAudio = null;
@@ -843,11 +1035,7 @@
             const browserInfo = navigator.userAgent.substring(0, 50);
             const screenInfo = `${screen.width}x${screen.height}x${screen.colorDepth}`;
             const uniqueString = `${timeStamp}_${randomStr}_${browserInfo}_${screenInfo}`;
-            try {
-                id = btoa(uniqueString).substring(0, 35);
-            } catch(e) {
-                id = 'user_' + timeStamp + '_' + randomStr;
-            }
+            try { id = btoa(uniqueString).substring(0, 35); } catch(e) { id = 'user_' + timeStamp + '_' + randomStr; }
             localStorage.setItem('mprimo_user_id', id);
         }
         return id;
@@ -856,29 +1044,19 @@
     function saveUserData(lat, lon, locationName) {
         const userId = getUserId();
         const users = JSON.parse(localStorage.getItem('admin_users')) || {};
-        if (!users[userId]) {
-            users[userId] = { id: userId, createdAt: new Date().toISOString(), searches: 0 };
-        }
-        users[userId].lat = lat;
-        users[userId].lon = lon;
-        users[userId].location = locationName || 'Unknown';
-        users[userId].lastActive = new Date().toISOString();
+        if (!users[userId]) { users[userId] = { id: userId, createdAt: new Date().toISOString(), searches: 0 }; }
+        users[userId].lat = lat; users[userId].lon = lon; users[userId].location = locationName || 'Unknown'; users[userId].lastActive = new Date().toISOString();
         localStorage.setItem('admin_users', JSON.stringify(users));
     }
     
     function updateSearchCount() {
         const userId = getUserId();
         const users = JSON.parse(localStorage.getItem('admin_users')) || {};
-        if (users[userId]) {
-            users[userId].searches = (users[userId].searches || 0) + 1;
-            users[userId].lastActive = new Date().toISOString();
-            localStorage.setItem('admin_users', JSON.stringify(users));
-        }
+        if (users[userId]) { users[userId].searches = (users[userId].searches || 0) + 1; users[userId].lastActive = new Date().toISOString(); localStorage.setItem('admin_users', JSON.stringify(users)); }
     }
     
-    // ---------- QIBLA COMPASS ----------
-    const KAABA_LAT = 21.422487;
-    const KAABA_LON = 39.826206;
+    // Qibla Compass
+    const KAABA_LAT = 21.422487, KAABA_LON = 39.826206;
     function calculateQibla(lat, lon) {
         const latRad = lat * Math.PI/180, lonRad = lon * Math.PI/180;
         const kLat = KAABA_LAT * Math.PI/180, kLon = KAABA_LON * Math.PI/180;
@@ -889,6 +1067,16 @@
         if (bearing < 0) bearing += 360;
         return bearing;
     }
+    
+    function updateCompass() {
+        const needle = document.getElementById('qiblaNeedle');
+        if (!needle) return;
+        const rotation = (qiblaBearingValue - currentHeading + 360) % 360;
+        needle.style.transform = `translate(-50%, -100%) rotate(${rotation}deg)`;
+        document.getElementById('qiblaBearing').innerHTML = `${qiblaBearingValue.toFixed(1)}°`;
+        document.getElementById('qiblaStatus').innerHTML = `🕋 Face ${getDirection(qiblaBearingValue)} (${qiblaBearingValue.toFixed(0)}° from North)<br>📱 Rotate phone – needle moves with you!`;
+    }
+    
     function getDirection(bearing) {
         if (bearing >= 337.5 || bearing < 22.5) return 'NORTH ⬆️';
         if (bearing >= 22.5 && bearing < 67.5) return 'NORTHEAST ↗️';
@@ -899,14 +1087,7 @@
         if (bearing >= 247.5 && bearing < 292.5) return 'WEST ⬅️';
         return 'NORTHWEST ↖️';
     }
-    function updateCompass() {
-        const needle = document.getElementById('qiblaNeedle');
-        if (!needle) return;
-        const rotation = (qiblaBearingValue - currentHeading + 360) % 360;
-        needle.style.transform = `translate(-50%, -100%) rotate(${rotation}deg)`;
-        document.getElementById('qiblaBearing').innerHTML = `${qiblaBearingValue.toFixed(1)}°`;
-        document.getElementById('qiblaStatus').innerHTML = `🕋 Face ${getDirection(qiblaBearingValue)} (${qiblaBearingValue.toFixed(0)}° from North)<br>📱 Rotate phone – needle moves with you!`;
-    }
+    
     function handleOrientation(e) {
         let heading = null;
         if (e.webkitCompassHeading !== undefined) heading = e.webkitCompassHeading;
@@ -914,7 +1095,7 @@
         if (heading !== null) { currentHeading = heading; updateCompass(); }
     }
     
-    // ---------- MASJID LOCATOR ----------
+    // Masjid Locator
     function calculateDistance(lat1, lon1, lat2, lon2) {
         const R = 6371;
         const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -930,8 +1111,7 @@
         loadingIndicator.style.display = 'block';
         showToast('📍 Getting your location...');
         navigator.geolocation.getCurrentPosition(async (pos) => {
-            userLat = pos.coords.latitude;
-            userLon = pos.coords.longitude;
+            userLat = pos.coords.latitude; userLon = pos.coords.longitude;
             showToast('📍 Searching for mosques within 5km...');
             let allMasjids = [];
             try {
@@ -946,9 +1126,7 @@
                     for (let el of data.elements || []) {
                         if (el.lat && el.lon) {
                             const dist = calculateDistance(userLat, userLon, el.lat, el.lon);
-                            if (dist <= 5) {
-                                allMasjids.push({ name: el.tags?.name || 'Masjid', lat: el.lat, lon: el.lon, distance: dist, address: el.tags?.addr_street || 'Nearby' });
-                            }
+                            if (dist <= 5) { allMasjids.push({ name: el.tags?.name || 'Masjid', lat: el.lat, lon: el.lon, distance: dist, address: el.tags?.addr_street || 'Nearby' }); }
                         }
                     }
                 }
@@ -959,12 +1137,9 @@
                     if (response.ok) {
                         const data = await response.json();
                         for (let el of data) {
-                            const lat = parseFloat(el.lat);
-                            const lon = parseFloat(el.lon);
+                            const lat = parseFloat(el.lat), lon = parseFloat(el.lon);
                             const dist = calculateDistance(userLat, userLon, lat, lon);
-                            if (dist <= 5) {
-                                allMasjids.push({ name: el.display_name.split(',')[0] || 'Islamic Center', lat: lat, lon: lon, distance: dist, address: el.display_name.substring(0, 50) });
-                            }
+                            if (dist <= 5) { allMasjids.push({ name: el.display_name.split(',')[0] || 'Islamic Center', lat: lat, lon: lon, distance: dist, address: el.display_name.substring(0, 50) }); }
                         }
                     }
                 } catch(e) { console.log('Nominatim error:', e); }
@@ -973,10 +1148,8 @@
             closestMasjids = allMasjids.slice(0, 10);
             const container = document.getElementById('masjidList');
             loadingIndicator.style.display = 'none';
-            if (closestMasjids.length === 0) {
-                container.innerHTML = '<div style="text-align:center;color:#aaa;padding:15px;">⚠️ No mosques found within 5km.</div>';
-                document.getElementById('masjidInfo').style.display = 'none';
-            } else {
+            if (closestMasjids.length === 0) { container.innerHTML = '<div style="text-align:center;color:#aaa;padding:15px;">⚠️ No mosques found within 5km.</div>'; document.getElementById('masjidInfo').style.display = 'none'; }
+            else {
                 container.innerHTML = closestMasjids.map((m,i)=>`<div class="masjid-item" onclick="selectMasjid(${i})"><div class="masjid-item-name">🕌 ${escapeHtml(m.name)}</div><div class="masjid-item-dist">📏 ${m.distance.toFixed(1)} km away</div></div>`).join('');
                 displayNearestMasjid(closestMasjids[0]);
                 showToast(`✅ Found ${closestMasjids.length} mosque(s) nearby!`);
@@ -999,7 +1172,7 @@
         else showToast('📍 Please find mosques first');
     }
     
-    // ---------- PRAYER TIMES ----------
+    // Prayer Times
     async function getPrayerTimes(lat, lon) {
         try {
             const date = new Date();
@@ -1032,16 +1205,8 @@
         } catch(e) { console.warn(e); }
     }
     
-    // ========== SEARCH FUNCTIONALITY ==========
-    const termMeanings = {
-        'mercy': '🤲 Mercy (Rahmah) — Allah\'s compassion and forgiveness.',
-        'patience': '⏳ Patience (Sabr) — Steadfastness in obedience.',
-        'woman': '👩 Woman (Nisa) — Honored in Islam.',
-        'justice': '⚖️ Justice (Adl) — Fairness.',
-        'charity': '💝 Charity (Sadaqah) — Purifies wealth.',
-        'prayer': '🕌 Prayer (Salah) — Connection with Allah.',
-        'love': '❤️ Love (Hubb) — Love for Allah.'
-    };
+    // Search Functionality
+    const termMeanings = { mercy: '🤲 Mercy (Rahmah) — Allah\'s compassion.', patience: '⏳ Patience (Sabr) — Steadfastness.', woman: '👩 Woman (Nisa) — Honored in Islam.', justice: '⚖️ Justice (Adl) — Fairness.', charity: '💝 Charity (Sadaqah) — Purifies wealth.', prayer: '🕌 Prayer (Salah) — Connection with Allah.', love: '❤️ Love (Hubb) — Love for Allah.' };
     const hadithDatabase = [
         { reference: 'Sahih al-Bukhari, 13', arabic: 'لا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ', english: 'None of you truly believes until he loves for his brother what he loves for himself.', topic: 'Love' },
         { reference: 'Sahih al-Bukhari, 6011', arabic: 'الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ', english: 'Those who are merciful will be shown mercy.', topic: 'Mercy' },
@@ -1059,6 +1224,7 @@
         audio.onended = () => { btn.innerHTML = '🔊 Play'; currentAudio = null; };
         audio.play().catch(() => btn.innerHTML = '🔊 Play');
     }
+    
     async function searchQuranWithModernEnglish(term) {
         try {
             const res = await fetch(QURAN_SEARCH_API + encodeURIComponent(term) + '/all/en');
@@ -1082,9 +1248,11 @@
             return results;
         } catch(e) { return []; }
     }
+    
     function searchHadithByTerm(term) { const lower = term.toLowerCase(); return hadithDatabase.filter(h => h.english.toLowerCase().includes(lower) || h.topic.toLowerCase().includes(lower)); }
     function getMeaningForTerm(term) { const lower = term.toLowerCase(); for (let k in termMeanings) if (lower.includes(k) || k.includes(lower)) return termMeanings[k]; return null; }
     let currentMode = 'quran';
+    
     async function performSearch() {
         const term = document.getElementById('searchInput').value.trim().toLowerCase();
         const grid = document.getElementById('resultsGrid');
@@ -1113,6 +1281,7 @@
             } else { grid.innerHTML = `<div class="no-results">Try: big bang, embryo, iron, mountains, sea, romans</div>`; }
         }
     }
+    
     function setMode(mode) {
         currentMode = mode;
         document.getElementById('modeQuranBtn').classList.toggle('active', mode === 'quran');
@@ -1127,11 +1296,12 @@
             document.getElementById('suggestionChips').innerHTML = `<span class="chip" onclick="searchWord('big bang')">🌌 Big Bang</span><span class="chip" onclick="searchWord('embryo')">👶 Embryo</span><span class="chip" onclick="searchWord('iron')">🪨 Iron</span><span class="chip" onclick="searchWord('mountains')">⛰️ Mountains</span><span class="chip" onclick="searchWord('sea')">🌊 Seas</span>`;
         }
     }
+    
     async function searchWord(word) { document.getElementById('searchInput').value = word; await performSearch(); }
     function escapeHtml(t) { if (!t) return ''; const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
     function showToast(msg) { const t = document.createElement('div'); t.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#00aa44; color:white; padding:10px 20px; border-radius:10px; z-index:9999; animation:fadeOut 3s ease;'; t.innerHTML = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
     
-    // ========== DUAS SECTION ==========
+    // Duas Section
     const duasList = [
         { arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", translation: "Our Lord, give us good in this world and good in the Hereafter and save us from the Fire.", reference: "Quran 2:201", context: "After any prayer", audio: "002201" },
         { arabic: "رَبِّ زِدْنِي عِلْمًا", translation: "My Lord, increase me in knowledge.", reference: "Quran 20:114", context: "Before studying", audio: "020114" },
@@ -1139,6 +1309,7 @@
         { arabic: "حَسْبِيَ اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ", translation: "Allah is sufficient for me. There is no deity except Him.", reference: "Quran 9:129", context: "When anxious", audio: "009129" },
         { arabic: "رَبَّنَا لَا تُؤَاخِذْنَا إِنْ نَسِينَا أَوْ أَخْطَأْنَا", translation: "Our Lord, do not blame us if we forget or make a mistake.", reference: "Quran 2:286", context: "Morning/evening", audio: "002286" }
     ];
+    
     function loadDuas() {
         const container = document.getElementById('duasGrid');
         if (!container) return;
@@ -1146,9 +1317,11 @@
         document.querySelectorAll('.dua-audio-btn').forEach(btn => { btn.addEventListener('click', () => { const surah = parseInt(btn.dataset.surah); const ayah = parseInt(btn.dataset.ayah); if (currentAudio) { currentAudio.pause(); currentAudio = null; } const url = `https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps/${String(surah).padStart(3,'0')}${String(ayah).padStart(3,'0')}.mp3`; const audio = new Audio(url); currentAudio = audio; audio.play().catch(() => showToast('Audio unavailable')); btn.textContent = '🎧 Playing...'; audio.onended = () => btn.textContent = '🔊 Listen to Dua'; }); });
     }
     
-    // ---------- INIT ALL ----------
+    // INIT ALL
     (function initAll() {
         setMode('quran');
+        loadNames();
+        loadCreations();
         loadMiracles();
         const masjidBtn = document.getElementById('findMasjidBtn');
         if (masjidBtn) masjidBtn.onclick = findNearestMasjid;
@@ -1164,7 +1337,7 @@
             else { window.addEventListener('deviceorientation', handleOrientation); }
         }
         loadDuas();
-        setTimeout(() => showToast('🏆 Quran, Hadith, Scientific Miracles, Duas with Audio | Qibla + Mosques'), 1200);
+        setTimeout(() => showToast('🏆 99 Names of Allah, Quran, Hadith, Duas with Audio | Qibla + Mosques'), 1200);
     })();
 </script>
 <style>
